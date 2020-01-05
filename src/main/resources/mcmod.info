@@ -1,0 +1,19 @@
+[
+   {
+      "modid":"qrystal",
+      "name":"Qrystal",
+      "description":"you know what it is",
+      "version":"${version}",
+      "mcversion":"${mcversion}",
+      "url":"",
+      "updateUrl":"",
+      "authorList":[
+         "Villfuk02"
+      ],
+      "credits":"",
+      "logoFile":"",
+      "dependencies":[
+
+      ]
+   }
+]
