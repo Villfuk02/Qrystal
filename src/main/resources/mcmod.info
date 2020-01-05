@@ -3,17 +3,12 @@
       "modid":"qrystal",
       "name":"Qrystal",
       "description":"you know what it is",
-      "version":"${version}",
-      "mcversion":"${mcversion}",
+      "version":"1.0.0",
+      "mcversion":"1.12.2",
       "url":"",
-      "updateUrl":"",
       "authorList":[
          "Villfuk02"
       ],
-      "credits":"",
-      "logoFile":"",
-      "dependencies":[
-
-      ]
+      "credits":""
    }
 ]
