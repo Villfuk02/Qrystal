@@ -2,9 +2,6 @@ package com.villfuk02.qrystal;
 
 import com.villfuk02.qrystal.proxy.CommonProxy;
 import com.villfuk02.qrystal.world.ModWorldGen;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.util.IStringSerializable;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -24,7 +21,7 @@ public class Main {
     public static final String CL_PROXY = MOD_ADDR + ".proxy.ClientProxy";
     public static final String CM_PROXY = MOD_ADDR + ".proxy.CommonProxy";
     
-    public static enum EnumColor implements IStringSerializable {
+    public enum EnumColor {
         QLEAR("qlear", 0), QERI("qeri", 1), QAWA("qawa", 2), QINI("qini", 3), QITAE("qitae", 4), QOID("qoid", 5), QONDO("qondo", 6), QALB("qalb", 7);
         
         private final String name;
@@ -37,11 +34,6 @@ public class Main {
         
         @Override
         public String toString() {
-            return name;
-        }
-        
-        @Override
-        public String getName() {
             return name;
         }
         
@@ -70,8 +62,6 @@ public class Main {
             }
         }
     }
-    
-    public static final IProperty<EnumColor> qrystalColor = PropertyEnum.create("color", EnumColor.class);
     
     private static Logger logger;
     

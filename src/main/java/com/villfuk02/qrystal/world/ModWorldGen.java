@@ -1,7 +1,5 @@
 package com.villfuk02.qrystal.world;
 
-import com.villfuk02.qrystal.Main;
-import com.villfuk02.qrystal.blocks.QrystalOre;
 import com.villfuk02.qrystal.init.ModBlocks;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
@@ -19,8 +17,8 @@ public class ModWorldGen implements IWorldGenerator {
     static final int PEAK_HEIGHT = 17;
     static final int MAX_HEIGHT = 48;
     static final int TRIES = 1;
-    static final int MIN_SIZE = 8;
-    static final int MAX_SIZE = 16;
+    static final int MIN_SIZE = 6;
+    static final int MAX_SIZE = 12;
     
     @Override
     public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider) {
@@ -31,12 +29,11 @@ public class ModWorldGen implements IWorldGenerator {
     private void generateOverworld(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider) {
         generateQrystalOre(ModBlocks.PEBBLE_BLOCK.getDefaultState(), random, chunkX * 16, chunkZ * 16, world, 3, 30, 60, 120, 15, 20);
         
-        generateQrystalOre(ModBlocks.QRYSTAL_ORE.getDefaultState().withProperty(Main.qrystalColor, Main.EnumColor.QERI).withProperty(QrystalOre.rich, false), random,
-                           chunkX * 16, chunkZ * 16, world, TRIES, MIN_HEIGHT, PEAK_HEIGHT, MAX_HEIGHT, MIN_SIZE, MAX_SIZE);
-        generateQrystalOre(ModBlocks.QRYSTAL_ORE.getDefaultState().withProperty(Main.qrystalColor, Main.EnumColor.QAWA).withProperty(QrystalOre.rich, false), random,
-                           chunkX * 16, chunkZ * 16, world, TRIES, MIN_HEIGHT, PEAK_HEIGHT, MAX_HEIGHT, MIN_SIZE, MAX_SIZE);
-        generateQrystalOre(ModBlocks.QRYSTAL_ORE.getDefaultState().withProperty(Main.qrystalColor, Main.EnumColor.QINI).withProperty(QrystalOre.rich, false), random,
-                           chunkX * 16, chunkZ * 16, world, TRIES, MIN_HEIGHT, PEAK_HEIGHT, MAX_HEIGHT, MIN_SIZE, MAX_SIZE);
+        generateQrystalOre(ModBlocks.QLEAR_ORE.getDefaultState(), random, chunkX * 16, chunkZ * 16, world, TRIES * 2, MIN_HEIGHT, 25, 60, MIN_SIZE, MAX_SIZE);
+        
+        generateQrystalOre(ModBlocks.QERI_ORE.getDefaultState(), random, chunkX * 16, chunkZ * 16, world, TRIES, MIN_HEIGHT, PEAK_HEIGHT, MAX_HEIGHT, MIN_SIZE, MAX_SIZE);
+        generateQrystalOre(ModBlocks.QAWA_ORE.getDefaultState(), random, chunkX * 16, chunkZ * 16, world, TRIES, MIN_HEIGHT, PEAK_HEIGHT, MAX_HEIGHT, MIN_SIZE, MAX_SIZE);
+        generateQrystalOre(ModBlocks.QINI_ORE.getDefaultState(), random, chunkX * 16, chunkZ * 16, world, TRIES, MIN_HEIGHT, PEAK_HEIGHT, MAX_HEIGHT, MIN_SIZE, MAX_SIZE);
         /*
         generateQrystalOre(ModBlocks.QRYSTAL_ORE.getDefaultState().withProperty(Main.qrystalColor, Main.EnumColor.QITAE).withProperty(QrystalOre.rich, true), random,
                            chunkX * 16, chunkZ * 16, world, TRIES, MIN_HEIGHT, PEAK_HEIGHT, MAX_HEIGHT, MIN_SIZE, MAX_SIZE);
