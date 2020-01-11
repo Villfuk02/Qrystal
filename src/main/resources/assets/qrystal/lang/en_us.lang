@@ -1,3 +1,6 @@
+# ITEMS
 item.stone_pebbles.name=Stone Pebbles
 
+# BLOCKS
 tile.pebble_block.name=Stone Pebble Block
+tile.qrystal_ore.name=Qrystal Ore

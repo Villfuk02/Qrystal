@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "color=qlear,rich=false": {"model": "qrystal:qlear_ore"},
+    "color=qeri,rich=false": {"model": "qrystal:qeri_ore"},
+    "color=qawa,rich=false": {"model": "qrystal:qawa_ore"},
+    "color=qini,rich=false": {"model": "qrystal:qini_ore"},
+    "color=qitae,rich=false": {"model": "qrystal:qlear_ore"},
+    "color=qoid,rich=false": {"model": "qrystal:qlear_ore"},
+    "color=qondo,rich=false": {"model": "qrystal:qlear_ore"},
+    "color=qalb,rich=false": {"model": "qrystal:qlear_ore"},
+    "color=qlear,rich=true": {"model": "qrystal:qlear_ore"},
+    "color=qeri,rich=true": {"model": "qrystal:qeri_ore_rich"},
+    "color=qawa,rich=true": {"model": "qrystal:qawa_ore_rich"},
+    "color=qini,rich=true": {"model": "qrystal:qini_ore_rich"},
+    "color=qitae,rich=true": {"model": "qrystal:qitae_ore_rich"},
+    "color=qoid,rich=true": {"model": "qrystal:qoid_ore_rich"},
+    "color=qondo,rich=true": {"model": "qrystal:qondo_ore_rich"},
+    "color=qalb,rich=true": {"model": "qrystal:qlear_ore"}
+  }
+}

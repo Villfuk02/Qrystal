@@ -1,0 +1,45 @@
+---- Minecraft Crash Report ----
+// I'm sorry, Dave.
+
+Time: 1/7/20 8:50 PM
+Description: Exception in server tick loop
+
+java.lang.NullPointerException: Exception in server tick loop
+	at net.minecraft.server.MinecraftServer.updateTimeLightAndEntities(MinecraftServer.java:869)
+	at net.minecraft.server.MinecraftServer.tick(MinecraftServer.java:743)
+	at net.minecraft.server.integrated.IntegratedServer.tick(IntegratedServer.java:192)
+	at net.minecraft.server.MinecraftServer.run(MinecraftServer.java:592)
+	at java.lang.Thread.run(Thread.java:748)
+
+
+A detailed walkthrough of the error, its code path and all known details is as follows:
+---------------------------------------------------------------------------------------
+
+-- System Details --
+Details:
+	Minecraft Version: 1.12.2
+	Operating System: Windows 10 (amd64) version 10.0
+	Java Version: 1.8.0_191, Oracle Corporation
+	Java VM Version: Java HotSpot(TM) 64-Bit Server VM (mixed mode), Oracle Corporation
+	Memory: 622202984 bytes (593 MB) / 1225785344 bytes (1169 MB) up to 3795845120 bytes (3620 MB)
+	JVM Flags: 0 total; 
+	IntCache: cache: 0, tcache: 0, allocated: 20, tallocated: 86
+	FML: MCP 9.42 Powered by Forge 14.23.5.2847 7 mods loaded, 7 mods active
+	States: 'U' = Unloaded 'L' = Loaded 'C' = Constructed 'H' = Pre-initialized 'I' = Initialized 'J' = Post-initialized 'A' = Available 'D' = Disabled 'E' = Errored
+
+	| State  | ID          | Version      | Source                                  | Signature |
+	|:------ |:----------- |:------------ |:--------------------------------------- |:--------- |
+	| LCHIJA | minecraft   | 1.12.2       | minecraft.jar                           | None      |
+	| LCHIJA | mcp         | 9.42         | minecraft.jar                           | None      |
+	| LCHIJA | FML         | 8.0.99.99    | forgeSrc-1.12.2-14.23.5.2847.jar        | None      |
+	| LCHIJA | forge       | 14.23.5.2847 | forgeSrc-1.12.2-14.23.5.2847.jar        | None      |
+	| LCHIJA | qrystal     | @VERSION@    | main                                    | None      |
+	| LCHIJA | jei         | 4.15.0.293   | jei_1.12.2-4.15.0.293.jar               | None      |
+	| LCHIJA | jeresources | 0.9.2.60     | JustEnoughResources-1.12.2-0.9.2.60.jar | None      |
+
+	Loaded coremods (and transformers): 
+	GL info: ~~ERROR~~ RuntimeException: No OpenGL context found in the current thread.
+	Profiler Position: N/A (disabled)
+	Player Count: 1 / 8; [EntityPlayerMP['Villfuk02'/1904, l='oo', x=253.02, y=34.94, z=228.42]]
+	Type: Integrated Server (map_client.txt)
+	Is Modded: Definitely; Client brand changed to 'fml,forge'

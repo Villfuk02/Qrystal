@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "qrystal:pebble_block"
+    }
+  ],
+  "result": {
+    "item": "qrystal:stone_pebbles",
+    "count": 9
+  }
+}
