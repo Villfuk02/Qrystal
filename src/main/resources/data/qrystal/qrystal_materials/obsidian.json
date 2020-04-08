@@ -1,0 +1,21 @@
+{
+  "name": "obsidian",
+  "locale": "block.minecraft.obsidian",
+  "temp": 1000,
+  "seed": "qalb",
+  "color_primary": "21193A",
+  "color_secondary": "5A3D82",
+  "crushable": [
+    {
+      "item": "minecraft:obsidian",
+      "min": 725760,
+      "max": 933120
+    }
+  ],
+  "outputs": [
+    {
+      "item": "qrystal:crystallic_obsidian",
+      "value": 829440
+    }
+  ]
+}

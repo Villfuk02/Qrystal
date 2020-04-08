@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "G G",
+    " T ",
+    " T "
+  ],
+  "key": {
+    "G": {
+      "tag": "forge:fused_quartz"
+    },
+    "T": {
+      "item": "qrystal:tube"
+    }
+  },
+  "result": {
+    "item": "qrystal:funnel"
+  }
+}

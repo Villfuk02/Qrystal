@@ -1,0 +1,35 @@
+{
+  "type": "qrystal:cutting",
+  "input": "minecraft:coal",
+  "output": [
+    {
+      "types": ["hammer"],
+      "item": "qrystal:coal_dust"
+    },
+    {
+      "types": ["saw"],
+      "item": "qrystal:coal_dust",
+      "count": 1.1
+    },
+    {
+      "types": ["laser"],
+      "item": "qrystal:coal_dust",
+      "count": 1.25
+    },
+    {
+      "types": ["hammer"],
+      "item": "qrystal:sulfur_dust",
+      "count": 0.1
+    },
+    {
+      "types": ["saw"],
+      "item": "qrystal:sulfur_dust",
+      "count": 0.15
+    },
+    {
+      "types": ["laser"],
+      "item": "qrystal:sulfur_dust",
+      "count": 0.2
+    }
+  ]
+}

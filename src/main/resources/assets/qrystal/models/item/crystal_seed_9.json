@@ -1,0 +1,12 @@
+{
+  "parent": "qrystal:item/seed",
+  "loader": "forge:obj",
+  "model": "qrystal:models/item/crystals/9.obj",
+  "display": {
+    "fixed": {
+      "rotation": [0, 0, 0],
+      "translation": [0, 0, 0],
+      "scale": [0.25, 0.25, 0.25]
+    }
+  }
+}

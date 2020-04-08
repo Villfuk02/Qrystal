@@ -1,0 +1,11 @@
+{
+  "type": "qrystal:fluid_mixing",
+  "fluid1": "qrystal:purified_water",
+  "fluid1Amt": 500,
+  "fluid2": "qrystal:ethanol",
+  "fluid2Amt": 250,
+  "result": "qrystal:vinegar",
+  "resultAmt": 250,
+  "in1": "minecraft:spider_eye",
+  "time": 1800
+}

@@ -1,0 +1,20 @@
+{
+  "type": "qrystal:cutting",
+  "tag": "forge:gems/quartz",
+  "output": [
+    {
+      "types": ["hammer"],
+      "item": "qrystal:quartz_dust"
+    },
+    {
+      "types": ["saw"],
+      "item": "qrystal:quartz_dust",
+      "count": 1.2
+    },
+    {
+      "types": ["laser"],
+      "item": "qrystal:quartz_dust",
+      "count": 1.4
+    }
+  ]
+}

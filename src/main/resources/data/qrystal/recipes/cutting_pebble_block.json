@@ -1,0 +1,11 @@
+{
+  "type": "qrystal:cutting",
+  "input": "qrystal:pebble_block",
+  "output": [
+    {
+      "types": ["hammer", "saw", "laser"],
+      "item": "qrystal:stone_pebbles",
+      "count": 9
+    }
+  ]
+}

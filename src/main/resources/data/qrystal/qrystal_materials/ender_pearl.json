@@ -1,0 +1,21 @@
+{
+  "name": "ender_pearl",
+  "locale": "item.minecraft.ender_pearl",
+  "temp": -500,
+  "seed": "qalb",
+  "color_primary": "0B4D42",
+  "color_secondary": "50E5CA",
+  "crushable": [
+    {
+      "item": "minecraft:ender_pearl",
+      "min": 207360,
+      "max": 311040
+    }
+  ],
+  "outputs": [
+    {
+      "item": "qrystal:crystallic_ender_pearl",
+      "value": 207360
+    }
+  ]
+}

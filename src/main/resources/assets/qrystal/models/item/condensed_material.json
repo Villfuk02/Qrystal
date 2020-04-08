@@ -1,0 +1,8 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "qrystal:items/condensed_material_base",
+    "layer1": "qrystal:items/condensed_material_mat0",
+    "layer2": "qrystal:items/condensed_material_mat1"
+  }
+}

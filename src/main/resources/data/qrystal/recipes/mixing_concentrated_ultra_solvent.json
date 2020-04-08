@@ -1,0 +1,10 @@
+{
+  "type": "qrystal:fluid_mixing",
+  "fluid1": "qrystal:ultra_solvent",
+  "fluid1Amt": 500,
+  "fluid2": "qrystal:dmso",
+  "fluid2Amt": 500,
+  "result": "qrystal:concentrated_ultra_solvent",
+  "resultAmt": 125,
+  "time": 6000
+}

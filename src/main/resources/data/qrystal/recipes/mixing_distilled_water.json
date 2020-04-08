@@ -1,0 +1,5 @@
+{
+  "type": "qrystal:fluid_mixing",
+  "fluid1": "qrystal:purified_water",
+  "result": "qrystal:distilled_water"
+}

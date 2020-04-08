@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "X#X",
+    " # ",
+    " # "
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:rods/wooden"
+    },
+    "X": {
+      "tag": "forge:gems/diamond"
+    }
+  },
+  "result": {
+    "item": "qrystal:diamond_hammer",
+    "count": 1
+  }
+}

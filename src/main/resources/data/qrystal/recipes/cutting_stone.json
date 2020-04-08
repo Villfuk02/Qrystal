@@ -1,0 +1,36 @@
+{
+  "type": "qrystal:cutting",
+  "tag": ["forge:stone", "forge:cobblestone"],
+  "output": [
+    {
+      "types": ["hammer", "saw", "laser"],
+      "item": "qrystal:stone_pebbles",
+      "count": 3.5
+    },
+    {
+      "types": ["saw", "laser"],
+      "item": "qrystal:stone_pebbles",
+      "count": 0.75
+    },
+    {
+      "types": ["laser"],
+      "item": "qrystal:stone_pebbles",
+      "count": 0.25
+    },
+    {
+      "types": ["hammer"],
+      "item": "minecraft:sand",
+      "count": 0.08
+    },
+    {
+      "types": ["saw"],
+      "item": "minecraft:sand",
+      "count": 0.1
+    },
+    {
+      "types": ["laser"],
+      "item": "minecraft:sand",
+      "count": 0.125
+    }
+  ]
+}

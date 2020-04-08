@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": {"model": "qrystal:block/steel_cutter"},
+    "facing=south": {"model": "qrystal:block/steel_cutter", "y": 180},
+    "facing=west": {"model": "qrystal:block/steel_cutter", "y": 270},
+    "facing=east": {"model": "qrystal:block/steel_cutter", "y": 90}
+  }
+}

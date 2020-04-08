@@ -1,39 +1,31 @@
 package com.villfuk02.qrystal.blocks;
 
-import com.villfuk02.qrystal.Main;
 import com.villfuk02.qrystal.init.ModBlocks;
 import com.villfuk02.qrystal.init.ModItems;
-import com.villfuk02.qrystal.util.IHasModel;
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.block.material.MaterialColor;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
+import net.minecraftforge.common.ToolType;
 
-public class BlockBase extends Block implements IHasModel {
+import static com.villfuk02.qrystal.Main.MODID;
+import static com.villfuk02.qrystal.Main.MOD_ITEM_GROUP;
+
+public class BlockBase extends Block {
     
-    public BlockBase(String name, Material material) {
-        super(material);
-        setUnlocalizedName(name);
-        setRegistryName(name);
-        setCreativeTab(CreativeTabs.BUILDING_BLOCKS);
+    public BlockBase(String name, Material material, MaterialColor materialColor, SoundType sound, float hardness, float blastResistance, ToolType tool, int level) {
+        this(name,
+             Block.Properties.create(material, materialColor).sound(sound).hardnessAndResistance(hardness, blastResistance / 5).harvestTool(tool).harvestLevel(level));
+    }
+    
+    public BlockBase(String name, Block.Properties properties) {
+        super(properties);
+        setRegistryName(MODID, name);
         ModBlocks.BLOCKS.add(this);
-        ModItems.ITEMS.add(new ItemBlock(this).setRegistryName(getRegistryName()));
-    }
-    
-    public BlockBase(String name, Material material, float hardness, float blastResistance) {
-        this(name, material);
-        setHardness(hardness);
-        setResistance(blastResistance / 3f);
-    }
-    
-    public BlockBase(String name, Material material, float hardness, float blastResistance, String tool, int level) {
-        this(name, material, hardness, blastResistance);
-        setHarvestLevel(tool, level);
-    }
-    
-    @Override
-    public void registerModels() {
-        Main.proxy.registerItemRenderer(Item.getItemFromBlock(this), 0, "inventory");
+        Item item = new BlockItem(this, new Item.Properties().group(MOD_ITEM_GROUP));
+        item.setRegistryName(MODID, name);
+        ModItems.ITEMS.add(item);
     }
 }

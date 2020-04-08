@@ -1,0 +1,35 @@
+{
+  "type": "qrystal:cutting",
+  "input": "minecraft:charcoal",
+  "output": [
+    {
+      "types": ["hammer"],
+      "item": "qrystal:charcoal_dust"
+    },
+    {
+      "types": ["saw"],
+      "item": "qrystal:charcoal_dust",
+      "count": 1.1
+    },
+    {
+      "types": ["laser"],
+      "item": "qrystal:charcoal_dust",
+      "count": 1.25
+    },
+    {
+      "types": ["hammer"],
+      "item": "qrystal:sulfur_dust",
+      "count": 0.04
+    },
+    {
+      "types": ["saw"],
+      "item": "qrystal:sulfur_dust",
+      "count": 0.06
+    },
+    {
+      "types": ["laser"],
+      "item": "qrystal:sulfur_dust",
+      "count": 0.08
+    }
+  ]
+}

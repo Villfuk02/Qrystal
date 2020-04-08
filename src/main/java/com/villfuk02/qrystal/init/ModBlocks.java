@@ -1,10 +1,12 @@
 package com.villfuk02.qrystal.init;
 
-import com.villfuk02.qrystal.Main;
-import com.villfuk02.qrystal.blocks.BlockBase;
-import com.villfuk02.qrystal.blocks.QrystalOre;
+import com.villfuk02.qrystal.blocks.*;
+import com.villfuk02.qrystal.util.CrystalUtil;
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.material.MaterialColor;
+import net.minecraftforge.common.ToolType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,15 +15,36 @@ public class ModBlocks {
     
     public static final List<Block> BLOCKS = new ArrayList<>();
     
-    public static final Block PEBBLE_BLOCK = new BlockBase("pebble_block", Material.ROCK, 1f, 20f, "pickaxe", 0);
-    public static final Block QLEAR_ORE = new QrystalOre(Main.EnumColor.QLEAR, false);
-    public static final Block QERI_ORE = new QrystalOre(Main.EnumColor.QERI, false);
-    public static final Block QAWA_ORE = new QrystalOre(Main.EnumColor.QAWA, false);
-    public static final Block QINI_ORE = new QrystalOre(Main.EnumColor.QINI, false);
-    public static final Block QERI_ORE_RICH = new QrystalOre(Main.EnumColor.QERI, true);
-    public static final Block QAWA_ORE_RICH = new QrystalOre(Main.EnumColor.QAWA, true);
-    public static final Block QINI_ORE_RICH = new QrystalOre(Main.EnumColor.QINI, true);
-    public static final Block QITAE_ORE_RICH = new QrystalOre(Main.EnumColor.QITAE, true);
-    public static final Block QOID_ORE_RICH = new QrystalOre(Main.EnumColor.QOID, true);
-    public static final Block QONDO_ORE_RICH = new QrystalOre(Main.EnumColor.QONDO, true);
+    public static final Block PEBBLE_BLOCK = new BlockBase("pebble_block", Material.ROCK, MaterialColor.STONE, SoundType.STONE, 1f, 20f, ToolType.PICKAXE, 0);
+    public static final Block QLEAR_ORE = new QrystalOre(CrystalUtil.Color.QLEAR, false);
+    public static final Block QERI_ORE = new QrystalOre(CrystalUtil.Color.QERI, false);
+    public static final Block QAWA_ORE = new QrystalOre(CrystalUtil.Color.QAWA, false);
+    public static final Block QINI_ORE = new QrystalOre(CrystalUtil.Color.QINI, false);
+    public static final Block QERI_ORE_RICH = new QrystalOre(CrystalUtil.Color.QERI, true);
+    public static final Block QAWA_ORE_RICH = new QrystalOre(CrystalUtil.Color.QAWA, true);
+    public static final Block QINI_ORE_RICH = new QrystalOre(CrystalUtil.Color.QINI, true);
+    public static final Block QITAE_ORE_RICH = new QrystalOre(CrystalUtil.Color.QITAE, true);
+    public static final Block QOID_ORE_RICH = new QrystalOre(CrystalUtil.Color.QOID, true);
+    public static final Block QONDO_ORE_RICH = new QrystalOre(CrystalUtil.Color.QONDO, true);
+    public static final Block DRYER = new DryerBlock();
+    public static final Block STEEL_CUTTER = new SteelCutterBlock();
+    public static final Block DIAMOND_CUTTER = new DiamondCutterBlock();
+    public static final Block LASER_CUTTER = new LaserCutterBlock();
+    public static final Block BURNER_FLUID_MIXER = new BurnerFluidMixerBlock();
+    public static final Block POWERED_FLUID_MIXER = new PoweredFluidMixerBlock();
+    public static final Block BASIC_EVAPORATOR = new BasicEvaporatorBlock();
+    public static final Block BURNER_EVAPORATOR = new BurnerEvaporatorBlock();
+    public static final Block POWERED_EVAPORATOR = new PoweredEvaporatorBlock();
+    public static final Block ULTIMATE_EVAPORATOR = new UltimateEvaporatorBlock();
+    public static final Block WOODEN_CONDENSING_BARREL = new CondensingBarrelBlock("wooden", 2, Material.WOOD, MaterialColor.WOOD, SoundType.WOOD);
+    public static final Block STONE_CONDENSING_BARREL = new CondensingBarrelBlock("stone", 3, Material.ROCK, MaterialColor.STONE, SoundType.STONE);
+    public static final Block IRON_CONDENSING_BARREL = new CondensingBarrelBlock("iron", 4, Material.IRON, MaterialColor.IRON, SoundType.STONE);
+    public static final Block GOLD_CONDENSING_BARREL = new CondensingBarrelBlock("gold", 5, Material.IRON, MaterialColor.GOLD, SoundType.STONE);
+    public static final Block IMBUED_CONDENSING_BARREL = new CondensingBarrelBlock("imbued", 6, Material.IRON, MaterialColor.DIAMOND, SoundType.STONE);
+    public static final Block STEEL_CONDENSING_BARREL = new CondensingBarrelBlock("steel", 7, Material.IRON, MaterialColor.WOOD, SoundType.STONE);
+    public static final Block DIAMOND_CONDENSING_BARREL = new CondensingBarrelBlock("diamond", 8, Material.IRON, MaterialColor.WOOD, SoundType.STONE);
+    public static final Block EMERALD_CONDENSING_BARREL = new CondensingBarrelBlock("emerald", 9, Material.IRON, MaterialColor.WOOD, SoundType.STONE);
+    public static final Block ENDSTEEL_CONDENSING_BARREL = new CondensingBarrelBlock("endsteel", 10, Material.IRON, MaterialColor.WOOD, SoundType.STONE);
+    
+    
 }

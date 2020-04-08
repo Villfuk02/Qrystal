@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "gravel",
+  "pattern": [
+    "PP",
+    "PP"
+  ],
+  "key": {
+    "P": {
+      "tag": "qrystal:pebbles"
+    }
+  },
+  "result": {
+    "item": "minecraft:gravel",
+    "count": 1
+  }
+}

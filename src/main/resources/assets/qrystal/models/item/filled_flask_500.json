@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "qrystal:items/flask",
+    "layer1": "qrystal:items/flask_overlay_500"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "type": "qrystal:fluid_mixing",
+  "fluid1": "qrystal:distilled_water",
+  "fluid1Amt": 500,
+  "result": "qrystal:sulfuric_acid",
+  "resultAmt": 125,
+  "tag1": "forge:dusts/sulfur",
+  "in2": "qrystal:dust_4320",
+  "nbt2": "{material:qondo}",
+  "time": 300
+}

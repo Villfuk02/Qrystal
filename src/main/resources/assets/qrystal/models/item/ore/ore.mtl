@@ -1,0 +1,63 @@
+newmtl stone
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+d 1
+illum 2
+map_Kd block/stone
+newmtl qlear
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+d 1
+illum 2
+map_Kd qrystal:blocks/qlear
+newmtl qeri
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+d 1
+illum 2
+map_Kd qrystal:blocks/qeri
+newmtl qawa
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+d 1
+illum 2
+map_Kd qrystal:blocks/qawa
+newmtl qini
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+d 1
+illum 2
+map_Kd qrystal:blocks/qini
+newmtl qitae
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+d 1
+illum 2
+map_Kd qrystal:blocks/qitae
+newmtl qondo
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+d 1
+illum 2
+map_Kd qrystal:blocks/qondo
+newmtl qoid
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+d 1
+illum 2
+map_Kd qrystal:blocks/qoid
+newmtl qalb
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+d 1
+illum 2
+map_Kd qrystal:blocks/qalb

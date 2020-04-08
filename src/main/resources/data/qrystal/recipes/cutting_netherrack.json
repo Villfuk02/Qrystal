@@ -1,0 +1,36 @@
+{
+  "type": "qrystal:cutting",
+  "input": "minecraft:netherrack",
+  "output": [
+    {
+      "types": ["hammer", "saw", "laser"],
+      "item": "qrystal:stone_pebbles",
+      "count": 2.5
+    },
+    {
+      "types": ["saw", "laser"],
+      "item": "qrystal:stone_pebbles",
+      "count": 0.75
+    },
+    {
+      "types": ["laser"],
+      "item": "qrystal:stone_pebbles",
+      "count": 0.25
+    },
+    {
+      "types": ["hammer"],
+      "item": "qrystal:sulfur_dust",
+      "count": 0.15
+    },
+    {
+      "types": ["saw"],
+      "item": "qrystal:sulfur_dust",
+      "count": 0.2
+    },
+    {
+      "types": ["laser"],
+      "item": "qrystal:sulfur_dust",
+      "count": 0.25
+    }
+  ]
+}

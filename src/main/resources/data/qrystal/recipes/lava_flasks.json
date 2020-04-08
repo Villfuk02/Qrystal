@@ -1,0 +1,6 @@
+{
+  "type": "qrystal:source_flasks",
+  "amount": 1000,
+  "fluid": "lava",
+  "tag": "forge:buckets/lava"
+}

@@ -1,0 +1,7 @@
+{
+  "type": "qrystal:source_flasks",
+  "amount": 1000,
+  "fluid": "water",
+  "tag": "forge:buckets/water",
+  "input": "minecraft:ice"
+}

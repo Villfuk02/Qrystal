@@ -1,0 +1,6 @@
+{
+  "type": "qrystal:source_flasks",
+  "amount": 250,
+  "fluid": "water",
+  "input": "minecraft:potion"
+}

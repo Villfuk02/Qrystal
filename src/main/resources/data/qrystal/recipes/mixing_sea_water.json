@@ -1,0 +1,12 @@
+{
+  "type": "qrystal:fluid_mixing",
+  "fluid1": "water",
+  "fluid1Amt": 500,
+  "fluid2": "qrystal:purified_water",
+  "fluid2Amt": 500,
+  "result": "qrystal:sea_water",
+  "resultAmt": 500,
+  "tag1": "forge:corals",
+  "tag2": "forge:corals",
+  "time": 900
+}

@@ -1,0 +1,7 @@
+{
+  "type": "qrystal:fluid_mixing",
+  "fluid1": "qrystal:wort",
+  "fluid1Amt": 500,
+  "result": "qrystal:ethanol",
+  "resultAmt": 125
+}

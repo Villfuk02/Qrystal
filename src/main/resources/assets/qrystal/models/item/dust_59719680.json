@@ -1,0 +1,8 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "qrystal:items/empty",
+    "layer1": "qrystal:items/dust_29859840",
+    "layer2": "qrystal:items/dust_29859840b"
+  }
+}

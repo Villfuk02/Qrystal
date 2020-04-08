@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GGG",
+    "GXG",
+    "###"
+  ],
+  "key": {
+    "X": {
+      "item": "minecraft:nether_star"
+    },
+    "#": {
+      "tag": "forge:obsidian"
+    },
+    "G": {
+      "tag": "forge:glass"
+    }
+  },
+  "result": {
+    "item": "minecraft:beacon"
+  }
+}

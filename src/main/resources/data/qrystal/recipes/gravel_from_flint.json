@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "gravel",
+  "ingredients": [
+    {
+      "item": "qrystal:stone_pebbles"
+    },
+    {
+      "item": "qrystal:stone_pebbles"
+    },
+    {
+      "item": "minecraft:flint"
+    },
+    {
+      "item": "minecraft:flint"
+    }
+  ],
+  "result": {
+    "item": "minecraft:gravel",
+    "count": 1
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "parent": "block/cube_column",
+  "textures": {
+    "end": "qrystal:blocks/endsteel_top",
+    "side": "qrystal:blocks/endsteel_block"
+  }
+}

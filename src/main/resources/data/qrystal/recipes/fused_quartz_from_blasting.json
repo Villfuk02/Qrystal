@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:blasting",
+  "ingredient": {
+    "item": "qrystal:quartz_dust_pile"
+  },
+  "result": "qrystal:fused_quartz",
+  "experience": 0.25,
+  "cookingtime": 400
+}

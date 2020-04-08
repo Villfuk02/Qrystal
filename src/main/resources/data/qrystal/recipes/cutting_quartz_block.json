@@ -1,0 +1,26 @@
+{
+  "type": "qrystal:cutting",
+  "input": ["minecraft:quartz_block", "minecraft:chiseled_quartz_block", "minecraft:quartz_pillar", "minecraft:smooth_quartz"],
+  "output": [
+    {
+      "types": ["hammer", "saw", "laser"],
+      "item": "qrystal:quartz_dust",
+      "count": 3.5
+    },
+    {
+      "types": ["hammer"],
+      "item": "qrystal:quartz_dust",
+      "count": 0.5
+    },
+    {
+      "types": ["saw"],
+      "item": "qrystal:quartz_dust",
+      "count": 1.3
+    },
+    {
+      "types": ["laser"],
+      "item": "qrystal:quartz_dust",
+      "count": 2.1
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    "qrystal:qlear_ore",
+    "qrystal:qeri_ore",
+    "qrystal:qawa_ore",
+    "qrystal:qini_ore",
+    "qrystal:qeri_ore_rich",
+    "qrystal:qawa_ore_rich",
+    "qrystal:qini_ore_rich",
+    "qrystal:qitae_ore_rich",
+    "qrystal:qoid_ore_rich",
+    "qrystal:qondo_ore_rich"
+  ]
+}

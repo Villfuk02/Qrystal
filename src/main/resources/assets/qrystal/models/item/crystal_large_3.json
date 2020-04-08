@@ -1,0 +1,5 @@
+{
+  "parent": "qrystal:item/large",
+  "loader": "forge:obj",
+  "model": "qrystal:models/item/crystals/3.obj"
+}

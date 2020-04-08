@@ -1,0 +1,11 @@
+{
+  "type": "qrystal:fluid_mixing",
+  "fluid1": "qrystal:distilled_water",
+  "fluid1Amt": 500,
+  "fluid2": "qrystal:sulfuric_acid",
+  "fluid2Amt": 125,
+  "result": "qrystal:hydrochloric_acid",
+  "resultAmt": 125,
+  "tag1": "forge:dusts/salt",
+  "time": 600
+}

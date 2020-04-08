@@ -1,11 +1,17 @@
 {
-  "forge_marker": 1,
-  "variants": {
-    "normal": {
-      "model": "cube_all",
-      "textures": {
-        "all": "qrystal:blocks/qlear_ore"
-      }
-    }
-  }
+  "multipart": [
+    {
+      "apply": [
+        {"model": "qrystal:block/ore/qlear"},
+        {"model": "qrystal:block/ore/qlear", "y": 90},
+        {"model": "qrystal:block/ore/qlear", "y": 180},
+        {"model": "qrystal:block/ore/qlear", "y": 270},
+        {"model": "qrystal:block/ore/qlear", "x": 180},
+        {"model": "qrystal:block/ore/qlear", "x": 180, "y": 90},
+        {"model": "qrystal:block/ore/qlear", "x": 180, "y": 180},
+        {"model": "qrystal:block/ore/qlear", "x": 180, "y": 270}
+      ]
+    },
+    {"apply": {"model": "block/stone"}}
+  ]
 }

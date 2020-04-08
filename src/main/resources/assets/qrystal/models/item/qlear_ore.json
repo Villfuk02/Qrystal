@@ -1,6 +1,8 @@
 {
   "parent": "block/cube_all",
+  "loader": "forge:obj",
+  "model": "qrystal:models/item/ore/qlear.obj",
   "textures": {
-    "all": "qrystal:blocks/qlear_ore"
+    "all": "block/stone"
   }
 }

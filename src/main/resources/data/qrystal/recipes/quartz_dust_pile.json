@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "tag": "forge:dusts/quartz"
+    },
+    {
+      "tag": "forge:dusts/quartz"
+    },
+    {
+      "tag": "forge:dusts/quartz"
+    },
+    {
+      "tag": "forge:dusts/quartz"
+    }
+  ],
+  "result": {
+    "item": "qrystal:quartz_dust_pile",
+    "count": 1
+  }
+}

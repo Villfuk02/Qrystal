@@ -1,0 +1,31 @@
+{
+  "type": "qrystal:cutting",
+  "tag": "forge:sandstone",
+  "output": [
+    {
+      "types": ["hammer", "saw", "laser"],
+      "item": "minecraft:sand",
+      "count": 2.25
+    },
+    {
+      "types": ["saw", "laser"],
+      "item": "minecraft:sand",
+      "count": 0.5
+    },
+    {
+      "types": ["hammer"],
+      "item": "qrystal:niter_dust",
+      "count": 0.125
+    },
+    {
+      "types": ["saw"],
+      "item": "qrystal:niter_dust",
+      "count": 0.15
+    },
+    {
+      "types": ["laser"],
+      "item": "qrystal:niter_dust",
+      "count": 0.2
+    }
+  ]
+}

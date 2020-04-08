@@ -1,0 +1,59 @@
+{
+  "ambientocclusion": false,
+  "parent": "block/block",
+  "textures": {
+    "particle": "qrystal:blocks/dark_machine_side",
+    "side": "qrystal:blocks/laser_cutter_side",
+    "top": "qrystal:blocks/laser_cutter_top",
+    "bottom": "qrystal:blocks/dark_machine_bottom",
+    "source": "blocks/redstone_block"
+  },
+  "elements": [
+    {
+      "from": [0, 0, 0],
+      "to": [16, 11, 16],
+      "faces": {
+        "north": {"texture": "#side", "cullface": "north"},
+        "east": {"texture": "#side", "cullface": "east"},
+        "south": {"texture": "#side", "cullface": "south"},
+        "west": {"texture": "#side", "cullface": "west"},
+        "up": {"texture": "#top"},
+        "down": {"texture": "#bottom", "cullface": "down"}
+      }
+    },
+    {
+      "from": [0.5, 11, 7.5],
+      "to": [1.5, 14, 8.5],
+      "faces": {
+        "north": {"texture": "#top"},
+        "east": {"texture": "#top"},
+        "south": {"texture": "#top"},
+        "west": {"texture": "#top"},
+        "up": {"texture": "#top"}
+      }
+    },
+    {
+      "from": [3.5, 11, 7.5],
+      "to": [4.5, 13, 8.5],
+      "faces": {
+        "north": {"texture": "#top"},
+        "east": {"texture": "#top"},
+        "south": {"texture": "#top"},
+        "west": {"texture": "#top"},
+        "up": {"texture": "#top"}
+      }
+    },
+    {
+      "from": [0, 14, 7],
+      "to": [2, 16, 9],
+      "faces": {
+        "north": {"texture": "#source"},
+        "east": {"texture": "#source"},
+        "south": {"texture": "#source"},
+        "west": {"texture": "#source"},
+        "up": {"texture": "#source"},
+        "down": {"texture": "#source"}
+      }
+    }
+  ]
+}

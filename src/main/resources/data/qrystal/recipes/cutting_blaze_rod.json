@@ -1,0 +1,41 @@
+{
+  "type": "qrystal:cutting",
+  "input": "minecraft:blaze_rod",
+  "output": [
+    {
+      "types": ["hammer"],
+      "item": "minecraft:blaze_powder",
+      "count": 2
+    },
+    {
+      "types": ["saw", "laser"],
+      "item": "minecraft:blaze_powder",
+      "count": 2.5
+    },
+    {
+      "types": ["saw"],
+      "item": "minecraft:blaze_powder",
+      "count": 1.5
+    },
+    {
+      "types": ["laser"],
+      "item": "minecraft:blaze_powder",
+      "count": 2.5
+    },
+    {
+      "types": ["hammer"],
+      "item": "qrystal:sulfur_dust",
+      "count": 0.3
+    },
+    {
+      "types": ["saw"],
+      "item": "qrystal:sulfur_dust",
+      "count": 0.5
+    },
+    {
+      "types": ["laser"],
+      "item": "qrystal:sulfur_dust",
+      "count": 0.7
+    }
+  ]
+}

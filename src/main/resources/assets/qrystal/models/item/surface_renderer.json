@@ -1,0 +1,14 @@
+{
+  "textures": {
+    "tex": "qrystal:items/surface_renderer"
+  },
+  "elements": [
+    {
+      "from": [0, 8, 0],
+      "to": [16, 8, 16],
+      "faces": {
+        "up": {"texture": "#tex", "tintindex": 0}
+      }
+    }
+  ]
+}

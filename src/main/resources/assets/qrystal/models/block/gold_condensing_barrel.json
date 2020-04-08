@@ -1,0 +1,7 @@
+{
+  "parent": "block/cube_column",
+  "textures": {
+    "end": "block/gold_block",
+    "side": "qrystal:blocks/gold_block"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "qrystal:fluid_mixing",
+  "fluid1": "qrystal:infernal_essence",
+  "fluid1Amt": 500,
+  "fluid2": "qrystal:sulfuric_acid",
+  "fluid2Amt": 250,
+  "result": "qrystal:energized_infernal_essence",
+  "resultAmt": 250,
+  "in1": "minecraft:blaze_powder",
+  "in2": "minecraft:glowstone_dust",
+  "time": 1200
+}

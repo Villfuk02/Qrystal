@@ -1,0 +1,10 @@
+{
+  "ambientocclusion": false,
+  "parent": "qrystal:block/cutter",
+  "textures": {
+    "particle": "qrystal:blocks/steel_machine_side",
+    "side": "qrystal:blocks/steel_cutter_side",
+    "top": "qrystal:blocks/steel_cutter_top",
+    "bottom": "qrystal:blocks/steel_machine_bottom"
+  }
+}

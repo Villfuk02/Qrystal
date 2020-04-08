@@ -1,6 +1,8 @@
 {
   "parent": "block/cube_all",
+  "loader": "forge:obj",
+  "model": "qrystal:models/item/ore/qeri.obj",
   "textures": {
-    "all": "qrystal:blocks/qeri_ore"
+    "all": "block/stone"
   }
 }
