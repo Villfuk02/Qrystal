@@ -1,5 +1,6 @@
 package com.villfuk02.qrystal.util;
 
+import net.minecraft.block.material.MaterialColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 
@@ -94,6 +95,28 @@ public class CrystalUtil {
                 case "qalb":
                     return QALB;
             }
+        }
+        
+        public MaterialColor getMapColor() {
+            switch(this) {
+                case QLEAR:
+                    return MaterialColor.SNOW;
+                case QERI:
+                    return MaterialColor.YELLOW;
+                case QAWA:
+                    return MaterialColor.DIAMOND;
+                case QINI:
+                    return MaterialColor.RED;
+                case QITAE:
+                    return MaterialColor.LIME;
+                case QOID:
+                    return MaterialColor.PURPLE;
+                case QONDO:
+                    return MaterialColor.ORANGE_TERRACOTTA;
+                case QALB:
+                    return MaterialColor.BLACK;
+            }
+            return MaterialColor.AIR;
         }
     }
 }

@@ -1,0 +1,5 @@
+{
+"parent": "block/cube_all",
+"textures": {
+"all": "qrystal:blocks/qondo_block_2"}
+}

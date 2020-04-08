@@ -146,5 +146,7 @@
   "qrystal.tier.14": "Icosahedral",
   "qrystal.tier.15": "Impossible",
   "qrystal.solvent_tier": " Crystal Solvent",
+  "qrystal.activated": "Activated",
+  "qrystal.block+tier": "Block Tier",
   "gui.qrystal.impurities": "Defect rate: "
 }

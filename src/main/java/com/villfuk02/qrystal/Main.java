@@ -155,6 +155,7 @@ public class Main {
     public static class RegistryEvents {
         @SubscribeEvent
         public static void registerBlocks(RegistryEvent.Register<Block> event) {
+            ModBlocks.init();
             event.getRegistry().registerAll(ModBlocks.BLOCKS.toArray(new Block[0]));
         }
         
@@ -178,6 +179,7 @@ public class Main {
             event.getRegistry().register(new FlaskRecipe.Serializer().setRegistryName(MODID, "flask_recipe"));
             event.getRegistry().register(new SourceFlasksRecipe.Serializer().setRegistryName(MODID, "source_flasks"));
             event.getRegistry().register(new FluidMixingRecipe.Serializer().setRegistryName(MODID, "fluid_mixing"));
+            event.getRegistry().register(new ActivationRecipe.Serializer().setRegistryName(MODID, "activation"));
         }
         
         @SubscribeEvent

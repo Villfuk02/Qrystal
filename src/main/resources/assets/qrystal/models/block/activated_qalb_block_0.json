@@ -1,0 +1,5 @@
+{
+"parent": "block/cube_all",
+"textures": {
+"all": "qrystal:blocks/activated_qalb_block_0"}
+}

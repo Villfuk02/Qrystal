@@ -9,7 +9,9 @@ import net.minecraft.block.material.MaterialColor;
 import net.minecraftforge.common.ToolType;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ModBlocks {
     
@@ -45,6 +47,19 @@ public class ModBlocks {
     public static final Block DIAMOND_CONDENSING_BARREL = new CondensingBarrelBlock("diamond", 8, Material.IRON, MaterialColor.WOOD, SoundType.STONE);
     public static final Block EMERALD_CONDENSING_BARREL = new CondensingBarrelBlock("emerald", 9, Material.IRON, MaterialColor.WOOD, SoundType.STONE);
     public static final Block ENDSTEEL_CONDENSING_BARREL = new CondensingBarrelBlock("endsteel", 10, Material.IRON, MaterialColor.WOOD, SoundType.STONE);
+    public static Map<String, Block> QRYSTAL_BLOCKS = new HashMap<>();
+    
+    public static void init() {
+        for(CrystalUtil.Color c : CrystalUtil.Color.values()) {
+            if(c == CrystalUtil.Color.QLEAR)
+                continue;
+            for(int i = 0; i < 3; i++) {
+                QRYSTAL_BLOCKS.putIfAbsent(c.toString() + "_" + i, new QrystalBlock(c, i, false));
+                if(c != CrystalUtil.Color.QONDO)
+                    QRYSTAL_BLOCKS.putIfAbsent("activated_" + c.toString() + "_" + i, new QrystalBlock(c, i, true));
+            }
+        }
+    }
     
     
 }

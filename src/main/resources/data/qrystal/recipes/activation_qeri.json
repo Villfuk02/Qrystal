@@ -1,0 +1,7 @@
+{
+  "type": "qrystal:activation",
+  "color": "qeri",
+  "tier1": "glass",
+  "tier2": "glowstone",
+  "tier3": "end_stone"
+}
