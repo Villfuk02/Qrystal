@@ -1,7 +1,7 @@
 {
   "type": "qrystal:activation",
   "color": "qini",
-  "tier1": "netherrack",
-  "tier2": "redstone_block",
-  "tier3": "lava"
+  "tier1": "lava",
+  "tier2": "netherrack",
+  "tier3": "redstone_block"
 }

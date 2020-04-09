@@ -30,3 +30,5 @@ usercache.json
 usernamecache.json
 crash-reports
 
+
+!.idea

@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CCC",
+    "CAC",
+    "CCC"
+  ],
+  "key": {
+    "C": {
+      "item": "qrystal:crystal_small_6",
+      "type": "forge:nbt",
+      "count": 1,
+      "nbt": "{material:qoid}"
+    },
+    "A": {
+      "item": "qrystal:activated_qoid_block_1"
+    }
+  },
+  "result": {
+    "item": "qrystal:qoid_block_2",
+    "count": 1
+  }
+}

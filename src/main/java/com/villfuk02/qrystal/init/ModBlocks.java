@@ -55,8 +55,7 @@ public class ModBlocks {
                 continue;
             for(int i = 0; i < 3; i++) {
                 QRYSTAL_BLOCKS.putIfAbsent(c.toString() + "_" + i, new QrystalBlock(c, i, false));
-                if(c != CrystalUtil.Color.QONDO)
-                    QRYSTAL_BLOCKS.putIfAbsent("activated_" + c.toString() + "_" + i, new QrystalBlock(c, i, true));
+                QRYSTAL_BLOCKS.putIfAbsent("activated_" + c.toString() + "_" + i, new QrystalBlock(c, i, true));
             }
         }
     }

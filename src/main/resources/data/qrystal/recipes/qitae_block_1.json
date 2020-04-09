@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CCC",
+    "CAC",
+    "CCC"
+  ],
+  "key": {
+    "C": {
+      "item": "qrystal:crystal_small_4",
+      "type": "forge:nbt",
+      "count": 1,
+      "nbt": "{material:qitae}"
+    },
+    "A": {
+      "item": "qrystal:activated_qitae_block_0"
+    }
+  },
+  "result": {
+    "item": "qrystal:qitae_block_1",
+    "count": 1
+  }
+}

@@ -8,8 +8,12 @@
         <option value="activateOnBatch" />
         <option value="organizeImports" />
         <option value="reformat" />
+        <option value="fieldCanBeFinal" />
+        <option value="localCanBeFinalExceptImplicit" />
         <option value="missingOverrideAnnotation" />
         <option value="unnecessaryThis" />
+        <option value="finalPrivateMethod" />
+        <option value="unnecessaryFinalOnLocalVariableOrParameter" />
         <option value="unnecessarySemicolon" />
       </set>
     </option>
