@@ -34,21 +34,17 @@ public class DryerBlock extends BlockBase {
     protected static final VoxelShape COMBINED = VoxelShapes.or(BOTTOM, VoxelShapes.combine(X_CROSS, Z_CROSS, IBooleanFunction.NOT_SAME));
     
     public DryerBlock() {
-        super("dryer", Block.Properties.create(Material.ROCK, MaterialColor.ADOBE)
-                .sound(SoundType.STONE)
-                .hardnessAndResistance(4f, 60f / 5f)
-                .harvestTool(ToolType.PICKAXE)
-                .harvestLevel(0));
+        super("dryer", Block.Properties.create(Material.ROCK, MaterialColor.ADOBE).sound(SoundType.STONE).hardnessAndResistance(4f, 60f / 5f).harvestTool(ToolType.PICKAXE).harvestLevel(0));
     }
     
     @Override
-    public boolean hasTileEntity(final BlockState state) {
+    public boolean hasTileEntity(BlockState state) {
         return true;
     }
     
     
     @Override
-    public TileEntity createTileEntity(final BlockState state, final IBlockReader world) {
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
         return ModTileEntityTypes.DRYER.create();
     }
     
@@ -90,13 +86,16 @@ public class DryerBlock extends BlockBase {
     @Override
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult traceResult) {
         ItemStack itemstack = player.getHeldItem(hand);
-        if(itemstack.isEmpty()) {
-            return ActionResultType.CONSUME;
-        } else {
-            if(world.getTileEntity(pos) instanceof DryerTileEntity) {
-                DryerTileEntity te = (DryerTileEntity)world.getTileEntity(pos);
-                if(!world.isRemote) {
-                    if(te.acceptsItemAmt(itemstack) > 0) {
+        if(world.getTileEntity(pos) instanceof DryerTileEntity) {
+            DryerTileEntity te = (DryerTileEntity)world.getTileEntity(pos);
+            if(!world.isRemote) {
+                if(player.isShiftKeyDown()) {
+                    te.toggleAutoDrop(player);
+                } else {
+                    if(itemstack.isEmpty()) {
+                        te.conditionalDrop();
+                        return ActionResultType.SUCCESS;
+                    } else if(te.acceptsItemAmt(itemstack) > 0) {
                         if(itemstack.getItem() == Items.WATER_BUCKET) {
                             if(!player.abilities.isCreativeMode) {
                                 player.setHeldItem(hand, new ItemStack(Items.BUCKET));
@@ -112,8 +111,8 @@ public class DryerBlock extends BlockBase {
                         return ActionResultType.CONSUME;
                     }
                 }
-                return ActionResultType.SUCCESS;
             }
+            return ActionResultType.SUCCESS;
         }
         world.notifyBlockUpdate(pos, state, state, 2);
         return ActionResultType.CONSUME;

@@ -52,6 +52,14 @@ public class ModItems {
     public static final Item UPGRADE_5 = new BarrelUpgrade(5, "diamond");
     public static final Item UPGRADE_6 = new BarrelUpgrade(6, "emerald");
     public static final Item UPGRADE_7 = new BarrelUpgrade(7, "endsteel");
+    public static final Item IMBUED_ALLOY_MIX = new ItemBase("imbued_alloy_mix");
+    public static final Item CONDUCTIVE_ALLOY_MIX = new ItemBase("conductive_alloy_mix");
+    public static final Item STEEL_MIX = new ItemBase("steel_mix");
+    public static final Item ENDSTEEL_MIX = new ItemBase("endsteel_mix");
+    public static final Item IMBUED_ALLOY_INGOT = new ItemBase("imbued_alloy_ingot");
+    public static final Item CONDUCTIVE_ALLOY_INGOT = new ItemBase("conductive_alloy_ingot");
+    public static final Item STEEL_INGOT = new ItemBase("steel_ingot");
+    public static final Item ENDSTEEL_INGOT = new ItemBase("endsteel_ingot");
     
     
     public static void init() {

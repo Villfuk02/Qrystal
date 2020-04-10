@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:blasting",
+  "ingredient": {
+    "item": "qrystal:steel_mix"
+  },
+  "result": "qrystal:steel_ingot",
+  "experience": 0.3
+}

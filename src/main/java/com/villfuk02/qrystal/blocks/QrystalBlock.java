@@ -246,14 +246,42 @@ public class QrystalBlock extends Block {
             if(color == CrystalUtil.Color.QONDO)
                 scheduleChecks(worldIn, pos);
         }
+        if(color == CrystalUtil.Color.QALB) {
+            for(int i = 0; i < 20 + 10 * tier; ++i) {
+                double d0 = worldIn.rand.nextGaussian() * 0.04D;
+                double d1 = worldIn.rand.nextGaussian() * 0.04D;
+                double d2 = worldIn.rand.nextGaussian() * 0.04D;
+                float offset = (2 + tier) * 0.5f;
+                int diameter = 3 + tier;
+                Minecraft.getInstance().world.addParticle(ParticleTypes.HAPPY_VILLAGER, pos.getX() - offset + worldIn.rand.nextFloat() * diameter, pos.getY() - offset + worldIn.rand.nextFloat() * diameter,
+                                                          pos.getZ() - offset + worldIn.rand.nextFloat() * diameter, d0, d1, d2);
+                Minecraft.getInstance().world.addParticle(ParticleTypes.PORTAL, pos.getX() - offset + worldIn.rand.nextFloat() * diameter, pos.getY() - offset + worldIn.rand.nextFloat() * diameter,
+                                                          pos.getZ() - offset + worldIn.rand.nextFloat() * diameter, d0, d1, d2);
+                Minecraft.getInstance().world.addParticle(ParticleTypes.END_ROD, pos.getX() - offset + worldIn.rand.nextFloat() * diameter, pos.getY() - offset + worldIn.rand.nextFloat() * diameter,
+                                                          pos.getZ() - offset + worldIn.rand.nextFloat() * diameter, d0, d1, d2);
+            }
+        }
     }
     
     public void deactivate(World worldIn, BlockPos pos) {
         if(activated) {
             worldIn.setBlockState(pos, ModBlocks.QRYSTAL_BLOCKS.get(color.toString() + "_" + tier).getDefaultState(), 3);
-            worldIn.playSound(null, pos, SoundEvents.ENTITY_ZOMBIE_BREAK_WOODEN_DOOR, SoundCategory.BLOCKS, 0.3F, 1.5F);
+            worldIn.playSound(null, pos, SoundEvents.ENTITY_ZOMBIE_BREAK_WOODEN_DOOR, SoundCategory.BLOCKS, 0.2F, 1.5F);
             if(color == CrystalUtil.Color.QONDO)
                 scheduleChecks(worldIn, pos);
+        }
+        if(color == CrystalUtil.Color.QALB) {
+            for(int i = 0; i < 20 + 10 * tier; ++i) {
+                double d0 = worldIn.rand.nextGaussian() * 0.04D;
+                double d1 = worldIn.rand.nextGaussian() * 0.04D;
+                double d2 = worldIn.rand.nextGaussian() * 0.04D;
+                float offset = (2 + tier) * 0.5f;
+                int diameter = 3 + tier;
+                Minecraft.getInstance().world.addParticle(ParticleTypes.EXPLOSION, pos.getX() - offset + worldIn.rand.nextFloat() * diameter, pos.getY() - offset + worldIn.rand.nextFloat() * diameter,
+                                                          pos.getZ() - offset + worldIn.rand.nextFloat() * diameter, d0, d1, d2);
+                Minecraft.getInstance().world.addParticle(ParticleTypes.FLAME, pos.getX() - offset + worldIn.rand.nextFloat() * diameter, pos.getY() - offset + worldIn.rand.nextFloat() * diameter,
+                                                          pos.getZ() - offset + worldIn.rand.nextFloat() * diameter, d0, d1, d2);
+            }
         }
     }
     

@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "tag": "forge:ingots/iron"
+    },
+    {
+      "tag": "forge:ingots/iron"
+    },
+    {
+      "tag": "forge:ingots/iron"
+    },
+    {
+      "tag": "forge:dusts/carbon"
+    },
+    {
+      "tag": "forge:dusts/carbon"
+    },
+    {
+      "tag": "forge:dusts/carbon"
+    }
+  ],
+  "result": {
+    "item": "qrystal:steel_mix"
+  }
+}

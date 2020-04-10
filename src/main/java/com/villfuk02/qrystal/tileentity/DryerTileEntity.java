@@ -31,7 +31,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -48,6 +48,7 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
     private int waste;
     private int crystallize;
     protected NonNullList<ItemStack> items = NonNullList.withSize(6, ItemStack.EMPTY);
+    protected boolean autoDrop = false;
     
     //CLIENT ONLY
     private int color;
@@ -56,7 +57,6 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
     
     private static final int MAX_VALUE = 150 * RecipeUtil.SMALL_VALUE;
     private static final int PROCESS_SPEED = 2600;
-    private static final int AVG_CRYSTAL_SIZE = RecipeUtil.SMALL_VALUE * 3 / 2;
     
     public DryerTileEntity() {
         super(ModTileEntityTypes.DRYER);
@@ -73,6 +73,7 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
         seeds = compound.getInt("seeds");
         waste = compound.getInt("waste");
         crystallize = compound.getInt("crystallize");
+        autoDrop = compound.getBoolean("autoDrop");
     }
     
     @Override
@@ -85,6 +86,7 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
         compound.putInt("seeds", seeds);
         compound.putInt("waste", waste);
         compound.putInt("crystallize", crystallize);
+        compound.putBoolean("autoDrop", autoDrop);
         return compound;
     }
     
@@ -102,6 +104,7 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
         }
         compound.putInt("crystalData", crystalInt);
         compound.putString("material", material);
+        compound.putBoolean("autoDrop", autoDrop);
         return compound;
     }
     
@@ -111,6 +114,7 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
         color = compound.getInt("color");
         crystalData = compound.getInt("crystalData");
         material = compound.getString("material");
+        autoDrop = compound.getBoolean("autoDrop");
     }
     
     
@@ -240,20 +244,22 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
             amt = 0;
             setWater(0);
             crystallize();
-            drop(true, removeItems());
-            drop(true, removeWasteAsDust());
-            drop(true, removeSeeds());
-            material = "";
+            if(autoDrop) {
+                drop(true, removeItems());
+                drop(true, removeWasteAsDust());
+                drop(true, removeSeeds());
+                material = "";
+            }
         } else {
             int processAmt = (int)(amt / (double)water * PROCESS_SPEED);
             amt -= processAmt;
             int temp = processAmt * 4 / 5;
             crystallize += temp;
             if(isEmpty()) {
-                if(world.rand.nextFloat() * 1000000f < 1000000f * temp / AVG_CRYSTAL_SIZE / 2)
+                if(world.rand.nextFloat() * 1000000f < 1000000f * temp / RecipeUtil.SMALL_VALUE / 2)
                     crystallize();
             } else {
-                if(world.rand.nextFloat() * 1000000f < (1000000f * temp / AVG_CRYSTAL_SIZE) / QrystalConfig.material_tier_multiplier)
+                if(world.rand.nextFloat() * 1000000f < (1000000f * temp / RecipeUtil.SMALL_VALUE * 2) / QrystalConfig.material_tier_multiplier / QrystalConfig.material_tier_multiplier)
                     crystallize();
             }
             processAmt -= temp;
@@ -363,6 +369,7 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
                 world.addEntity(itementity);
             }
         }
+        
     }
     
     private static boolean isInventoryFull(IInventory iinventory, Direction direction) {
@@ -464,24 +471,18 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
         return renderValues.get(address);
     }
     
-    public float getRenderValueHeight(String address, float x, float z, float d) {
-        if(!renderValues.containsKey(address)) {
-            float f = MathHelper.sqrt(d * d - x * x - z * z);
-            renderValues.put(address, f);
+    public void toggleAutoDrop(PlayerEntity player) {
+        autoDrop = !autoDrop;
+        markDirty();
+        player.sendStatusMessage(new TranslationTextComponent("qrystal.dryer.autodrop_" + autoDrop), true);
+    }
+    
+    public void conditionalDrop() {
+        if(water == 0 && (waste != 0 || !isEmpty())) {
+            drop(false, removeItems());
+            drop(false, removeWasteAsDust());
+            drop(false, removeSeeds());
+            material = "";
         }
-        return renderValues.get(address);
     }
-    
-    public boolean hasRenderValue(String s) {
-        return renderValues.containsKey(s);
-    }
-    
-    public void setRenderValue(String s, float f) {
-        renderValues.put(s, f);
-    }
-    
-    public float getRenderValue(String s) {
-        return renderValues.get(s);
-    }
-    
 }

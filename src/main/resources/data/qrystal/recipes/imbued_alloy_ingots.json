@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "qrystal:imbued_alloy_block"
+    }
+  ],
+  "result": {
+    "item": "qrystal:imbued_alloy_ingot",
+    "count": 9
+  }
+}

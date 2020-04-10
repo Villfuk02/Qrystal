@@ -24,7 +24,7 @@ public class DryerTileEntityRenderer extends TileEntityRenderer<DryerTileEntity>
     }
     
     @Override
-    public void render(DryerTileEntity tileEntity, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int light, int backupLight) {
+    public void render(DryerTileEntity tileEntity, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int light, int overlay) {
         matrixStack.push();
         matrixStack.translate(0.5d, 0, 0.5d);
         int[] crystals = tileEntity.getCrystalData();
@@ -78,6 +78,16 @@ public class DryerTileEntityRenderer extends TileEntityRenderer<DryerTileEntity>
             matrixStack.translate(0, 0.125f + 0.375f * tileEntity.getWaterLevel(), 0);
             matrixStack.scale(0.75f, 1, 0.75f);
             Minecraft.getInstance().getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.NONE, light, OverlayTexture.NO_OVERLAY, matrixStack, buffer);
+            matrixStack.pop();
+        } else if(!tileEntity.getMaterial().isEmpty()) {
+            matrixStack.push();
+            matrixStack.rotate(Vector3f.XP.rotationDegrees(90));
+            matrixStack.translate(0, 0, -0.125f);
+            matrixStack.scale(0.75f, 0.75f, 0.75f);
+            Minecraft.getInstance()
+                    .getItemRenderer()
+                    .renderItem(RecipeUtil.getStackWithMatTag(ModItems.DUSTS.get("dust_10"), tileEntity.getMaterial()), ItemCameraTransforms.TransformType.NONE, light, OverlayTexture.NO_OVERLAY, matrixStack,
+                                buffer);
             matrixStack.pop();
         }
         matrixStack.pop();

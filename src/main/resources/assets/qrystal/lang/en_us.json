@@ -148,5 +148,7 @@
   "qrystal.solvent_tier": " Crystal Solvent",
   "qrystal.activated": "Activated",
   "qrystal.block+tier": "Block Tier",
+  "qrystal.dryer.autodrop_true": "Drop items when finished: ON",
+  "qrystal.dryer.autodrop_false": "Drop items when finished: OFF",
   "gui.qrystal.impurities": "Defect rate: "
 }

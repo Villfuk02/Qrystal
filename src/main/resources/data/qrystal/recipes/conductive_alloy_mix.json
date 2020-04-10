@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "qrystal:crystal_small_1",
+      "type": "forge:nbt",
+      "count": 1,
+      "nbt": "{material:qondo}"
+    },
+    {
+      "tag": "forge:ingots/gold"
+    },
+    {
+      "tag": "forge:ingots/gold"
+    },
+    {
+      "tag": "forge:dusts/redstone"
+    }
+  ],
+  "result": {
+    "item": "qrystal:conductive_alloy_mix"
+  }
+}
