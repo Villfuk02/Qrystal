@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " D ",
+    "DID",
+    " D "
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:ingots/steel"
+    },
+    "D": {
+      "item": "qrystal:crystal_small_2",
+      "type": "forge:nbt",
+      "count": 1,
+      "nbt": "{material:diamond}"
+    }
+  },
+  "result": {
+    "item": "qrystal:diamond_blade",
+    "count": 8
+  }
+}

@@ -384,7 +384,7 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
         markDirty();
         int temp = waste;
         waste = 0;
-        return RecipeUtil.getResult(RecipeUtil.getDustRecipe(temp, material, 3, true, true, 7), world.rand).toArray(new ItemStack[0]);
+        return RecipeUtil.getResult(RecipeUtil.getDustRecipe(temp, material, 3, true, 7), world.rand).toArray(new ItemStack[0]);
     }
     
     public ItemStack[] removeItems() {
@@ -483,6 +483,7 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
             drop(false, removeWasteAsDust());
             drop(false, removeSeeds());
             material = "";
+            world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 3);
         }
     }
 }

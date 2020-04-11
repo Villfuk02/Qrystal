@@ -2,6 +2,6 @@
   "parent": "block/cube_column",
   "textures": {
     "end": "qrystal:blocks/imbued_top",
-    "side": "qrystal:blocks/imbued_block"
+    "side": "qrystal:blocks/imbued_alloy_block"
   }
 }

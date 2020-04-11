@@ -28,13 +28,15 @@ public class CutterTileEntityRenderer extends TileEntityRenderer<CutterTileEntit
         if(!tileEntity.inventory.getStackInSlot(0).isEmpty()) {
             ItemStack stack = tileEntity.inventory.getStackInSlot(0);
             matrixStack.push();
-            matrixStack.translate(0, 0.75d, 0);
-            matrixStack.scale(1.2f, 1.2f, 0.4f);
+            matrixStack.translate(0, 0.625d, 0);
+            matrixStack.scale(0.875f, 0.875f, 0.5f);
+            matrixStack.push();
             if(tileEntity.totalTime > 0) {
-                Quaternion rot = Vector3f.ZP.rotationDegrees(((tileEntity.getWorld().getGameTime() + partialTicks) * -72) % 360);
+                Quaternion rot = Vector3f.ZP.rotationDegrees(((tileEntity.getWorld().getGameTime() + partialTicks) * 48) % 360);
                 matrixStack.rotate(rot);
             }
-            Minecraft.getInstance().getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.GROUND, 15728880, OverlayTexture.NO_OVERLAY, matrixStack, buffer);
+            Minecraft.getInstance().getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.FIXED, 15728880, OverlayTexture.NO_OVERLAY, matrixStack, buffer);
+            matrixStack.pop();
             matrixStack.pop();
         }
         if(!tileEntity.inventory.getStackInSlot(1).isEmpty()) {
@@ -42,12 +44,15 @@ public class CutterTileEntityRenderer extends TileEntityRenderer<CutterTileEntit
             stack.setCount(1);
             matrixStack.push();
             if(tileEntity.totalTime > 0)
-                matrixStack.translate(0, 0.6875d - 0.05d - 0.3d * tileEntity.time / (double)tileEntity.totalTime, 0);
+                matrixStack.translate(0, 0.6875d - 0.05d - 0.375d * tileEntity.time / (double)tileEntity.totalTime, 0);
             else
                 matrixStack.translate(0, 0.6875d - 0.05d, 0);
             Quaternion rot = Vector3f.YP.rotationDegrees(90);
             matrixStack.rotate(rot);
+            matrixStack.push();
+            matrixStack.scale(1.25f, 1.25f, 1.25f);
             Minecraft.getInstance().getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.GROUND, 15728880, OverlayTexture.NO_OVERLAY, matrixStack, buffer);
+            matrixStack.pop();
             matrixStack.pop();
         }
         matrixStack.pop();

@@ -95,7 +95,7 @@ public class RecipeUtil {
     
     public static ArrayList<Pair<ItemStack, Float>> getCuttingRecipe(CuttingType cuttingType, int tier, ItemStack input, World world, boolean combineDust) {
         if(combineDust && input.getItem() instanceof CrystalDust && input.hasTag() && input.getTag().contains("material")) {
-            return getDustRecipe(((CrystalDust)input.getItem()).size * input.getCount(), input.getTag().getString("material"), 64, false, true, 1);
+            return getDustRecipe(((CrystalDust)input.getItem()).size * input.getCount(), input.getTag().getString("material"), 64, false, 1);
         }
         
         if(input.getItem() instanceof Crystal && input.hasTag() && input.getTag().contains("material")) {
@@ -111,10 +111,10 @@ public class RecipeUtil {
                 MaterialInfo.Crushable c = MaterialManager.crushable.get(rl);
                 double value = c.min * input.getCount();
                 value = value * QrystalConfig.material_tier_multiplier * QrystalConfig.material_dust_multiplier;
-                ArrayList<Pair<ItemStack, Float>> r = getDustRecipe((long)value, c.material, 2, true, true, Math.min(input.getCount(), 7));
+                ArrayList<Pair<ItemStack, Float>> r = getDustRecipe((long)value, c.material, 2, true, Math.min(input.getCount(), 7));
                 value = (c.max - c.min) * input.getCount();
                 value = value * QrystalConfig.material_tier_multiplier * QrystalConfig.material_dust_multiplier;
-                ArrayList<Pair<ItemStack, Float>> temp = getDustRecipe((long)value, c.material, 2, true, true, Math.min(1 + input.getCount(), 7));
+                ArrayList<Pair<ItemStack, Float>> temp = getDustRecipe((long)value, c.material, 2, true, Math.min(1 + input.getCount(), 7));
                 for(Pair<ItemStack, Float> p : temp) {
                     float v = p.getValue();
                     if(v > 1f) {
@@ -135,7 +135,7 @@ public class RecipeUtil {
         
         Optional<CustomCuttingRecipe> recipe = world.getRecipeManager().getRecipe(CustomCuttingRecipe.CustomCuttingRecipeType.CUTTING, FakeInventory(input), world);
         if(recipe.isPresent()) {
-            return getCustomCuttingRecipe(cuttingType, tier, input, recipe.get());
+            return getCustomCuttingRecipe(cuttingType, input, recipe.get());
         }
         
         return new ArrayList<>();
@@ -219,7 +219,7 @@ public class RecipeUtil {
         
     }
     
-    public static ArrayList<Pair<ItemStack, Float>> getDustRecipe(long value, String mat, int stacks, boolean chances, boolean condense, int overshot) {
+    public static ArrayList<Pair<ItemStack, Float>> getDustRecipe(long value, String mat, int stacks, boolean condense, int overshot) {
         ArrayList<Pair<ItemStack, Float>> result = new ArrayList<>();
         
         for(int i = 0; i < stacks; i++) {
@@ -234,14 +234,13 @@ public class RecipeUtil {
                         output.getKey().setCount(1);
                         value -= amt * l * output.getValue();
                         result.add(new Pair<>(output.getKey(), (float)amt));
-                        break;
                     } else {
                         if(amt > 64)
                             amt = 64;
                         value -= amt * l;
                         result.add(new Pair<>(getStackWithMatTag(ModItems.DUSTS.get("dust_" + l), mat), (float)amt));
-                        break;
                     }
+                    break;
                 }
             }
             
@@ -249,7 +248,7 @@ public class RecipeUtil {
         return result;
     }
     
-    public static ArrayList<Pair<ItemStack, Float>> getCustomCuttingRecipe(CuttingType cuttingType, int tier, ItemStack input, CustomCuttingRecipe recipe) {
+    public static ArrayList<Pair<ItemStack, Float>> getCustomCuttingRecipe(CuttingType cuttingType, ItemStack input, CustomCuttingRecipe recipe) {
         ArrayList<Pair<ItemStack, Float>> result = new ArrayList<>();
         for(CustomCuttingRecipe.RecipeOutput o : recipe.getOutputs()) {
             if(cuttingType == CuttingType.HAMMER && o.hammer || cuttingType == CuttingType.SAW && o.saw || cuttingType == CuttingType.LASER && o.laser) {
@@ -439,12 +438,10 @@ public class RecipeUtil {
             
             @Override
             public void setInventorySlotContents(int index, ItemStack stack1) {
-            
             }
             
             @Override
             public void markDirty() {
-            
             }
             
             @Override
@@ -454,7 +451,6 @@ public class RecipeUtil {
             
             @Override
             public void clear() {
-            
             }
         };
     }

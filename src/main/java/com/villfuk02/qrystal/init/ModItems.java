@@ -60,6 +60,8 @@ public class ModItems {
     public static final Item CONDUCTIVE_ALLOY_INGOT = new ItemBase("conductive_alloy_ingot");
     public static final Item STEEL_INGOT = new ItemBase("steel_ingot");
     public static final Item ENDSTEEL_INGOT = new ItemBase("endsteel_ingot");
+    public static final Item STEEL_BLADE = new Blade("steel_blade", 1200);
+    public static final Item DIAMOND_BLADE = new Blade("diamond_blade", 1800);
     
     
     public static void init() {
