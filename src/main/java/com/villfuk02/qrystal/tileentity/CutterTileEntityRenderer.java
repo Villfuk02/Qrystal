@@ -31,7 +31,7 @@ public class CutterTileEntityRenderer extends TileEntityRenderer<CutterTileEntit
             matrixStack.translate(0, 0.625d, 0);
             matrixStack.scale(0.875f, 0.875f, 0.5f);
             matrixStack.push();
-            if(tileEntity.totalTime > 0) {
+            if(tileEntity.totalTime > 0 && tileEntity.getPower() >= tileEntity.requiredPower) {
                 Quaternion rot = Vector3f.ZP.rotationDegrees(((tileEntity.getWorld().getGameTime() + partialTicks) * 48) % 360);
                 matrixStack.rotate(rot);
             }

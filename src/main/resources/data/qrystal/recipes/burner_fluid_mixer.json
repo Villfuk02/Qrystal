@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CYC",
+    "HfH",
+    "FIF"
+  ],
+  "key": {
+    "C": {
+      "item": "qrystal:condenser"
+    },
+    "Y": {
+      "item": "qrystal:funnel"
+    },
+    "H": {
+      "item": "qrystal:heat_conduit"
+    },
+    "f": {
+      "item": "qrystal:flask"
+    },
+    "F": {
+      "item": "minecraft:furnace"
+    },
+    "I": {
+      "item": "qrystal:imbued_alloy_chassis"
+    }
+  },
+  "result": {
+    "item": "qrystal:burner_fluid_mixer",
+    "count": 1
+  }
+}

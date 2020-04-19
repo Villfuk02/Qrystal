@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "FOF",
+    "ACA",
+    "DSD"
+  ],
+  "key": {
+    "F": {
+      "item": "minecraft:flint"
+    },
+    "O": {
+      "tag": "forge:obsidian"
+    },
+    "A": {
+      "item": "qrystal:actuator"
+    },
+    "D": {
+      "tag": "forge:gems/diamond"
+    },
+    "C": {
+      "item": "qrystal:steel_cutter"
+    },
+    "S": {
+      "item": "qrystal:steel_chassis"
+    }
+  },
+  "result": {
+    "item": "qrystal:diamond_cutter",
+    "count": 1
+  }
+}

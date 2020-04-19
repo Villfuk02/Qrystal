@@ -6,13 +6,17 @@ import com.villfuk02.qrystal.init.ModTileEntityTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.MathHelper;
 
 import javax.annotation.Nonnull;
 
-public class PoweredEvaporatorTileEntity extends EvaporatorTileEntity {
+public class PoweredEvaporatorTileEntity extends EvaporatorTileEntity implements IPowerConsumer {
+    
+    private byte powered;
+    
     public PoweredEvaporatorTileEntity() {
-        super(ModTileEntityTypes.POWERED_EVAPORATOR, (short)8, 14, ModBlocks.POWERED_EVAPORATOR);
+        super(ModTileEntityTypes.POWERED_EVAPORATOR, (short)8, (byte)2, 14, ModBlocks.POWERED_EVAPORATOR);
     }
     
     @Nonnull
@@ -23,8 +27,7 @@ public class PoweredEvaporatorTileEntity extends EvaporatorTileEntity {
     
     @Override
     public int tickTemperature(int move) {
-        final boolean powered = true;
-        if(material.isEmpty() || !powered)
+        if(material.isEmpty() || powered < 2)
             return move;
         
         tempTarget = materialTemp;
@@ -33,5 +36,34 @@ public class PoweredEvaporatorTileEntity extends EvaporatorTileEntity {
         if(opposing)
             return shift;
         return move + shift;
+    }
+    
+    @Override
+    public byte getPower() {
+        return powered;
+    }
+    
+    @Override
+    public void setPower(byte power) {
+        powered = power;
+        if(pos != null && world != null)
+            world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 2);
+    }
+    
+    @Override
+    public void readClient(CompoundNBT compound) {
+        powered = compound.getByte("powered");
+        super.readClient(compound);
+    }
+    
+    @Override
+    public CompoundNBT write(CompoundNBT compound) {
+        compound.putByte("powered", powered);
+        return super.write(compound);
+    }
+    
+    @Override
+    boolean isPowered() {
+        return powered >= requiredPower;
     }
 }

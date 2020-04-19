@@ -20,7 +20,7 @@ public class BasicEvaporatorTileEntity extends EvaporatorTileEntity {
     public int heatTotal = 0;
     
     public BasicEvaporatorTileEntity() {
-        super(ModTileEntityTypes.BASIC_EVAPORATOR, (short)40, 15, ModBlocks.BASIC_EVAPORATOR);
+        super(ModTileEntityTypes.BASIC_EVAPORATOR, (short)40, (byte)0, 15, ModBlocks.BASIC_EVAPORATOR);
     }
     
     @Nonnull
@@ -91,5 +91,10 @@ public class BasicEvaporatorTileEntity extends EvaporatorTileEntity {
         compound.putInt("heatLeft", heatLeft);
         compound.putInt("heatTotal", heatTotal);
         return compound;
+    }
+    
+    @Override
+    boolean isPowered() {
+        return true;
     }
 }

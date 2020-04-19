@@ -11,6 +11,7 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
@@ -20,11 +21,10 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.wrapper.RangedWrapper;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 
-public abstract class CutterTileEntity extends TileEntity implements INamedContainerProvider, ITickableTileEntity {
+public abstract class CutterTileEntity extends TileEntity implements INamedContainerProvider, ITickableTileEntity, IPowerConsumer {
     
     public final ItemStackHandler inventory = new ItemStackHandler(7) {
         @Override
@@ -58,8 +58,60 @@ public abstract class CutterTileEntity extends TileEntity implements INamedConta
             markDirty();
         }
     };
-    private final LazyOptional<ItemStackHandler> inventoryCapabilityExternal = LazyOptional.of(() -> inventory);
-    private final LazyOptional<IItemHandlerModifiable> inventoryCapabilityExternalOutput = LazyOptional.of(() -> new RangedWrapper(inventory, 2, 7));
+    private final ItemStackHandler externalInventory = new ItemStackHandler(7) {
+        
+        @Override
+        public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
+            inventory.setStackInSlot(slot, stack);
+        }
+        
+        @Override
+        @Nonnull
+        public ItemStack getStackInSlot(int slot) {
+            return inventory.getStackInSlot(slot);
+        }
+        
+        @Override
+        @Nonnull
+        public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+            return inventory.insertItem(slot, stack, simulate);
+        }
+        
+        @Nonnull
+        @Override
+        public ItemStack extractItem(int slot, int amount, boolean simulate) {
+            if(slot <= 1)
+                return ItemStack.EMPTY;
+            return inventory.extractItem(slot, amount, simulate);
+        }
+        
+        @Override
+        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+            return inventory.isItemValid(slot, stack);
+        }
+        
+        @Override
+        public CompoundNBT serializeNBT() {
+            return inventory.serializeNBT();
+        }
+        
+        @Override
+        public void deserializeNBT(CompoundNBT nbt) {
+            setSize(nbt.contains("Size", Constants.NBT.TAG_INT) ? nbt.getInt("Size") : stacks.size());
+            ListNBT tagList = nbt.getList("Items", Constants.NBT.TAG_COMPOUND);
+            for(int i = 0; i < tagList.size(); i++) {
+                CompoundNBT itemTags = tagList.getCompound(i);
+                int slot = itemTags.getInt("Slot");
+                
+                if(slot >= 0 && slot < stacks.size()) {
+                    stacks.set(slot, ItemStack.read(itemTags));
+                }
+            }
+            inventory.deserializeNBT(nbt);
+            onLoad();
+        }
+    };
+    private final LazyOptional<ItemStackHandler> inventoryCapabilityExternal = LazyOptional.of(() -> externalInventory);
     
     public short time;
     public short totalTime;
@@ -68,14 +120,17 @@ public abstract class CutterTileEntity extends TileEntity implements INamedConta
     private final ToIntFunction<ItemStack> toolTier;
     private final RecipeUtil.CuttingType cutterType;
     private final Block block;
+    private byte powered = 0;
+    public final byte requiredPower;
     
-    public CutterTileEntity(TileEntityType<?> type, int speed, Predicate<ItemStack> acceptedTools, ToIntFunction<ItemStack> toolTier, RecipeUtil.CuttingType cutterType, Block block) {
+    public CutterTileEntity(TileEntityType<?> type, int speed, Predicate<ItemStack> acceptedTools, ToIntFunction<ItemStack> toolTier, byte requiredPower, RecipeUtil.CuttingType cutterType, Block block) {
         super(type);
         this.speed = speed;
         this.acceptedTools = acceptedTools;
         this.toolTier = toolTier;
         this.cutterType = cutterType;
         this.block = block;
+        this.requiredPower = requiredPower;
     }
     
     @Override
@@ -84,6 +139,7 @@ public abstract class CutterTileEntity extends TileEntity implements INamedConta
         inventory.deserializeNBT(compound.getCompound("Items"));
         time = compound.getShort("time");
         totalTime = compound.getShort("totalTime");
+        setPower(compound.getByte("powered"));
         
         if(pos != null && world != null) {
             world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 2);
@@ -96,6 +152,7 @@ public abstract class CutterTileEntity extends TileEntity implements INamedConta
         inventory.deserializeNBT(compound.getCompound("Items"));
         time = compound.getShort("time");
         totalTime = compound.getShort("totalTime");
+        setPower(compound.getByte("powered"));
     }
     
     @Override
@@ -104,12 +161,13 @@ public abstract class CutterTileEntity extends TileEntity implements INamedConta
         compound.put("Items", inventory.serializeNBT());
         compound.putShort("time", time);
         compound.putShort("totalTime", totalTime);
+        compound.putByte("powered", getPower());
         return compound;
     }
     
     @Override
     public void tick() {
-        if(totalTime > 0) {
+        if(totalTime > 0 && getPower() >= requiredPower) {
             if(time < totalTime)
                 time += speed;
             if(time >= totalTime) {
@@ -205,18 +263,7 @@ public abstract class CutterTileEntity extends TileEntity implements INamedConta
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, Direction side) {
         if(cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            if(side == null)
-                return inventoryCapabilityExternal.cast();
-            switch(side) {
-                case DOWN:
-                    return inventoryCapabilityExternalOutput.cast();
-                case UP:
-                case NORTH:
-                case SOUTH:
-                case WEST:
-                case EAST:
-                    return inventoryCapabilityExternal.cast();
-            }
+            return inventoryCapabilityExternal.cast();
         }
         return super.getCapability(cap, side);
     }
@@ -234,5 +281,17 @@ public abstract class CutterTileEntity extends TileEntity implements INamedConta
             }
         }
         return CustomCuttingRecipe.DEFAULT_TIME;
+    }
+    
+    @Override
+    public byte getPower() {
+        return powered;
+    }
+    
+    @Override
+    public void setPower(byte power) {
+        powered = power;
+        if(pos != null && world != null)
+            world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 2);
     }
 }

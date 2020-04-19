@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#B#",
+    "BCB",
+    "# #"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:gems/emerald"
+    },
+    "B": {
+      "item": "qrystal:diamond_condensing_barrel"
+    },
+    "C": {
+      "item": "qrystal:crystal_small_7",
+      "type": "forge:nbt",
+      "count": 1,
+      "nbt": "{material:qoid}"
+    }
+  },
+  "result": {
+    "item": "qrystal:upgrade_6",
+    "count": 1
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "QTQ",
+    "Q Q",
+    "QTQ"
+  ],
+  "key": {
+    "Q": {
+      "tag": "forge:fused_quartz"
+    },
+    "T": {
+      "item": "qrystal:tube"
+    }
+  },
+  "result": {
+    "item": "qrystal:reservoir",
+    "count": 2
+  }
+}

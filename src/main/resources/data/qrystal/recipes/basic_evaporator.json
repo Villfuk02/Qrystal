@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "TTT",
+    "RRM",
+    "FIE"
+  ],
+  "key": {
+    "T": {
+      "item": "qrystal:tube"
+    },
+    "R": {
+      "item": "qrystal:reservoir"
+    },
+    "M": {
+      "item": "qrystal:nano_mesh"
+    },
+    "E": {
+      "item": "qrystal:dryer"
+    },
+    "F": {
+      "item": "minecraft:furnace"
+    },
+    "I": {
+      "item": "qrystal:imbued_alloy_chassis"
+    }
+  },
+  "result": {
+    "item": "qrystal:basic_evaporator",
+    "count": 1
+  }
+}

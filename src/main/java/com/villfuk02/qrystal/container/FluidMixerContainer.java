@@ -66,8 +66,7 @@ public class FluidMixerContainer extends Container {
         // Player Top Inventory slots
         for(int row = 0; row < 3; ++row) {
             for(int column = 0; column < 9; ++column) {
-                addSlot(new Slot(playerInventory, 9 + (row * 9) + column, playerInventoryStartX + (column * slotSizePlus2),
-                                 playerInventoryStartY + (row * slotSizePlus2)));
+                addSlot(new Slot(playerInventory, 9 + (row * 9) + column, playerInventoryStartX + (column * slotSizePlus2), playerInventoryStartY + (row * slotSizePlus2)));
             }
         }
         
@@ -130,8 +129,8 @@ public class FluidMixerContainer extends Container {
     
     @Override
     public boolean canInteractWith(@Nonnull PlayerEntity player) {
-        return isWithinUsableDistance(canInteractWithCallable, player, ModBlocks.BURNER_FLUID_MIXER) ||
-                isWithinUsableDistance(canInteractWithCallable, player, ModBlocks.POWERED_FLUID_MIXER);
+        return isWithinUsableDistance(canInteractWithCallable, player, ModBlocks.BURNER_FLUID_MIXER) || isWithinUsableDistance(canInteractWithCallable, player, ModBlocks.POWERED_FLUID_MIXER) ||
+                isWithinUsableDistance(canInteractWithCallable, player, ModBlocks.ULTIMATE_FLUID_MIXER);
     }
     
 }

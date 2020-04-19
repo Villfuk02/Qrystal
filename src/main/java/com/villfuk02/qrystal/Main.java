@@ -110,6 +110,7 @@ public class Main {
         ClientRegistry.bindTileEntityRenderer(ModTileEntityTypes.DIAMOND_CUTTER, CutterTileEntityRenderer::new);
         //ClientRegistry.bindTileEntityRenderer(ModTileEntityTypes.LASER_CUTTER, LaserCutterTileEntityRenderer::new);
         ClientRegistry.bindTileEntityRenderer(ModTileEntityTypes.CONDENSING_BARREL, CondensingBarrelTileEntityRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(ModTileEntityTypes.EMITTER, EmitterTileEntityRenderer::new);
         
         
         DeferredWorkQueue.runLater(() -> {
@@ -190,6 +191,7 @@ public class Main {
             event.getRegistry().register(TileEntityType.Builder.create(LaserCutterTileEntity::new, ModBlocks.LASER_CUTTER).build(null).setRegistryName(MODID, "laser_cutter"));
             event.getRegistry().register(TileEntityType.Builder.create(BurnerFluidMixerTileEntity::new, ModBlocks.BURNER_FLUID_MIXER).build(null).setRegistryName(MODID, "burner_fluid_mixer"));
             event.getRegistry().register(TileEntityType.Builder.create(PoweredFluidMixerTileEntity::new, ModBlocks.POWERED_FLUID_MIXER).build(null).setRegistryName(MODID, "powered_fluid_mixer"));
+            event.getRegistry().register(TileEntityType.Builder.create(UltimateFluidMixerTileEntity::new, ModBlocks.ULTIMATE_FLUID_MIXER).build(null).setRegistryName(MODID, "ultimate_fluid_mixer"));
             event.getRegistry().register(TileEntityType.Builder.create(BasicEvaporatorTileEntity::new, ModBlocks.BASIC_EVAPORATOR).build(null).setRegistryName(MODID, "basic_evaporator"));
             event.getRegistry().register(TileEntityType.Builder.create(BurnerEvaporatorTileEntity::new, ModBlocks.BURNER_EVAPORATOR).build(null).setRegistryName(MODID, "burner_evaporator"));
             event.getRegistry().register(TileEntityType.Builder.create(PoweredEvaporatorTileEntity::new, ModBlocks.POWERED_EVAPORATOR).build(null).setRegistryName(MODID, "powered_evaporator"));
@@ -198,6 +200,7 @@ public class Main {
                     .register(TileEntityType.Builder.create(CondensingBarrelTileEntity::new, ModBlocks.WOODEN_CONDENSING_BARREL, ModBlocks.STONE_CONDENSING_BARREL, ModBlocks.IRON_CONDENSING_BARREL,
                                                             ModBlocks.GOLD_CONDENSING_BARREL, ModBlocks.IMBUED_CONDENSING_BARREL, ModBlocks.STEEL_CONDENSING_BARREL, ModBlocks.DIAMOND_CONDENSING_BARREL,
                                                             ModBlocks.EMERALD_CONDENSING_BARREL, ModBlocks.ENDSTEEL_CONDENSING_BARREL).build(null).setRegistryName(MODID, "condensing_barrel"));
+            event.getRegistry().register(TileEntityType.Builder.create(EmitterTileEntity::new, ModBlocks.EMITTER_0, ModBlocks.EMITTER_1, ModBlocks.EMITTER_2).build(null).setRegistryName(MODID, "emitter"));
         }
         
     }

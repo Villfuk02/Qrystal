@@ -33,9 +33,9 @@ import static com.villfuk02.qrystal.Main.MOD_ITEM_GROUP;
 
 public class QrystalBlock extends Block {
     
-    private final boolean activated;
-    private final int tier;
-    private final CrystalUtil.Color color;
+    public final boolean activated;
+    public final int tier;
+    public final CrystalUtil.Color color;
     
     public QrystalBlock(CrystalUtil.Color color, int tier, boolean activated) {
         super(Block.Properties.create(Material.ROCK, color.getMapColor()).sound(SoundType.STONE).hardnessAndResistance(3f, 15f / 5).harvestTool(ToolType.PICKAXE).harvestLevel(0));

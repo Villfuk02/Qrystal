@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#B#",
+    "BCB",
+    "# #"
+  ],
+  "key": {
+    "#": {
+      "item": "qrystal:endsteel_ingot"
+    },
+    "B": {
+      "item": "qrystal:emerald_condensing_barrel"
+    },
+    "C": {
+      "item": "qrystal:crystal_small_8",
+      "type": "forge:nbt",
+      "count": 1,
+      "nbt": "{material:qoid}"
+    }
+  },
+  "result": {
+    "item": "qrystal:upgrade_7",
+    "count": 1
+  }
+}

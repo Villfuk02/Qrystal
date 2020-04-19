@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CEC",
+    "CIC",
+    "CEC"
+  ],
+  "key": {
+    "I": {
+      "item": "qrystal:endsteel_ingot"
+    },
+    "C": {
+      "item": "qrystal:conductive_alloy_coil"
+    },
+    "E": {
+      "tag": "forge:ender_pearls"
+    }
+  },
+  "result": {
+    "item": "qrystal:ender_coil",
+    "count": 2
+  }
+}

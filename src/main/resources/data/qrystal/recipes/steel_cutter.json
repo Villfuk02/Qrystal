@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "FPF",
+    "ccc",
+    "sSs"
+  ],
+  "key": {
+    "F": {
+      "item": "minecraft:flint"
+    },
+    "P": {
+      "item": "minecraft:piston"
+    },
+    "c": {
+      "item": "qrystal:redstone_coil"
+    },
+    "s": {
+      "tag": "forge:ingots/steel"
+    },
+    "S": {
+      "item": "qrystal:steel_chassis"
+    }
+  },
+  "result": {
+    "item": "qrystal:steel_cutter",
+    "count": 1
+  }
+}

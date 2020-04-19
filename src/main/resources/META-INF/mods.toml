@@ -46,6 +46,6 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed mollis lacinia magn
 [[dependencies.qrystal]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.15.1]"
+    versionRange="[1.15.2]"
     ordering="NONE"
     side="BOTH"

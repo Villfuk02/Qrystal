@@ -6,13 +6,16 @@ import com.villfuk02.qrystal.init.ModTileEntityTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.MathHelper;
 
 import javax.annotation.Nonnull;
 
-public class UltimateEvaporatorTileEntity extends EvaporatorTileEntity {
+public class UltimateEvaporatorTileEntity extends EvaporatorTileEntity implements IPowerConsumer {
+    private byte powered;
+    
     public UltimateEvaporatorTileEntity() {
-        super(ModTileEntityTypes.ULTIMATE_EVAPORATOR, (short)2, 14, ModBlocks.ULTIMATE_EVAPORATOR);
+        super(ModTileEntityTypes.ULTIMATE_EVAPORATOR, (short)2, (byte)3, 14, ModBlocks.ULTIMATE_EVAPORATOR);
     }
     
     @Nonnull
@@ -23,8 +26,7 @@ public class UltimateEvaporatorTileEntity extends EvaporatorTileEntity {
     
     @Override
     public int tickTemperature(int move) {
-        final boolean powered = true;
-        if(material.isEmpty() || !powered)
+        if(material.isEmpty() || powered < 3)
             return move;
         
         tempTarget = materialTemp;
@@ -33,5 +35,34 @@ public class UltimateEvaporatorTileEntity extends EvaporatorTileEntity {
         if(opposing)
             return shift;
         return move + shift;
+    }
+    
+    @Override
+    public byte getPower() {
+        return powered;
+    }
+    
+    @Override
+    public void setPower(byte power) {
+        powered = power;
+        if(pos != null && world != null)
+            world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 2);
+    }
+    
+    @Override
+    public void readClient(CompoundNBT compound) {
+        powered = compound.getByte("powered");
+        super.readClient(compound);
+    }
+    
+    @Override
+    public CompoundNBT write(CompoundNBT compound) {
+        compound.putByte("powered", powered);
+        return super.write(compound);
+    }
+    
+    @Override
+    boolean isPowered() {
+        return powered >= requiredPower;
     }
 }

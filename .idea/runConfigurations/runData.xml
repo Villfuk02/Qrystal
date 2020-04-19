@@ -1,13 +1,13 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="runData" type="Application" factoryName="Application" singleton="false">
+  <configuration default="false" name="runData" type="Application" factoryName="Application" singleton="true">
     <envs>
-      <env name="MOD_CLASSES" value="examplemod%%C:\Users\Villfuk\Desktop\MCMods\Qrystal\build\resources\main;examplemod%%C:\Users\Villfuk\Desktop\MCMods\Qrystal\build\classes\java\main" />
-      <env name="MCP_MAPPINGS" value="snapshot_20190719-1.14.3" />
-      <env name="MCP_VERSION" value="20191217.105819" />
-      <env name="FORGE_VERSION" value="30.0.36" />
+      <env name="MOD_CLASSES" value="examplemod%%$PROJECT_DIR$/../Qrystal\build\resources\main;examplemod%%$PROJECT_DIR$/../Qrystal\build\classes\java\main" />
+      <env name="MCP_MAPPINGS" value="snapshot_20200223-1.15.1" />
+      <env name="MCP_VERSION" value="20200307.202953" />
+      <env name="FORGE_VERSION" value="31.1.40" />
       <env name="FORGE_GROUP" value="net.minecraftforge" />
       <env name="target" value="fmluserdevdata" />
-      <env name="MC_VERSION" value="1.15.1" />
+      <env name="MC_VERSION" value="1.15.2" />
     </envs>
     <option name="MAIN_CLASS_NAME" value="net.minecraftforge.userdev.LaunchTesting" />
     <module name="Qrystal.main" />

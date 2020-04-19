@@ -191,13 +191,13 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
     
     @Override
     public ItemStack decrStackSize(int index, int count) {
-        world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 3);
+        world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 2);
         return ItemStackHelper.getAndSplit(items, index, count);
     }
     
     @Override
     public ItemStack removeStackFromSlot(int index) {
-        world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 3);
+        world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 2);
         return ItemStackHelper.getAndRemove(items, index);
     }
     
@@ -216,7 +216,7 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
             else
                 markDirty();
         }
-        world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 3);
+        world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 2);
     }
     
     @Override
@@ -227,7 +227,7 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
     
     @Override
     public void clear() {
-        world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 3);
+        world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 2);
         items.clear();
     }
     
@@ -315,7 +315,7 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
             }
         }
         markDirty();
-        world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 3);
+        world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 2);
     }
     
     public void refill() {
@@ -416,7 +416,7 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
         int prev = getComparatorLevel();
         water = target;
         if(prev != getComparatorLevel() && world != null) {
-            world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 3);
+            world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 2);
             world.updateComparatorOutputLevel(pos, world.getBlockState(pos).getBlock());
         }
     }
@@ -434,7 +434,7 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
             setInventorySlotContents(i + 1, c.getValue().get(i));
         }
         crystallize = 0;
-        world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 3);
+        world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 2);
     }
     
     public int getMaterialColor() {
@@ -483,7 +483,7 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
             drop(false, removeWasteAsDust());
             drop(false, removeSeeds());
             material = "";
-            world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 3);
+            world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 2);
         }
     }
 }

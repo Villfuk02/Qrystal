@@ -42,6 +42,7 @@ public class ModItems {
     public static final Item TUBE = new ItemBase("tube");
     public static final Item FUNNEL = new ItemWithContainer("funnel");
     public static final Item CONDENSER = new ItemBase("condenser");
+    public static final Item RESERVOIR = new ItemBase("reservoir");
     public static final Item FILTER_PAPER = new ItemBase("filter_paper");
     public static final Item SALT = new ItemBase("salt");
     public static final Item UPGRADE_0 = new BarrelUpgrade(0, "stone");
@@ -62,6 +63,12 @@ public class ModItems {
     public static final Item ENDSTEEL_INGOT = new ItemBase("endsteel_ingot");
     public static final Item STEEL_BLADE = new Blade("steel_blade", 1200);
     public static final Item DIAMOND_BLADE = new Blade("diamond_blade", 1800);
+    public static final Item REDSTONE_COIL = new ItemBase("redstone_coil");
+    public static final Item CONDUCTIVE_ALLOY_COIL = new ItemBase("conductive_alloy_coil");
+    public static final Item ENDER_COIL = new ItemBase("ender_coil");
+    public static final Item HEAT_CONDUIT = new ItemBase("heat_conduit");
+    public static final Item NANO_MESH = new ItemBase("nano_mesh");
+    public static final Item ACTUATOR = new ItemBase("actuator");
     
     
     public static void init() {

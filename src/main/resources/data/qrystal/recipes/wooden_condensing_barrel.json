@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "WPW",
+    "WCW",
+    "WPW"
+  ],
+  "key": {
+    "W": {
+      "tag": "minecraft:logs"
+    },
+    "P": {
+      "item": "minecraft:piston"
+    },
+    "C": {
+      "item": "qrystal:crystal_small_0",
+      "type": "forge:nbt",
+      "count": 1,
+      "nbt": "{material:qoid}"
+    }
+  },
+  "result": {
+    "item": "qrystal:wooden_condensing_barrel",
+    "count": 4
+  }
+}

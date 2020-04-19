@@ -1,0 +1,6 @@
+{
+  "type": "qrystal:fluid_mixing",
+  "fluid1": "qrystal:filtered_water",
+  "result": "qrystal:distilled_water",
+  "time": 900
+}

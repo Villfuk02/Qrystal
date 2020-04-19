@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#B#",
+    "BCB",
+    "# #"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:ingots/steel"
+    },
+    "B": {
+      "item": "qrystal:imbued_condensing_barrel"
+    },
+    "C": {
+      "item": "qrystal:crystal_small_5",
+      "type": "forge:nbt",
+      "count": 1,
+      "nbt": "{material:qoid}"
+    }
+  },
+  "result": {
+    "item": "qrystal:upgrade_4",
+    "count": 1
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " C ",
+    " C ",
+    "IcI"
+  ],
+  "key": {
+    "C": {
+      "item": "qrystal:conductive_alloy_coil"
+    },
+    "I": {
+      "tag": "forge:ingots/steel"
+    },
+    "c": {
+      "item": "qrystal:crystal_small_4",
+      "type": "forge:nbt",
+      "count": 1,
+      "nbt": "{material:qondo}"
+    }
+  },
+  "result": {
+    "item": "qrystal:emitter_1",
+    "count": 4
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SCS",
+    "C C",
+    "SCS"
+  ],
+  "key": {
+    "S": {
+      "tag": "forge:ingots/steel"
+    },
+    "C": {
+      "item": "qrystal:redstone_coil"
+    }
+  },
+  "result": {
+    "item": "qrystal:steel_chassis",
+    "count": 2
+  }
+}

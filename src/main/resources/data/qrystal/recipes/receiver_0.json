@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ICI",
+    "CcC",
+    "ICI"
+  ],
+  "key": {
+    "C": {
+      "item": "qrystal:redstone_coil"
+    },
+    "I": {
+      "item": "qrystal:imbued_alloy_ingot"
+    },
+    "c": {
+      "item": "qrystal:crystal_small_2",
+      "type": "forge:nbt",
+      "count": 1,
+      "nbt": "{material:qondo}"
+    }
+  },
+  "result": {
+    "item": "qrystal:receiver_0",
+    "count": 4
+  }
+}

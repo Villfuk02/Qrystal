@@ -16,6 +16,7 @@ import net.minecraft.block.Block;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
@@ -27,12 +28,10 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.wrapper.CombinedInvWrapper;
-import net.minecraftforge.items.wrapper.RangedWrapper;
 
 import javax.annotation.Nonnull;
 
@@ -40,8 +39,8 @@ public abstract class EvaporatorTileEntity extends TileEntity implements INamedC
     
     
     public final ItemStackHandler inventory;
+    public final ItemStackHandler externalInventory;
     private final LazyOptional<ItemStackHandler> inventoryCapabilityExternal;
-    private final LazyOptional<IItemHandlerModifiable> inventoryCapabilityExternalOutput;
     
     public short time = 0;
     public final short cycle;
@@ -58,12 +57,14 @@ public abstract class EvaporatorTileEntity extends TileEntity implements INamedC
     public int currentBatch = 0;
     public int impurities = 0;
     public boolean reevaluate = true;
+    public final byte requiredPower;
     
     
-    public EvaporatorTileEntity(TileEntityType<?> type, short cycle, int slots, Block block) {
+    public EvaporatorTileEntity(TileEntityType<?> type, short cycle, byte requiredPower, int slots, Block block) {
         super(type);
         this.cycle = cycle;
         this.block = block;
+        this.requiredPower = requiredPower;
         
         inventory = new ItemStackHandler(slots) {
             @Override
@@ -98,8 +99,60 @@ public abstract class EvaporatorTileEntity extends TileEntity implements INamedC
                 markDirty();
             }
         };
-        inventoryCapabilityExternal = LazyOptional.of(() -> inventory);
-        inventoryCapabilityExternalOutput = LazyOptional.of(() -> new CombinedInvWrapper(new RangedWrapper(inventory, 3, 4), new RangedWrapper(inventory, 9, 14)));
+        externalInventory = new ItemStackHandler(slots) {
+            
+            @Override
+            public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
+                inventory.setStackInSlot(slot, stack);
+            }
+            
+            @Override
+            @Nonnull
+            public ItemStack getStackInSlot(int slot) {
+                return inventory.getStackInSlot(slot);
+            }
+            
+            @Override
+            @Nonnull
+            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+                return inventory.insertItem(slot, stack, simulate);
+            }
+            
+            @Nonnull
+            @Override
+            public ItemStack extractItem(int slot, int amount, boolean simulate) {
+                if(slot != 3 && slot <= 8)
+                    return ItemStack.EMPTY;
+                return inventory.extractItem(slot, amount, simulate);
+            }
+            
+            @Override
+            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+                return inventory.isItemValid(slot, stack);
+            }
+            
+            @Override
+            public CompoundNBT serializeNBT() {
+                return inventory.serializeNBT();
+            }
+            
+            @Override
+            public void deserializeNBT(CompoundNBT nbt) {
+                setSize(nbt.contains("Size", Constants.NBT.TAG_INT) ? nbt.getInt("Size") : stacks.size());
+                ListNBT tagList = nbt.getList("Items", Constants.NBT.TAG_COMPOUND);
+                for(int i = 0; i < tagList.size(); i++) {
+                    CompoundNBT itemTags = tagList.getCompound(i);
+                    int slot = itemTags.getInt("Slot");
+                    
+                    if(slot >= 0 && slot < stacks.size()) {
+                        stacks.set(slot, ItemStack.read(itemTags));
+                    }
+                }
+                inventory.deserializeNBT(nbt);
+                onLoad();
+            }
+        };
+        inventoryCapabilityExternal = LazyOptional.of(() -> externalInventory);
     }
     
     @Override
@@ -151,7 +204,8 @@ public abstract class EvaporatorTileEntity extends TileEntity implements INamedC
     
     @Override
     public void tick() {
-        time++;
+        if(isPowered())
+            time++;
         temperature += tickTemperature(temperature * 499 / 500 - temperature);
         if(fluidAmount > 0 && materialAmount > 0) {
             if(time >= cycle) {
@@ -185,6 +239,8 @@ public abstract class EvaporatorTileEntity extends TileEntity implements INamedC
         }
         markDirty();
     }
+    
+    abstract boolean isPowered();
     
     public abstract int tickTemperature(int move);
     
@@ -354,18 +410,7 @@ public abstract class EvaporatorTileEntity extends TileEntity implements INamedC
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, Direction side) {
         if(cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            if(side == null)
-                return inventoryCapabilityExternal.cast();
-            switch(side) {
-                case DOWN:
-                    return inventoryCapabilityExternalOutput.cast();
-                case UP:
-                case NORTH:
-                case SOUTH:
-                case WEST:
-                case EAST:
-                    return inventoryCapabilityExternal.cast();
-            }
+            return inventoryCapabilityExternal.cast();
         }
         return super.getCapability(cap, side);
     }

@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "C#C",
+    "#I#",
+    "C#C"
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:ingots/steel"
+    },
+    "C": {
+      "item": "qrystal:redstone_coil"
+    },
+    "#": {
+      "item": "qrystal:conductive_alloy_ingot"
+    }
+  },
+  "result": {
+    "item": "qrystal:conductive_alloy_coil",
+    "count": 2
+  }
+}

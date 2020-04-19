@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "TTT",
+    "EME",
+    "iIi"
+  ],
+  "key": {
+    "T": {
+      "item": "qrystal:tube"
+    },
+    "M": {
+      "item": "qrystal:nano_mesh"
+    },
+    "E": {
+      "item": "qrystal:basic_evaporator"
+    },
+    "i": {
+      "tag": "forge:ingots/iron"
+    },
+    "I": {
+      "item": "qrystal:imbued_alloy_chassis"
+    }
+  },
+  "result": {
+    "item": "qrystal:burner_evaporator",
+    "count": 1
+  }
+}

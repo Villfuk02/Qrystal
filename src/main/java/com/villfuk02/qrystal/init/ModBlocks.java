@@ -34,6 +34,7 @@ public class ModBlocks {
     public static final Block LASER_CUTTER = new LaserCutterBlock();
     public static final Block BURNER_FLUID_MIXER = new BurnerFluidMixerBlock();
     public static final Block POWERED_FLUID_MIXER = new PoweredFluidMixerBlock();
+    public static final Block ULTIMATE_FLUID_MIXER = new UltimateFluidMixerBlock();
     public static final Block BASIC_EVAPORATOR = new BasicEvaporatorBlock();
     public static final Block BURNER_EVAPORATOR = new BurnerEvaporatorBlock();
     public static final Block POWERED_EVAPORATOR = new PoweredEvaporatorBlock();
@@ -52,6 +53,13 @@ public class ModBlocks {
     public static final Block CONDUCTIVE_ALLOY_BLOCK = new BlockBase("conductive_alloy_block", Material.IRON, MaterialColor.ORANGE_TERRACOTTA, SoundType.STONE, 4f, 10f, ToolType.PICKAXE, 0);
     public static final Block STEEL_BLOCK = new BlockBase("steel_block", Material.IRON, MaterialColor.STONE, SoundType.STONE, 5f, 30f, ToolType.PICKAXE, 0);
     public static final Block ENDSTEEL_BLOCK = new BlockBase("endsteel_block", Material.IRON, MaterialColor.PURPLE, SoundType.STONE, 6f, 60f, ToolType.PICKAXE, 0);
+    public static final Block EMITTER_0 = new EmitterBlock("emitter_0", 0);
+    public static final Block EMITTER_1 = new EmitterBlock("emitter_1", 1);
+    public static final Block EMITTER_2 = new EmitterBlock("emitter_2", 2);
+    public static Map<String, Block> RECEIVERS = new HashMap<>();
+    public static final Block IMBUED_ALLOY_CHASSIS = new BlockBase("imbued_alloy_chassis", Material.ROCK, MaterialColor.DIAMOND, SoundType.STONE, 3f, 15f, ToolType.PICKAXE, 0);
+    public static final Block STEEL_CHASSIS = new BlockBase("steel_chassis", Material.ROCK, MaterialColor.STONE, SoundType.STONE, 3f, 15f, ToolType.PICKAXE, 0);
+    public static final Block ENDSTEEL_CHASSIS = new BlockBase("endsteel_chassis", Material.ROCK, MaterialColor.PURPLE, SoundType.STONE, 3f, 15f, ToolType.PICKAXE, 0);
     
     public static void init() {
         for(CrystalUtil.Color c : CrystalUtil.Color.values()) {
@@ -61,6 +69,10 @@ public class ModBlocks {
                 QRYSTAL_BLOCKS.putIfAbsent(c.toString() + "_" + i, new QrystalBlock(c, i, false));
                 QRYSTAL_BLOCKS.putIfAbsent("activated_" + c.toString() + "_" + i, new QrystalBlock(c, i, true));
             }
+        }
+        for(int i = 0; i < 3; i++) {
+            RECEIVERS.putIfAbsent(Integer.toString(i), new ReceiverBlock(i, false));
+            RECEIVERS.putIfAbsent("activated_" + i, new ReceiverBlock(i, true));
         }
     }
     

@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "cPc",
+    "PCP",
+    "cPc"
+  ],
+  "key": {
+    "P": {
+      "item": "minecraft:piston"
+    },
+    "c": {
+      "item": "qrystal:redstone_coil"
+    },
+    "C": {
+      "item": "qrystal:crystal_medium_3",
+      "type": "forge:nbt",
+      "count": 1,
+      "nbt": "{material:qitae}"
+    }
+  },
+  "result": {
+    "item": "qrystal:actuator",
+    "count": 2
+  }
+}
