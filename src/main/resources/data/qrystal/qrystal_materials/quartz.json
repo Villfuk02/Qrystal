@@ -1,21 +1,13 @@
 {
   "name": "quartz",
   "locale": "item.minecraft.quartz",
-  "temp": 666,
   "seed": "qondo",
   "color_primary": "CCC4A6",
   "color_secondary": "F7F5F2",
-  "crushable": [
-    {
-      "item": "minecraft:nether_quartz_ore",
-      "min": 155520,
-      "max": 259200
-    }
-  ],
   "outputs": [
     {
       "item": "minecraft:quartz",
-      "value": 207360
+      "value": 36
     }
   ]
 }

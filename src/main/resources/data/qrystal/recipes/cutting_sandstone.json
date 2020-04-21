@@ -26,6 +26,11 @@
       "types": ["laser"],
       "item": "qrystal:niter_dust",
       "count": 0.2
+    },
+    {
+      "types": ["hammer", "saw", "laser"],
+      "item": "qrystal:quartz_dust",
+      "count": 0.1
     }
   ]
 }

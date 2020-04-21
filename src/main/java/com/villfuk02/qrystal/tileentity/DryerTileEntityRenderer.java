@@ -86,7 +86,7 @@ public class DryerTileEntityRenderer extends TileEntityRenderer<DryerTileEntity>
             matrixStack.scale(0.75f, 0.75f, 0.75f);
             Minecraft.getInstance()
                     .getItemRenderer()
-                    .renderItem(RecipeUtil.getStackWithMatTag(ModItems.DUSTS.get("dust_10"), tileEntity.getMaterial()), ItemCameraTransforms.TransformType.NONE, light, OverlayTexture.NO_OVERLAY, matrixStack,
+                    .renderItem(RecipeUtil.getStackWithMatTag(ModItems.DUSTS.get("dust_36"), tileEntity.getMaterial()), ItemCameraTransforms.TransformType.NONE, light, OverlayTexture.NO_OVERLAY, matrixStack,
                                 buffer);
             matrixStack.pop();
         }

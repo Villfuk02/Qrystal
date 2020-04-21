@@ -5,7 +5,7 @@
   "result": "qrystal:nitric_acid",
   "resultAmt": 125,
   "tag1": "forge:dusts/saltpeter",
-  "in2": "qrystal:dust_4320",
+  "in2": "qrystal:dust_1",
   "nbt2": "{material:iron}",
   "time": 300
 }

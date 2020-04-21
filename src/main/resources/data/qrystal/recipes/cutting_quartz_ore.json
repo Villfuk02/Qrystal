@@ -1,0 +1,34 @@
+{
+  "type": "qrystal:cutting",
+  "input": "minecraft:nether_quartz_ore",
+  "output": [
+    {
+      "types": ["hammer", "saw", "laser"],
+      "item": "qrystal:dust_36",
+      "count": 1,
+      "material": "quartz"
+    },
+    {
+      "types": ["saw"],
+      "item": "qrystal:dust_6",
+      "count": 0.6,
+      "material": "quartz"
+    },
+    {
+      "types": ["laser"],
+      "item": "qrystal:dust_6",
+      "count": 1.5,
+      "material": "quartz"
+    },
+    {
+      "types": ["saw"],
+      "item": "qrystal:sulfur_dust",
+      "count": 0.05
+    },
+    {
+      "types": ["laser"],
+      "item": "qrystal:sulfur_dust",
+      "count": 0.1
+    }
+  ]
+}

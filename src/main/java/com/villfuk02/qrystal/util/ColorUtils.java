@@ -1,5 +1,7 @@
 package com.villfuk02.qrystal.util;
 
+import net.minecraft.util.math.MathHelper;
+
 public class ColorUtils {
     
     public static int[] unwrapRGB(int color) {
@@ -16,6 +18,30 @@ public class ColorUtils {
     
     public static int wrap(int r, int g, int b, int a) {
         return r + (g << 8) + (b << 16) + (a << 24);
+    }
+    
+    public static int wrap(int... ints) {
+        if(ints.length == 3)
+            return wrap(ints[0], ints[1], ints[2]);
+        if(ints.length == 4)
+            return wrap(ints[0], ints[1], ints[2], ints[3]);
+        return 0;
+    }
+    
+    public static int[] float2Int(float... floats) {
+        int[] ints = new int[floats.length];
+        for(int i = 0; i < floats.length; i++) {
+            ints[i] = (int)(floats[i] * 255 + 0.5f);
+        }
+        return ints;
+    }
+    
+    public static float[] hue2RGB(float hue) {
+        return new float[]{hueCycle(hue + 1 / 3f), hueCycle(hue), hueCycle(hue + 2 / 3f)};
+    }
+    
+    static float hueCycle(float in) {
+        return MathHelper.clamp(Math.abs(Math.abs(in * 6 % 6 - 2) - 3) - 1, 0, 1);
     }
     
 }

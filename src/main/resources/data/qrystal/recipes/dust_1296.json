@@ -1,0 +1,47 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "qrystal:dust_216",
+      "type": "forge:nbt",
+      "count": 1,
+      "nbt": "{material:Any}"
+    },
+    {
+      "item": "qrystal:dust_216",
+      "type": "forge:nbt",
+      "count": 1,
+      "nbt": "{material:Any}"
+    },
+    {
+      "item": "qrystal:dust_216",
+      "type": "forge:nbt",
+      "count": 1,
+      "nbt": "{material:Any}"
+    },
+    {
+      "item": "qrystal:dust_216",
+      "type": "forge:nbt",
+      "count": 1,
+      "nbt": "{material:Any}"
+    },
+    {
+      "item": "qrystal:dust_216",
+      "type": "forge:nbt",
+      "count": 1,
+      "nbt": "{material:Any}"
+    },
+    {
+      "item": "qrystal:dust_216",
+      "type": "forge:nbt",
+      "count": 1,
+      "nbt": "{material:Any}"
+    }
+  ],
+  "result": {
+    "item": "qrystal:dust_1296",
+    "type": "forge:nbt",
+    "count": 1,
+    "nbt": "{material:Any}"
+  }
+}

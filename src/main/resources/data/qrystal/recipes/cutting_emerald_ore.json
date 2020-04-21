@@ -1,0 +1,34 @@
+{
+  "type": "qrystal:cutting",
+  "input": "minecraft:emerald_ore",
+  "output": [
+    {
+      "types": ["hammer", "saw", "laser"],
+      "item": "qrystal:dust_36",
+      "count": 1,
+      "material": "emerald"
+    },
+    {
+      "types": ["saw"],
+      "item": "qrystal:dust_6",
+      "count": 0.6,
+      "material": "emerald"
+    },
+    {
+      "types": ["laser"],
+      "item": "qrystal:dust_6",
+      "count": 1.5,
+      "material": "emerald"
+    },
+    {
+      "types": ["saw"],
+      "item": "qrystal:stone_pebbles",
+      "count": 0.2
+    },
+    {
+      "types": ["laser"],
+      "item": "qrystal:stone_pebbles",
+      "count": 0.4
+    }
+  ]
+}

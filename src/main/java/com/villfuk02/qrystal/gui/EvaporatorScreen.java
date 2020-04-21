@@ -3,8 +3,6 @@ package com.villfuk02.qrystal.gui;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.villfuk02.qrystal.Main;
 import com.villfuk02.qrystal.container.EvaporatorContainer;
-import com.villfuk02.qrystal.tileentity.BasicEvaporatorTileEntity;
-import com.villfuk02.qrystal.tileentity.BurnerEvaporatorTileEntity;
 import com.villfuk02.qrystal.tileentity.EvaporatorTileEntity;
 import com.villfuk02.qrystal.util.ColorUtils;
 import com.villfuk02.qrystal.util.RecipeUtil;
@@ -12,9 +10,7 @@ import com.villfuk02.qrystal.util.handlers.FilledFlaskColorHandler;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 
@@ -51,13 +47,7 @@ public class EvaporatorScreen extends ContainerScreen<EvaporatorContainer> {
                 renderTooltip(tooltip, mouseX, mouseY);
             }
         }
-        boolean thermometerHovered = relMouseX > 29 && relMouseX < 39 && relMouseY > 42 && relMouseY < 91;
-        if(thermometerHovered && !tileEntity.material.isEmpty()) {
-            String tooltip = new TranslationTextComponent("gui." + Main.MODID + ".impurities").applyTextStyle(TextFormatting.YELLOW)
-                    .appendSibling(new StringTextComponent(tileEntity.getTemperatureMultiplier() / 100f + "x"))
-                    .getFormattedText();
-            renderTooltip(tooltip, mouseX, mouseY);
-        }
+        
         
     }
     
@@ -90,48 +80,14 @@ public class EvaporatorScreen extends ContainerScreen<EvaporatorContainer> {
         int[] mc = ColorUtils.unwrapRGB(tileEntity.materialColor);
         RenderSystem.color3f(mc[0] / 255f, mc[1] / 255f, mc[2] / 255f);
         if(tileEntity.materialAmount > 0) {
-            blit(startX + 44, startY + 92, 176, 152, 7, (int)((-48 * (long)tileEntity.materialAmount + 1) / (500 * RecipeUtil.SMALL_VALUE)) - 1);
+            blit(startX + 44, startY + 92, 176, 152, 7, (int)((-48 * (long)tileEntity.materialAmount + 1) / (500 * RecipeUtil.BASE_VALUE)) - 1);
         }
-        if(!tileEntity.material.isEmpty() && MathHelper.abs(tileEntity.temperature - tileEntity.materialTemp) <= 25)
-            RenderSystem.color3f(0, 1, 0);
-        else if(tileEntity.temperature > 0)
-            RenderSystem.color3f(1, 0, 0);
-        else if(tileEntity.temperature < 0)
-            RenderSystem.color3f(0, 0, 1);
-        else
-            RenderSystem.color3f(1, 1, 0);
-        blit(startX + 31, startY + 90, 176, 104, 7, -(MathHelper.abs(tileEntity.temperature) + 24) / 50 - 7);
-        if(tileEntity.materialTemp > 0)
-            RenderSystem.color3f(1, 0.7f, 0);
-        else if(tileEntity.materialTemp < 0)
-            RenderSystem.color3f(0, 1, 1);
-        else
-            RenderSystem.color3f(1, 1, 0);
-        blit(startX + 31, startY + 90 - (MathHelper.abs(tileEntity.materialTemp) + 24) / 50 - 7, 176, 103 - (MathHelper.abs(tileEntity.materialTemp) + 24) / 50 - 7, 7, 1);
-        
         
         RenderSystem.color3f(1, 1, 1);
         if(tileEntity.time > 0 && tileEntity.materialAmount > 0 && tileEntity.fluidAmount > 0) {
             blit(startX + 105, startY + 64, 176, 57, 11, (-29 * tileEntity.time - tileEntity.cycle + 1) / tileEntity.cycle);
         }
-        if(burner) {
-            if(tileEntity instanceof BurnerEvaporatorTileEntity) {
-                BurnerEvaporatorTileEntity entity = (BurnerEvaporatorTileEntity)tileEntity;
-                if(entity.heatLeft > 0) {
-                    blit(startX + 27, startY + 104, 176, entity.tempTarget > 0 ? 14 : 28, 14, (-14 * entity.heatLeft - entity.heatTotal + 1) / entity.heatTotal);
-                    blit(startX + 16, startY + 88, 190, 52, 9, 10);
-                    blit(startX + 16, startY + 88 - ((MathHelper.abs(tileEntity.tempTarget) + 24) / 50 + 9), 190, 0, 13, (MathHelper.abs(tileEntity.tempTarget) + 24) / 50 + 9);
-                }
-                
-            } else if(tileEntity instanceof BasicEvaporatorTileEntity) {
-                BasicEvaporatorTileEntity entity = (BasicEvaporatorTileEntity)tileEntity;
-                if(entity.heatLeft > 0) {
-                    blit(startX + 27, startY + 104, 176, entity.tempTarget > 0 ? 14 : 28, 14, (-14 * entity.heatLeft - entity.heatTotal + 1) / entity.heatTotal);
-                    blit(startX + 16, startY + 88, 190, 52, 9, 10);
-                    blit(startX + 16, startY + 88 - ((MathHelper.abs(tileEntity.tempTarget) + 24) / 50 + 9), 190, 0, 13, (MathHelper.abs(tileEntity.tempTarget) + 24) / 50 + 9);
-                }
-            }
-        }
+        
     }
     
     

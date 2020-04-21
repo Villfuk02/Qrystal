@@ -1,29 +1,21 @@
 {
   "name": "iron",
   "locale": "qrystal.mat.iron",
-  "temp": 350,
   "seed": "qawa",
   "color_primary": "D8D8D8",
   "color_secondary": "FFFFFF",
-  "crushable": [
-    {
-      "item": "minecraft:iron_ore",
-      "min": 155520,
-      "max": 259200
-    }
-  ],
   "outputs": [
     {
       "item": "minecraft:iron_nugget",
-      "value": 23040
+      "value": 4
     },
     {
       "item": "minecraft:iron_ingot",
-      "value": 207360
+      "value": 36
     },
     {
       "item": "minecraft:iron_block",
-      "value": 1866240
+      "value": 324
     }
   ]
 }

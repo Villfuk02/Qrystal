@@ -3,7 +3,6 @@ package com.villfuk02.qrystal.items;
 import com.google.common.collect.Multimap;
 import com.villfuk02.qrystal.Main;
 import com.villfuk02.qrystal.crafting.CustomCuttingRecipe;
-import com.villfuk02.qrystal.dataserializers.MaterialManager;
 import com.villfuk02.qrystal.init.ModItems;
 import com.villfuk02.qrystal.util.RecipeUtil;
 import net.minecraft.block.Block;
@@ -123,11 +122,6 @@ public class Hammer extends ToolItem {
     public static Set<Block> getEffectiveOn(World world) {
         if(effectiveOn == null || !withWorld && world != null) {
             Set<Block> blocks = new HashSet<>();
-            for(ResourceLocation rl : MaterialManager.crushable.keySet()) {
-                Block b = ForgeRegistries.BLOCKS.getValue(rl);
-                if(b != Blocks.AIR)
-                    blocks.add(b);
-            }
             if(world != null) {
                 withWorld = true;
                 Set<ResourceLocation> tags = new HashSet<>();

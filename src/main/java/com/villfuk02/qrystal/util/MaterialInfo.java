@@ -8,8 +8,7 @@ import java.util.Map;
 public class MaterialInfo {
     
     public String name;
-    public Map<ResourceLocation, Long> outputs;
-    public int temp;
+    public Map<ResourceLocation, Integer> outputs;
     public Pair<Integer, Integer> color;
     public String lang;
     public CrystalUtil.Color seed;
@@ -22,15 +21,13 @@ public class MaterialInfo {
         this.lang = lang;
     }
     
-    public static class Crushable {
+    public static class Unit {
         public String material;
-        public long min;
-        public long max;
+        public int value;
         
-        public Crushable(String mat, long min, long max) {
+        public Unit(String mat, int value) {
             material = mat;
-            this.min = min;
-            this.max = max;
+            this.value = value;
         }
     }
 }

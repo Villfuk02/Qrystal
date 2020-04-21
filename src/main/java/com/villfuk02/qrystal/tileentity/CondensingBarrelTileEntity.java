@@ -183,14 +183,14 @@ public class CondensingBarrelTileEntity extends TileEntity {
                 stack = ItemStack.EMPTY;
             return stack;
         } else if(item.getItem() instanceof CrystalDust) {
-            long value = ModItems.dust_sizes[-mode];
+            long value = ModItems.DUST_SIZES[-mode];
             if(force)
                 return RecipeUtil.getStackWithTag(ModItems.DUSTS.get("dust_" + value), 1, item.hasTag() ? item.getTag() : new CompoundNBT());
             int amount;
             if(stored >= 64)
                 amount = 64;
             else
-                amount = (int)Math.min((stored * ModItems.dust_sizes[0] + dustOverflow) / value, 64L);
+                amount = (int)Math.min((stored * ModItems.DUST_SIZES[0] + dustOverflow) / value, 64L);
             stack = RecipeUtil.getStackWithTag(ModItems.DUSTS.get("dust_" + value), amount, item.hasTag() ? item.getTag() : new CompoundNBT());
             if(stack.getCount() == 0)
                 stack = ItemStack.EMPTY;
@@ -206,14 +206,14 @@ public class CondensingBarrelTileEntity extends TileEntity {
                 stored -= value.getKey();
                 dustOverflow -= value.getValue();
                 if(dustOverflow < 0) {
-                    dustOverflow += ModItems.dust_sizes[0];
+                    dustOverflow += ModItems.DUST_SIZES[0];
                     stored--;
                 }
             } else {
                 stored += value.getKey();
                 dustOverflow += value.getValue();
-                if(dustOverflow >= ModItems.dust_sizes[0]) {
-                    dustOverflow -= ModItems.dust_sizes[0];
+                if(dustOverflow >= ModItems.DUST_SIZES[0]) {
+                    dustOverflow -= ModItems.DUST_SIZES[0];
                     stored++;
                 }
             }
@@ -224,7 +224,7 @@ public class CondensingBarrelTileEntity extends TileEntity {
     
     public static ItemStack getFake(ItemStack stack) {
         if(stack.getItem() instanceof CrystalDust) {
-            return RecipeUtil.getStackWithTag(ModItems.DUSTS.get("dust_" + ModItems.dust_sizes[0]), stack.getTag());
+            return RecipeUtil.getStackWithTag(ModItems.DUSTS.get("dust_" + ModItems.DUST_SIZES[0]), stack.getTag());
         } else if(stack.getItem() instanceof CondensedMaterial) {
             if(stack.hasTag() && stack.getTag().contains("power") && stack.getTag().contains("item"))
                 return ItemStack.read(stack.getTag().getCompound("item"));
@@ -246,8 +246,8 @@ public class CondensingBarrelTileEntity extends TileEntity {
         }
         if(stack.getItem() instanceof CrystalDust) {
             long v = ((CrystalDust)stack.getItem()).size * stack.getCount();
-            long w = v / ModItems.dust_sizes[0];
-            v -= w * ModItems.dust_sizes[0];
+            long w = v / ModItems.DUST_SIZES[0];
+            v -= w * ModItems.DUST_SIZES[0];
             return new Pair<>(w, v);
         }
         return new Pair<>((long)stack.getCount(), 0L);
@@ -268,7 +268,7 @@ public class CondensingBarrelTileEntity extends TileEntity {
         long o = -dustOverflow;
         if(value.getKey() == 0L && value.getValue() != 0L) {
             int c = (int)Math.min(65L, s);
-            o += c * ModItems.dust_sizes[0];
+            o += c * ModItems.DUST_SIZES[0];
             return (int)Math.min(64L, o / value.getValue());
         } else if(value.getValue() == 0L && value.getKey() != 0L) {
             if(dustOverflow > 0)
@@ -295,7 +295,7 @@ public class CondensingBarrelTileEntity extends TileEntity {
     public void cycleMode() {
         mode++;
         if(mode > getRawCapacity())
-            mode = item.getItem() instanceof CrystalDust ? -10 : 0;
+            mode = item.getItem() instanceof CrystalDust ? (1 - ModItems.DUST_SIZES.length) : 0;
         world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 2);
     }
     
@@ -318,7 +318,7 @@ public class CondensingBarrelTileEntity extends TileEntity {
         if(shiftKeyDown) {
             if(mode >= 0)
                 return Long.toString(getValue(mode));
-            return "0::" + ModItems.dust_sizes[-mode];
+            return "0::" + ModItems.DUST_SIZES[-mode];
         }
         if(stored <= 9999L) {
             return stored + (dustOverflow <= 0 ? "" : "::" + dustOverflow);
@@ -348,7 +348,7 @@ public class CondensingBarrelTileEntity extends TileEntity {
         int m = 0;
         while(dustOverflow > 0) {
             m--;
-            long value = ModItems.dust_sizes[-m];
+            long value = ModItems.DUST_SIZES[-m];
             int amount = (int)Math.min(dustOverflow / value, 64L);
             dustOverflow -= amount * value;
             ItemStack stack = RecipeUtil.getStackWithTag(ModItems.DUSTS.get("dust_" + value), amount, item.hasTag() ? item.getTag() : new CompoundNBT());

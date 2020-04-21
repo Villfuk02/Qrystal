@@ -15,9 +15,9 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class CrystalDust extends ItemBase {
-    public final long size;
+    public final int size;
     
-    public CrystalDust(long size) {
+    public CrystalDust(int size) {
         super("dust_" + size);
         this.size = size;
     }

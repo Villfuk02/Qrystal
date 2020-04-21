@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.villfuk02.qrystal.dataserializers.MaterialManager;
 import com.villfuk02.qrystal.init.ModItems;
 import com.villfuk02.qrystal.items.CrystalDust;
+import com.villfuk02.qrystal.util.RecipeUtil;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -22,7 +23,7 @@ public class DustCombiningRecipe extends SpecialRecipe {
     
     @Override
     public boolean matches(CraftingInventory inv, World worldIn) {
-        long size = 0;
+        int size = 0;
         int amt = 0;
         String mat = "";
         
@@ -58,18 +59,12 @@ public class DustCombiningRecipe extends SpecialRecipe {
             }
         }
         
-        if(amt > 1) {
-            for(long l : ModItems.dust_sizes) {
-                if(size * amt == l)
-                    return true;
-            }
-        }
-        return false;
+        return amt == 6;
     }
     
     @Override
     public ItemStack getCraftingResult(CraftingInventory inv) {
-        long total = 0;
+        int total = 0;
         CompoundNBT tag = null;
         
         for(int i = 0; i < inv.getSizeInventory(); ++i) {
@@ -81,22 +76,12 @@ public class DustCombiningRecipe extends SpecialRecipe {
             }
         }
         
-        if(total > 0) {
-            for(long l : ModItems.dust_sizes) {
-                if(total == l) {
-                    ItemStack r = new ItemStack(ModItems.DUSTS.get("dust_" + l));
-                    r.setTag(tag);
-                    return r;
-                }
-            }
-        }
-        
-        return ItemStack.EMPTY;
+        return RecipeUtil.getStackWithTag(ModItems.DUSTS.get("dust_" + total), tag);
     }
     
     @Override
     public boolean canFit(int width, int height) {
-        return width * height >= 2;
+        return width * height >= 6;
     }
     
     @Override

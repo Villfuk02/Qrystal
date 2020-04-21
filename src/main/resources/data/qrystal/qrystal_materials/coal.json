@@ -1,25 +1,17 @@
 {
   "name": "coal",
   "locale": "item.minecraft.coal",
-  "temp": 250,
   "seed": "qeri",
   "color_primary": "261E24",
   "color_secondary": "393E46",
-  "crushable": [
-    {
-      "item": "minecraft:coal_ore",
-      "min": 155520,
-      "max": 259200
-    }
-  ],
   "outputs": [
     {
       "item": "minecraft:coal",
-      "value": 207360
+      "value": 36
     },
     {
       "item": "minecraft:coal_block",
-      "value": 1866240
+      "value": 324
     }
   ]
 }

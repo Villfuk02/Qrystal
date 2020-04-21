@@ -3,7 +3,7 @@
   "pattern": [
     "#B#",
     "BCB",
-    "# #"
+    "#P#"
   ],
   "key": {
     "#": {
@@ -17,6 +17,9 @@
       "type": "forge:nbt",
       "count": 1,
       "nbt": "{material:qoid}"
+    },
+    "p": {
+      "tag": "forge:glass_panes"
     }
   },
   "result": {

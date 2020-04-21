@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.villfuk02.qrystal.dataserializers.MaterialManager;
 import com.villfuk02.qrystal.init.ModItems;
 import com.villfuk02.qrystal.items.CrystalDust;
+import com.villfuk02.qrystal.util.RecipeUtil;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -56,15 +57,8 @@ public class DustSplittingRecipe extends SpecialRecipe {
             }
         }
         
-        if(val > 0) {
-            for(long l : ModItems.dust_sizes) {
-                if(val > l) {
-                    ItemStack r = new ItemStack(ModItems.DUSTS.get("dust_" + l));
-                    r.setTag(tag);
-                    r.setCount((int)(val / l));
-                    return r;
-                }
-            }
+        if(val > 1) {
+            return RecipeUtil.getStackWithTag(ModItems.DUSTS.get("dust_" + val / 6), 6, tag);
         }
         
         return ItemStack.EMPTY;

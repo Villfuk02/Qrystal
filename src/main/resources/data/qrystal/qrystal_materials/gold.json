@@ -1,29 +1,21 @@
 {
   "name": "gold",
   "locale": "qrystal.mat.gold",
-  "temp": 300,
   "seed": "qondo",
   "color_primary": "FDF55F",
   "color_secondary": "FF8C19",
-  "crushable": [
-    {
-      "item": "minecraft:gold_ore",
-      "min": 155520,
-      "max": 259200
-    }
-  ],
   "outputs": [
     {
       "item": "minecraft:gold_nugget",
-      "value": 23040
+      "value": 4
     },
     {
       "item": "minecraft:gold_ingot",
-      "value": 207360
+      "value": 36
     },
     {
       "item": "minecraft:gold_block",
-      "value": 1866240
+      "value": 324
     }
   ]
 }

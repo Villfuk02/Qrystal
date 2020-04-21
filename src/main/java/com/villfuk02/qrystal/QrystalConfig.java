@@ -9,7 +9,6 @@ import net.minecraftforge.fml.config.ModConfig;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.File;
-import java.util.List;
 
 @Mod.EventBusSubscriber(modid = Main.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class QrystalConfig {
@@ -34,10 +33,10 @@ public class QrystalConfig {
     public static int ore_spawn_tries_rich;
     
     public static int material_tier_multiplier;
-    public static double material_dust_multiplier;
+    public static double base_yield_multiplier;
     public static double yield_tier_multiplier;
-    public static double large_tier_multiplier;
-    public static double large_base_multiplier;
+    public static double qrystal_yield_multiplier;
+    public static double base_seed_chance;
     
     public static void rebuild() {
         Pair<Config, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Config::new);
@@ -57,28 +56,10 @@ public class QrystalConfig {
         ore_spawn_tries_rich = CONFIG.ore_spawn_tries_rich.get();
         
         material_tier_multiplier = CONFIG.material_tier_multiplier.get();
-        material_dust_multiplier = parseFraction(CONFIG.material_dust_multiplier.get(), 0.25d, 4);
-        yield_tier_multiplier = parseFraction(CONFIG.yield_tier_multiplier.get(), 1, 4);
-        large_base_multiplier = parseFraction(CONFIG.large_base_multiplier.get(), 1, 4);
-        large_tier_multiplier = parseFraction(CONFIG.large_tier_multiplier.get(), 1, 1.25d);
-    }
-    
-    public static double parseFraction(String s, double min, double max) {
-        String[] v = s.split("/");
-        double d;
-        if(v.length < 2)
-            d = Double.parseDouble(s);
-        else
-            d = Double.parseDouble(v[0]) / Double.parseDouble(v[1]);
-        if(d > max) {
-            Main.LOGGER.error("Config value " + d + " is out of range!");
-            return max;
-        }
-        if(d < min) {
-            Main.LOGGER.error("Config value " + d + " is out of range!");
-            return min;
-        }
-        return d;
+        base_yield_multiplier = CONFIG.base_yield_multiplier.get();
+        yield_tier_multiplier = CONFIG.yield_tier_multiplier.get();
+        qrystal_yield_multiplier = CONFIG.qrystal_yield_multiplier.get();
+        base_seed_chance = CONFIG.base_seed_chance.get();
     }
     
     @SubscribeEvent
@@ -105,16 +86,14 @@ public class QrystalConfig {
         public ForgeConfigSpec.IntValue ore_spawn_tries_rich;
         
         public ForgeConfigSpec.IntValue material_tier_multiplier;
-        ForgeConfigSpec.ConfigValue<String> material_dust_multiplier;
-        ForgeConfigSpec.ConfigValue<String> yield_tier_multiplier;
-        ForgeConfigSpec.ConfigValue<String> large_tier_multiplier;
-        ForgeConfigSpec.ConfigValue<String> large_base_multiplier;
-        
-        public ForgeConfigSpec.ConfigValue<List<? extends String>> material_strings;
+        public ForgeConfigSpec.DoubleValue base_yield_multiplier;
+        public ForgeConfigSpec.DoubleValue yield_tier_multiplier;
+        public ForgeConfigSpec.DoubleValue qrystal_yield_multiplier;
+        public ForgeConfigSpec.DoubleValue base_seed_chance;
         
         public Config(ForgeConfigSpec.Builder builder) {
             builder.comment(baked ? "" : "WARNING: Global configs are used when loading a world for the first time. For adjusting the config for an existing world, go to the world's serverconfig folder.")
-                    .push("QRYSTAL");
+                    .push("Qrystal");
             
             builder.push("WorldGen");
             ore_vein_size = builder.comment("The size of qrystal ore veins").defineInRange("ore_vein_size", baked ? QrystalConfig.ore_vein_size : 9, 0, 64);
@@ -126,17 +105,16 @@ public class QrystalConfig {
             ore_spawn_tries_rich = builder.comment("Number of potential rich qrystal ore veins per chunk").defineInRange("ore_spawn_tries_rich", baked ? QrystalConfig.ore_vein_size_rich : 2, 0, 64);
             builder.pop();
             
-            builder.comment("(string fraction) accepts a string of a value in decimal form or a fraction with /").push("Multipliers");
+            builder.push("Multipliers");
             material_tier_multiplier = builder.comment("How many times more material is needed for next tier (multiplicative)")
                     .defineInRange("material_tier_multiplier", baked ? QrystalConfig.material_tier_multiplier : 4, 2, 12);
-            material_dust_multiplier = builder.comment("How many times more dust you get from crushing ores (string fraction, range 0.25 ~ 4)")
-                    .define("material_dust_multiplier", baked ? Double.toString(QrystalConfig.material_dust_multiplier) : "4/3");
-            yield_tier_multiplier = builder.comment("How many times more material you get for every tier (multiplicative, string fraction, range 1 ~ 4)")
-                    .define("yield_tier_multiplier", baked ? Double.toString(QrystalConfig.yield_tier_multiplier) : "1.45");
-            large_base_multiplier = builder.comment("How many times more medium crystals you get from a large qrystal crystal (string fraction, range 1 ~ 4)")
-                    .define("large_base_multiplier", baked ? Double.toString(QrystalConfig.large_base_multiplier) : "2");
-            large_tier_multiplier = builder.comment("How many times more medium crystals you get from a large qrystal crystal for every tier (multiplicative, string fraction, range 1 ~ 1.25)")
-                    .define("large_tier_multiplier", baked ? Double.toString(QrystalConfig.large_tier_multiplier) : "1.1");
+            base_yield_multiplier = builder.comment("How many ingots do you get from one Dust or Medium Triangular Crystal (assuming 100% efficiency)")
+                    .defineInRange("base_yield_multiplier", baked ? QrystalConfig.base_yield_multiplier : 1.667, 1, 16);
+            yield_tier_multiplier = builder.comment("How many times more material you get for every tier (multiplicative)")
+                    .defineInRange("yield_tier_multiplier", baked ? QrystalConfig.yield_tier_multiplier : 1.415, 1, 4);
+            qrystal_yield_multiplier = builder.comment("How many times more material you get for every tier (multiplicative)")
+                    .defineInRange("qrystal_yield_multiplier", baked ? QrystalConfig.qrystal_yield_multiplier : 1.2, 1, 2);
+            base_seed_chance = builder.comment("Chance for getting seeds of higher tier from a large crystal").defineInRange("base_seed_chance", baked ? QrystalConfig.base_seed_chance : 0.2, 0, 100);
             builder.pop();
             builder.pop();
         }

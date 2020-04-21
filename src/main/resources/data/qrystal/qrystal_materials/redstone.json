@@ -1,25 +1,17 @@
 {
   "name": "redstone",
   "locale": "qrystal.mat.redstone",
-  "temp": 450,
   "seed": "qini",
   "color_primary": "990F01",
   "color_secondary": "FF0000",
-  "crushable": [
-    {
-      "item": "minecraft:redstone_ore",
-      "min": 725760,
-      "max": 1140480
-    }
-  ],
   "outputs": [
     {
       "item": "minecraft:redstone",
-      "value": 207360
+      "value": 36
     },
     {
       "item": "minecraft:redstone_block",
-      "value": 1866240
+      "value": 324
     }
   ]
 }

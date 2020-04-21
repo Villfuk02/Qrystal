@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SSS",
+    "SCS",
+    "SSS"
+  ],
+  "key": {
+    "S": {
+      "item": "qrystal:endsteel_ingot"
+    },
+    "C": {
+      "item": "qrystal:ender_coil"
+    }
+  },
+  "result": {
+    "item": "qrystal:endsteel_chassis",
+    "count": 2
+  }
+}

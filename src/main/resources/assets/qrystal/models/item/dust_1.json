@@ -3,6 +3,6 @@
   "textures": {
     "layer0": "qrystal:items/empty",
     "layer1": "qrystal:items/dust_1",
-    "layer2": "qrystal:items/empty"
+    "layer2": "qrystal:items/dust_1b"
   }
 }

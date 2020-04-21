@@ -2,37 +2,37 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "item": "qrystal:dust_7464960",
+      "item": "qrystal:dust_1296",
       "type": "forge:nbt",
       "count": 1,
       "nbt": "{material:qeri}"
     },
     {
-      "item": "qrystal:dust_7464960",
+      "item": "qrystal:dust_1296",
       "type": "forge:nbt",
       "count": 1,
       "nbt": "{material:qawa}"
     },
     {
-      "item": "qrystal:dust_7464960",
+      "item": "qrystal:dust_1296",
       "type": "forge:nbt",
       "count": 1,
       "nbt": "{material:qini}"
     },
     {
-      "item": "qrystal:dust_7464960",
+      "item": "qrystal:dust_1296",
       "type": "forge:nbt",
       "count": 1,
       "nbt": "{material:qitae}"
     },
     {
-      "item": "qrystal:dust_7464960",
+      "item": "qrystal:dust_1296",
       "type": "forge:nbt",
       "count": 1,
       "nbt": "{material:qoid}"
     },
     {
-      "item": "qrystal:dust_7464960",
+      "item": "qrystal:dust_1296",
       "type": "forge:nbt",
       "count": 1,
       "nbt": "{material:qondo}"
@@ -42,7 +42,7 @@
     }
   ],
   "result": {
-    "item": "qrystal:dust_7464960",
+    "item": "qrystal:dust_1296",
     "type": "forge:nbt",
     "count": 1,
     "nbt": "{material:qalb}"

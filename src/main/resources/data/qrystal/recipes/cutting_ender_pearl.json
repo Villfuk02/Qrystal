@@ -1,0 +1,24 @@
+{
+  "type": "qrystal:cutting",
+  "input": "minecraft:ender_pearl",
+  "output": [
+    {
+      "types": ["hammer", "saw", "laser"],
+      "item": "qrystal:dust_36",
+      "count": 1.5,
+      "material": "ender_pearl"
+    },
+    {
+      "types": ["saw"],
+      "item": "qrystal:dust_36",
+      "count": 0.25,
+      "material": "ender_pearl"
+    },
+    {
+      "types": ["laser"],
+      "item": "qrystal:dust_36",
+      "count": 0.5,
+      "material": "ender_pearl"
+    }
+  ]
+}

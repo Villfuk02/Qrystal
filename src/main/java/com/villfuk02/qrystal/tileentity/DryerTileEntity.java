@@ -55,8 +55,8 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
     private int crystalData;
     private final Map<String, Float> renderValues = new HashMap<>();
     
-    private static final int MAX_VALUE = 150 * RecipeUtil.SMALL_VALUE;
-    private static final int PROCESS_SPEED = 2600;
+    private static final int PROCESS_MULTIPLIER = 8;
+    private static final int MAX_VALUE = PROCESS_MULTIPLIER * 40 * RecipeUtil.BASE_VALUE * QrystalConfig.material_tier_multiplier;
     
     public DryerTileEntity() {
         super(ModTileEntityTypes.DRYER);
@@ -147,7 +147,7 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
                 return 0;
             }
             CrystalDust dust = (CrystalDust)itemStackIn.getItem();
-            return (water - amt) / (int)dust.size;
+            return (water - amt) / PROCESS_MULTIPLIER / dust.size / QrystalConfig.material_tier_multiplier;
         }
         if(itemStackIn.getItem() instanceof Crystal) {
             if(!RecipeUtil.isQrystalMaterial(itemStackIn.getTag().getString("material"), false))
@@ -236,7 +236,7 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
         if(water <= 0)
             return;
         
-        if(water <= PROCESS_SPEED) {
+        if(water <= QrystalConfig.material_tier_multiplier) {
             int temp = amt * 4 / 5;
             crystallize += temp;
             amt -= temp;
@@ -251,21 +251,16 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
                 material = "";
             }
         } else {
-            int processAmt = (int)(amt / (double)water * PROCESS_SPEED);
+            int processAmt = amt * QrystalConfig.material_tier_multiplier / water;
             amt -= processAmt;
             int temp = processAmt * 4 / 5;
             crystallize += temp;
-            if(isEmpty()) {
-                if(world.rand.nextFloat() * 1000000f < 1000000f * temp / RecipeUtil.SMALL_VALUE / 2)
-                    crystallize();
-            } else {
-                if(world.rand.nextFloat() * 1000000f < (1000000f * temp / RecipeUtil.SMALL_VALUE * 2) / QrystalConfig.material_tier_multiplier / QrystalConfig.material_tier_multiplier)
-                    crystallize();
-            }
+            if(world.rand.nextInt(PROCESS_MULTIPLIER * RecipeUtil.BASE_VALUE * QrystalConfig.material_tier_multiplier * QrystalConfig.material_tier_multiplier / 2) < temp)
+                crystallize();
             processAmt -= temp;
             temp = processAmt;
             waste += temp;
-            setWater(water - PROCESS_SPEED);
+            setWater(water - QrystalConfig.material_tier_multiplier);
         }
     }
     
@@ -304,7 +299,7 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
                     material = mat;
                 if(stack.getItem() instanceof CrystalDust) {
                     CrystalDust dust = (CrystalDust)stack.getItem();
-                    amt += dust.size * stack.getCount();
+                    amt += PROCESS_MULTIPLIER * dust.size * stack.getCount() * QrystalConfig.material_tier_multiplier;
                 } else if(stack.getItem() instanceof Crystal) {
                     seeds += stack.getCount();
                 } else {
@@ -382,8 +377,9 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
     
     public ItemStack[] removeWasteAsDust() {
         markDirty();
-        int temp = waste;
+        int temp = (waste + amt) / PROCESS_MULTIPLIER / QrystalConfig.material_tier_multiplier;
         waste = 0;
+        amt = 0;
         return RecipeUtil.getResult(RecipeUtil.getDustRecipe(temp, material, 3, true, 7), world.rand).toArray(new ItemStack[0]);
     }
     
@@ -423,17 +419,17 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
     
     public void crystallize() {
         markDirty();
-        Pair<Pair<Integer, Integer>, ArrayList<ItemStack>> c = RecipeUtil.crystallize(material, seeds, crystallize, 0, removeItems());
+        Pair<Pair<Integer, Integer>, ArrayList<ItemStack>> c = RecipeUtil.crystallize(material, seeds, crystallize / PROCESS_MULTIPLIER, 0, removeItems());
         seeds = c.getKey().getKey();
-        waste += c.getKey().getValue();
+        waste += c.getKey().getValue() * PROCESS_MULTIPLIER;
         for(int i = 0; i < c.getValue().size(); i++) {
             if(i + 1 >= getSizeInventory()) {
-                Main.LOGGER.error("Dryer has run out of inventory space.");
+                Main.LOGGER.error("Evaporating Bowl has run out of inventory space. HOW???");
                 break;
             }
             setInventorySlotContents(i + 1, c.getValue().get(i));
         }
-        crystallize = 0;
+        crystallize -= (crystallize / PROCESS_MULTIPLIER) * PROCESS_MULTIPLIER;
         world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 2);
     }
     

@@ -7,7 +7,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.MathHelper;
 
 import javax.annotation.Nonnull;
 
@@ -16,7 +15,7 @@ public class PoweredEvaporatorTileEntity extends EvaporatorTileEntity implements
     private byte powered;
     
     public PoweredEvaporatorTileEntity() {
-        super(ModTileEntityTypes.POWERED_EVAPORATOR, (short)8, (byte)2, 14, ModBlocks.POWERED_EVAPORATOR);
+        super(ModTileEntityTypes.POWERED_EVAPORATOR, (short)8, (byte)2, ModBlocks.POWERED_EVAPORATOR);
     }
     
     @Nonnull
@@ -25,18 +24,6 @@ public class PoweredEvaporatorTileEntity extends EvaporatorTileEntity implements
         return new EvaporatorContainer(windowId, inventory, this);
     }
     
-    @Override
-    public int tickTemperature(int move) {
-        if(material.isEmpty() || powered < 2)
-            return move;
-        
-        tempTarget = materialTemp;
-        int shift = (tempTarget - temperature) - (tempTarget - temperature) * 79 / 80;
-        boolean opposing = move != 0 && MathHelper.signum(move) != MathHelper.signum(shift);
-        if(opposing)
-            return shift;
-        return move + shift;
-    }
     
     @Override
     public byte getPower() {

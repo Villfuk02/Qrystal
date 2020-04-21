@@ -3,7 +3,6 @@ package com.villfuk02.qrystal.dataserializers;
 import com.google.gson.*;
 import com.villfuk02.qrystal.Main;
 import com.villfuk02.qrystal.util.CrystalUtil;
-import com.villfuk02.qrystal.util.JSONUtil;
 import com.villfuk02.qrystal.util.MaterialInfo;
 import com.villfuk02.qrystal.util.RecipeUtil;
 import javafx.util.Pair;
@@ -25,7 +24,7 @@ public class MaterialManager extends JsonReloadListener {
     
     public static List<String> material_names = new ArrayList<>();
     public static Map<String, MaterialInfo> materials = new HashMap<>();
-    public static Map<ResourceLocation, MaterialInfo.Crushable> crushable = new HashMap<>();
+    public static Map<ResourceLocation, MaterialInfo.Unit> dissolvable = new HashMap<>();
     
     /*
             this.name = name;                    //Material ID
@@ -34,7 +33,6 @@ public class MaterialManager extends JsonReloadListener {
             this.replaceIO = replaceIO;          //Replace crushable and outputs?
             this.IOPriority = IOPriority;        //If replace = true, the version with higher priority is kept
             this.locale = locale;                //Localisation string for the material name display
-            this.temp = temp;                    //Temperature, keep it in range from -1000 to 2000, 0 is ambient, 1000 is lava, -100 is ice
             this.seed = seed;                    //Which material seed is used to grow this material, only accepts qrystal materials, "qlear" = none
             this.primaryColor = primaryColor;    //Primary color eg. "3EF20C"
             this.secondaryColor = secondaryColor;//Secondary color eg. "3EF20C"
@@ -75,26 +73,23 @@ public class MaterialManager extends JsonReloadListener {
         int dataPriority = JSONUtils.getInt(json, "priority_data", 0);
         int IOPriority = JSONUtils.getInt(json, "priority_IO", 0);
         String lang = JSONUtils.getString(json, "locale", name);
-        int temp = JSONUtils.getInt(json, "temp", 0);
         String seed = JSONUtils.getString(json, "seed", "qlear");
         String primaryColor = JSONUtils.getString(json, "color_primary", "FF00FF");
         String secondaryColor = JSONUtils.getString(json, "color_secondary", "000000");
-        MaterialInfo.Crushable[] crushables;
-        if(json.has("crushable")) {
-            JsonArray inputArray = JSONUtils.getJsonArray(json, "crushable");
-            crushables = StreamSupport.stream(inputArray.spliterator(), false)
-                    .map(e -> new MaterialInfo.Crushable(JSONUtils.getString(e.getAsJsonObject(), "item", ""), JSONUtil.getLong(e.getAsJsonObject(), "min", 0),
-                                                         JSONUtil.getLong(e.getAsJsonObject(), "max", 0)))
-                    .toArray(MaterialInfo.Crushable[]::new);
+        MaterialInfo.Unit[] inputs;
+        if(json.has("dissolvable")) {
+            JsonArray inputArray = JSONUtils.getJsonArray(json, "dissolvable");
+            inputs = StreamSupport.stream(inputArray.spliterator(), false)
+                    .map(e -> new MaterialInfo.Unit(JSONUtils.getString(e.getAsJsonObject(), "item", ""), JSONUtils.getInt(e.getAsJsonObject(), "value", 0)))
+                    .toArray(MaterialInfo.Unit[]::new);
         } else {
-            crushables = new MaterialInfo.Crushable[0];
+            inputs = new MaterialInfo.Unit[0];
         }
-        Pair<ResourceLocation, Long>[] outputs;
+        Pair<ResourceLocation, Integer>[] outputs;
         if(json.has("outputs")) {
             JsonArray outputArray = JSONUtils.getJsonArray(json, "outputs");
-            List<Pair<ResourceLocation, Long>> o = StreamSupport.stream(outputArray.spliterator(), false)
-                    .map(e -> new javafx.util.Pair<>(new ResourceLocation(JSONUtils.getString(e.getAsJsonObject(), "item", "")),
-                                                     JSONUtil.getLong(e.getAsJsonObject(), "value", 207360)))
+            List<Pair<ResourceLocation, Integer>> o = StreamSupport.stream(outputArray.spliterator(), false)
+                    .map(e -> new javafx.util.Pair<>(new ResourceLocation(JSONUtils.getString(e.getAsJsonObject(), "item", "")), JSONUtils.getInt(e.getAsJsonObject(), "value", 36)))
                     .collect(Collectors.toList());
             outputs = o.toArray(new Pair[0]);
         } else {
@@ -114,8 +109,6 @@ public class MaterialManager extends JsonReloadListener {
                     m.dataPriority = dataPriority;
                     if(!lang.isEmpty())
                         m.lang = lang;
-                    if(temp >= -1000 && temp <= 2000)
-                        m.temp = temp;
                     if(!seed.isEmpty() && RecipeUtil.isQrystalMaterial(seed, true))
                         m.seed = CrystalUtil.Color.valueOf(seed);
                     if(!primaryColor.isEmpty() && !secondaryColor.isEmpty())
@@ -126,9 +119,9 @@ public class MaterialManager extends JsonReloadListener {
                 if(IOPriority > m.IOPriority) {
                     m.IOPriority = IOPriority;
                     m.outputs = new HashMap<>();
-                    for(ResourceLocation rl : crushable.keySet()) {
-                        if(crushable.get(rl).material.equals(name))
-                            crushable.remove(rl);
+                    for(ResourceLocation rl : dissolvable.keySet()) {
+                        if(dissolvable.get(rl).material.equals(name))
+                            dissolvable.remove(rl);
                     }
                 }
             }
@@ -137,18 +130,17 @@ public class MaterialManager extends JsonReloadListener {
             m = new MaterialInfo(name, lang);
             materials.put(name, m);
             m.dataPriority = dataPriority;
-            m.temp = temp;
             m.seed = CrystalUtil.Color.fromString(seed);
             m.color = new javafx.util.Pair<>(Integer.parseInt(primaryColor, 16), Integer.parseInt(secondaryColor, 16));
         }
         
         if(m.outputs == null)
             m.outputs = new HashMap<>();
-        for(Pair<ResourceLocation, Long> output : outputs) {
+        for(Pair<ResourceLocation, Integer> output : outputs) {
             m.outputs.putIfAbsent(output.getKey(), output.getValue());
         }
-        for(MaterialInfo.Crushable value : crushables) {
-            crushable.putIfAbsent(new ResourceLocation(value.material), new MaterialInfo.Crushable(name, value.min, value.max));
+        for(MaterialInfo.Unit value : inputs) {
+            dissolvable.putIfAbsent(new ResourceLocation(value.material), new MaterialInfo.Unit(name, value.value));
         }
     }
 }

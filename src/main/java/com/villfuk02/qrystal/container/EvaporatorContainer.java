@@ -45,19 +45,7 @@ public class EvaporatorContainer extends Container {
         trackInt(new FunctionalIntReferenceHolder(() -> tileEntity.time, v -> tileEntity.time = (short)v));
         trackInt(new FunctionalIntReferenceHolder(() -> tileEntity.fluidAmount, v -> tileEntity.fluidAmount = v));
         trackInt(new FunctionalIntReferenceHolder(() -> tileEntity.materialAmount, v -> tileEntity.materialAmount = v));
-        if(tileEntity instanceof BurnerEvaporatorTileEntity) {
-            trackInt(new FunctionalIntReferenceHolder(() -> ((BurnerEvaporatorTileEntity)tileEntity).heatLeft, v -> ((BurnerEvaporatorTileEntity)tileEntity).heatLeft = v));
-            trackInt(new FunctionalIntReferenceHolder(() -> ((BurnerEvaporatorTileEntity)tileEntity).heatTotal, v -> ((BurnerEvaporatorTileEntity)tileEntity).heatTotal = v));
-            trackInt(new FunctionalIntReferenceHolder(() -> ((BurnerEvaporatorTileEntity)tileEntity).tempTarget, v -> ((BurnerEvaporatorTileEntity)tileEntity).tempTarget = v));
-            trackInt(new FunctionalIntReferenceHolder(() -> ((BurnerEvaporatorTileEntity)tileEntity).temperature, v -> ((BurnerEvaporatorTileEntity)tileEntity).temperature = v));
-            trackInt(new FunctionalIntReferenceHolder(() -> ((BurnerEvaporatorTileEntity)tileEntity).materialTemp, v -> ((BurnerEvaporatorTileEntity)tileEntity).materialTemp = v));
-        } else if(tileEntity instanceof BasicEvaporatorTileEntity) {
-            trackInt(new FunctionalIntReferenceHolder(() -> ((BasicEvaporatorTileEntity)tileEntity).heatLeft, v -> ((BasicEvaporatorTileEntity)tileEntity).heatLeft = v));
-            trackInt(new FunctionalIntReferenceHolder(() -> ((BasicEvaporatorTileEntity)tileEntity).heatTotal, v -> ((BasicEvaporatorTileEntity)tileEntity).heatTotal = v));
-            trackInt(new FunctionalIntReferenceHolder(() -> ((BasicEvaporatorTileEntity)tileEntity).tempTarget, v -> ((BasicEvaporatorTileEntity)tileEntity).tempTarget = v));
-            trackInt(new FunctionalIntReferenceHolder(() -> ((BasicEvaporatorTileEntity)tileEntity).temperature, v -> ((BasicEvaporatorTileEntity)tileEntity).temperature = v));
-            trackInt(new FunctionalIntReferenceHolder(() -> ((BasicEvaporatorTileEntity)tileEntity).materialTemp, v -> ((BasicEvaporatorTileEntity)tileEntity).materialTemp = v));
-        }
+        
         
         // Add all the slots for the tileEntity's inventory and the playerInventory to this container
         
@@ -70,8 +58,6 @@ public class EvaporatorContainer extends Container {
             addSlot(new SlotItemHandler(tileEntity.inventory, 4 + i, 75 + 18 * i, 17));
             addSlot(new SlotItemHandler(tileEntity.inventory, 9 + i, 75 + 18 * i, 103));
         }
-        if(burner)
-            addSlot(new SlotItemHandler(tileEntity.inventory, 14, 27, 107));
         
         
         final int playerInventoryStartX = 8;

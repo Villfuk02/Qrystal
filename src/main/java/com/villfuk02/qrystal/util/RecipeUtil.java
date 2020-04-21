@@ -23,7 +23,7 @@ import java.util.*;
 
 public class RecipeUtil {
     
-    public static final int SMALL_VALUE = 207360;
+    public static final int BASE_VALUE = 36;
     
     public enum CuttingType {HAMMER, SAW, LASER}
     
@@ -56,10 +56,10 @@ public class RecipeUtil {
     
     public static boolean doesCut(ItemStack input, World world, boolean combineDust) {
         if(combineDust && input.getItem() instanceof CrystalDust && input.hasTag() && input.getTag().contains("material")) {
-            long value = ((CrystalDust)input.getItem()).size * input.getCount();
-            if(value == ModItems.dust_sizes[0] * 64)
+            int value = ((CrystalDust)input.getItem()).size * input.getCount();
+            if(value == ModItems.DUST_SIZES[0] * 64)
                 return true;
-            for(long l : ModItems.dust_sizes) {
+            for(int l : ModItems.DUST_SIZES) {
                 if(l <= value) {
                     return l != ((CrystalDust)input.getItem()).size;
                 }
@@ -80,11 +80,6 @@ public class RecipeUtil {
             }
         }
         
-        for(ResourceLocation rl : MaterialManager.crushable.keySet()) {
-            if(ForgeRegistries.ITEMS.getValue(rl) == input.getItem()) {
-                return true;
-            }
-        }
         Optional<CustomCuttingRecipe> recipe = world.getRecipeManager().getRecipe(CustomCuttingRecipe.CustomCuttingRecipeType.CUTTING, FakeInventory(input), world);
         if(recipe.isPresent()) {
             return true;
@@ -106,33 +101,6 @@ public class RecipeUtil {
             return r;
         }
         
-        for(ResourceLocation rl : MaterialManager.crushable.keySet()) {
-            if(ForgeRegistries.ITEMS.getValue(rl) == input.getItem()) {
-                MaterialInfo.Crushable c = MaterialManager.crushable.get(rl);
-                double value = c.min * input.getCount();
-                value = value * QrystalConfig.material_tier_multiplier * QrystalConfig.material_dust_multiplier;
-                ArrayList<Pair<ItemStack, Float>> r = getDustRecipe((long)value, c.material, 2, true, Math.min(input.getCount(), 7));
-                value = (c.max - c.min) * input.getCount();
-                value = value * QrystalConfig.material_tier_multiplier * QrystalConfig.material_dust_multiplier;
-                ArrayList<Pair<ItemStack, Float>> temp = getDustRecipe((long)value, c.material, 2, true, Math.min(1 + input.getCount(), 7));
-                for(Pair<ItemStack, Float> p : temp) {
-                    float v = p.getValue();
-                    if(v > 1f) {
-                        ItemStack stack = p.getKey();
-                        stack.setCount((int)v);
-                        r.add(new Pair<>(stack, 0.5f));
-                        v -= (int)v;
-                    }
-                    if(v > 0f) {
-                        ItemStack stack = p.getKey();
-                        stack.setCount(1);
-                        r.add(new Pair<>(p.getKey(), v / 2));
-                    }
-                }
-                return r;
-            }
-        }
-        
         Optional<CustomCuttingRecipe> recipe = world.getRecipeManager().getRecipe(CustomCuttingRecipe.CustomCuttingRecipeType.CUTTING, FakeInventory(input), world);
         if(recipe.isPresent()) {
             return getCustomCuttingRecipe(cuttingType, input, recipe.get());
@@ -148,55 +116,60 @@ public class RecipeUtil {
                 case SEED:
                     return result;
                 case SMALL:
-                    if(input.tier == 0)
-                        result.add(new Pair<>(getStackWithMatTag(ModItems.DUSTS.get("dust_207360"), mat), 1f));
-                    else
-                        result.add(new Pair<>(getStackWithMatTag(getCrystal(input.tier, CrystalUtil.Size.SEED), mat), (float)seedAmt(cuttingType, tier)));
+                    if(input.tier == 0) {
+                        if(QrystalConfig.material_tier_multiplier == 2)
+                            result.add(new Pair<>(getStackWithMatTag(ModItems.DUSTS.get("dust_6"), mat), 3f));
+                        else if(QrystalConfig.material_tier_multiplier == 3)
+                            result.add(new Pair<>(getStackWithMatTag(ModItems.DUSTS.get("dust_6"), mat), 2f));
+                        else
+                            result.add(new Pair<>(getStackWithMatTag(ModItems.DUSTS.get("dust_1"), mat), 36 / (float)QrystalConfig.material_tier_multiplier));
+                    } else {
+                        result.add(new Pair<>(getStackWithMatTag(getCrystal(input.tier, CrystalUtil.Size.SEED), mat), (float)seedAmt(cuttingType)));
+                    }
                     return result;
                 case MEDIUM:
-                    result.add(new Pair<>(getStackWithMatTag(getCrystal(input.tier, CrystalUtil.Size.SMALL), mat), (float)QrystalConfig.material_tier_multiplier));
+                    result.add(new Pair<>(getStackWithMatTag(getCrystal(input.tier, CrystalUtil.Size.SMALL), mat), (float)(QrystalConfig.material_tier_multiplier * QrystalConfig.qrystal_yield_multiplier)));
                     if(input.tier > 0)
-                        result.add(new Pair<>(getStackWithMatTag(getCrystal(input.tier, CrystalUtil.Size.SEED), mat), seedAmt(cuttingType, tier) * 0.04f));
-                    if(input.tier < 15)
-                        result.add(new Pair<>(getStackWithMatTag(getCrystal(input.tier + 1, CrystalUtil.Size.SEED), mat), higherSeedChance(cuttingType, tier, input.tier)));
+                        result.add(new Pair<>(getStackWithMatTag(getCrystal(input.tier, CrystalUtil.Size.SEED), mat), seedAmt(cuttingType) * 0.05f));
                     return result;
                 
                 case LARGE:
-                    
-                    result.add(new Pair<>(getStackWithMatTag(getCrystal(input.tier, CrystalUtil.Size.SEED), mat), seedAmt(cuttingType, tier) * 0.0625f));
-                    float amt = (float)(getMediumAmt(cuttingType, tier) * Math.pow(QrystalConfig.large_tier_multiplier, input.tier) * QrystalConfig.large_base_multiplier);
-                    result.add(new Pair<>(getStackWithMatTag(getCrystal(input.tier, CrystalUtil.Size.MEDIUM), mat), amt));
-                    
-                    amt = (QrystalConfig.material_tier_multiplier - getMediumAmt(cuttingType, tier)) * QrystalConfig.material_tier_multiplier;
-                    if(amt > 0)
-                        result.add(new Pair<>(getStackWithMatTag(getCrystal(input.tier, CrystalUtil.Size.SMALL), mat), amt));
+                    result.add(new Pair<>(getStackWithMatTag(getCrystal(input.tier, CrystalUtil.Size.MEDIUM), mat), (float)(QrystalConfig.material_tier_multiplier * QrystalConfig.qrystal_yield_multiplier)));
+                    if(input.tier < 15)
+                        result.add(new Pair<>(getStackWithMatTag(getCrystal(input.tier + 1, CrystalUtil.Size.SEED), mat), higherSeedChance(cuttingType, tier, input.tier)));
                     return result;
             }
         }
-        double value = SMALL_VALUE;
+        double rawValue = BASE_VALUE;
         switch(input.size) {
             case SEED:
                 return result;
             case SMALL:
-                if(input.tier == 0)
-                    result.add(new Pair<>(getStackWithMatTag(ModItems.DUSTS.get("dust_207360"), mat), 1f));
+                if(input.tier == 0) {
+                    if(QrystalConfig.material_tier_multiplier == 2)
+                        result.add(new Pair<>(getStackWithMatTag(ModItems.DUSTS.get("dust_6"), mat), 3f));
+                    else if(QrystalConfig.material_tier_multiplier == 3)
+                        result.add(new Pair<>(getStackWithMatTag(ModItems.DUSTS.get("dust_6"), mat), 2f));
+                    else
+                        result.add(new Pair<>(getStackWithMatTag(ModItems.DUSTS.get("dust_1"), mat), 36 / (float)QrystalConfig.material_tier_multiplier));
+                }
                 return result;
             case MEDIUM:
                 break;
             case LARGE:
-                value *= QrystalConfig.material_tier_multiplier;
+                rawValue *= QrystalConfig.material_tier_multiplier;
                 break;
         }
-        double yieldMulti = 2 * Math.pow(QrystalConfig.yield_tier_multiplier, input.tier) * Math.pow(QrystalConfig.material_tier_multiplier, input.tier);
-        double yield = value * yieldMulti * getYield(cuttingType, tier);
-        Map<ResourceLocation, Long> outputs = MaterialManager.materials.get(mat).outputs;
+        double yieldMulti = QrystalConfig.base_yield_multiplier * Math.pow(QrystalConfig.yield_tier_multiplier, input.tier) * longPositivePower(QrystalConfig.material_tier_multiplier, input.tier);
+        double yield = rawValue * yieldMulti * getYieldRate(cuttingType);
+        Map<ResourceLocation, Integer> outputs = MaterialManager.materials.get(mat).outputs;
         //BIGGEST
-        Pair<ResourceLocation, Long> biggest = getBiggestOutput(outputs, yield);
+        Pair<ResourceLocation, Integer> biggest = getBiggestOutput(outputs, yield);
         if(biggest.getValue() > 0) {
             Pair<ItemStack, Double> output = condenseD(new ItemStack(ForgeRegistries.ITEMS.getValue(biggest.getKey())), mat, yield / biggest.getValue(), 65);
             int amt = output.getKey().getCount();
             yield -= biggest.getValue() * output.getValue();
-            value -= biggest.getValue() * output.getValue() / yieldMulti;
+            rawValue -= biggest.getValue() * output.getValue() / yieldMulti;
             output.getKey().setCount(1);
             result.add(new Pair<>(output.getKey(), (float)amt));
             //2ND BIGGEST
@@ -204,19 +177,33 @@ public class RecipeUtil {
             if(biggest.getValue() > 0) {
                 output = condenseD(new ItemStack(ForgeRegistries.ITEMS.getValue(biggest.getKey())), mat, yield / biggest.getValue(), 65);
                 amt = output.getKey().getCount();
-                value -= biggest.getValue() * output.getValue() / yieldMulti;
+                rawValue -= biggest.getValue() * output.getValue() / yieldMulti;
                 output.getKey().setCount(1);
                 result.add(new Pair<>(output.getKey(), (float)amt));
             }
         }
-        value /= SMALL_VALUE;
-        if(getMediumAmt(cuttingType, tier, value) > 0)
-            result.add(new Pair<>(getStackWithMatTag(getCrystal(input.tier, CrystalUtil.Size.MEDIUM), mat), (float)getMediumAmt(cuttingType, tier, value)));
-        value = (value - getMediumAmt(cuttingType, tier, value)) * QrystalConfig.material_tier_multiplier;
-        if(value >= 1)
-            result.add(new Pair<>(getStackWithMatTag(getCrystal(input.tier, CrystalUtil.Size.SMALL), mat), (float)value));
+        rawValue /= BASE_VALUE;
+        if(rawValue > 1)
+            result.add(new Pair<>(getStackWithMatTag(getCrystal(input.tier, CrystalUtil.Size.MEDIUM), mat), (float)(int)rawValue));
+        rawValue -= (int)rawValue;
+        rawValue *= QrystalConfig.material_tier_multiplier;
+        if(rawValue > 0)
+            result.add(new Pair<>(getStackWithMatTag(getCrystal(input.tier, CrystalUtil.Size.SMALL), mat), (float)rawValue));
         return result;
         
+    }
+    
+    private static long longPositivePower(int base, int power) {
+        long res = 1;
+        while(true) {
+            if((power & 1) == 1)
+                res *= base;
+            power >>>= 1;
+            if(power == 0)
+                break;
+            base *= base;
+        }
+        return res;
     }
     
     public static ArrayList<Pair<ItemStack, Float>> getDustRecipe(long value, String mat, int stacks, boolean condense, int overshot) {
@@ -225,7 +212,7 @@ public class RecipeUtil {
         for(int i = 0; i < stacks; i++) {
             if(value <= 0)
                 break;
-            for(long l : ModItems.dust_sizes) {
+            for(int l : ModItems.DUST_SIZES) {
                 if(l == 1 || l * overshot <= value) {
                     long amt = value / l;
                     if(amt >= 64 && condense) {
@@ -252,7 +239,7 @@ public class RecipeUtil {
         ArrayList<Pair<ItemStack, Float>> result = new ArrayList<>();
         for(CustomCuttingRecipe.RecipeOutput o : recipe.getOutputs()) {
             if(cuttingType == CuttingType.HAMMER && o.hammer || cuttingType == CuttingType.SAW && o.saw || cuttingType == CuttingType.LASER && o.laser) {
-                result.add(new Pair(new ItemStack(o.item, input.getCount()), o.amt));
+                result.add(new Pair(getStackWithMatTag(o.item, input.getCount(), o.material), o.amt));
             }
         }
         return result;
@@ -272,63 +259,48 @@ public class RecipeUtil {
         return (Crystal)ModItems.CRYSTALS.get(size.toString() + "_" + tier);
     }
     
-    public static int seedAmt(CuttingType cuttingType, int tier) {
+    public static int seedAmt(CuttingType cuttingType) {
         switch(cuttingType) {
             case HAMMER:
                 return 8;
             case SAW:
-                return tier == 0 ? 10 : 12;
+                return 10;
             case LASER:
-                return 16;
+                return 12;
         }
         return 0;
     }
     
     public static float higherSeedChance(CuttingType cuttingType, int cuttingTier, int crystalTier) {
-        float chance = 0.025f;
-        if(cuttingType == CuttingType.SAW)
-            chance *= 3 + cuttingTier;
-        else if(cuttingType == CuttingType.LASER) {
-            chance *= 6 * Math.pow(1.2, cuttingTier);
-        }
-        if(crystalTier == 0)
-            return chance * 2;
-        for(int i = 0; i < crystalTier; i++) {
-            chance *= 0.8f;
-        }
-        return Math.min(chance, 1f);
-    }
-    
-    public static int getMediumAmt(CuttingType cuttingType, int tier, double amt) {
+        double convertedTier = crystalTier;
         switch(cuttingType) {
             case HAMMER:
-                return (int)(2 * amt / 3);
+                convertedTier -= 2;
+                break;
             case SAW:
-                return (int)((7 + tier) * amt / 9);
+                convertedTier -= 4;
+                break;
             case LASER:
-                return (int)amt;
+                convertedTier -= 6 + cuttingTier;
+                break;
         }
-        return 0;
+        return (float)Math.min(QrystalConfig.base_seed_chance * Math.pow(0.4, convertedTier), 1);
     }
     
-    public static int getMediumAmt(CuttingType cuttingType, int tier) {
-        return getMediumAmt(cuttingType, tier, QrystalConfig.material_tier_multiplier);
-    }
-    
-    public static double getYield(CuttingType cuttingType, int tier) {
+    public static double getYieldRate(CuttingType cuttingType) {
         switch(cuttingType) {
             case HAMMER:
                 return 0.4;
             case SAW:
-                return (6 + tier) * 0.1;
+                return 0.6;
             case LASER:
                 return 0.8;
         }
         return 0;
     }
     
-    public static Pair<ResourceLocation, Long> getBiggestOutput(Map<ResourceLocation, Long> sources, double max) {
-        Pair<ResourceLocation, Long> result = new Pair<>(new ResourceLocation(""), 0L);
+    public static Pair<ResourceLocation, Integer> getBiggestOutput(Map<ResourceLocation, Integer> sources, double max) {
+        Pair<ResourceLocation, Integer> result = new Pair<>(new ResourceLocation(""), 0);
         for(ResourceLocation k : sources.keySet()) {
             if(sources.get(k) > result.getValue() && sources.get(k) <= max) {
                 result = new Pair<>(k, sources.get(k));
@@ -355,7 +327,8 @@ public class RecipeUtil {
     
     public static ItemStack getStackWithMatTag(IItemProvider item, int count, String mat) {
         CompoundNBT tag = new CompoundNBT();
-        tag.putString("material", mat);
+        if(!mat.isEmpty())
+            tag.putString("material", mat);
         return getStackWithTag(item, count, tag);
     }
     
@@ -497,27 +470,27 @@ public class RecipeUtil {
         int large = separated.getKey()[2];
         int next = separated.getKey()[3];
         ArrayList<ItemStack> result = separated.getValue();
-        if(seeds > 0 && value > SMALL_VALUE * QrystalConfig.material_tier_multiplier) {
-            int amt = Math.min(seeds, value / (SMALL_VALUE * QrystalConfig.material_tier_multiplier));
-            value -= amt * SMALL_VALUE * QrystalConfig.material_tier_multiplier;
+        if(seeds > 0 && value > BASE_VALUE * QrystalConfig.material_tier_multiplier) {
+            int amt = Math.min(seeds, value / (BASE_VALUE * QrystalConfig.material_tier_multiplier));
+            value -= amt * BASE_VALUE * QrystalConfig.material_tier_multiplier;
             seeds -= amt;
             next += amt;
         }
-        if(medium > 0 && value > SMALL_VALUE * QrystalConfig.material_tier_multiplier * (QrystalConfig.material_tier_multiplier - 1)) {
-            int amt = Math.min(medium, value / (SMALL_VALUE * QrystalConfig.material_tier_multiplier * (QrystalConfig.material_tier_multiplier - 1)));
-            value -= amt * SMALL_VALUE * QrystalConfig.material_tier_multiplier * (QrystalConfig.material_tier_multiplier - 1);
+        if(value > BASE_VALUE * QrystalConfig.material_tier_multiplier * QrystalConfig.material_tier_multiplier) {
+            int amt = value / (BASE_VALUE * QrystalConfig.material_tier_multiplier * QrystalConfig.material_tier_multiplier);
+            value -= amt * BASE_VALUE * QrystalConfig.material_tier_multiplier * QrystalConfig.material_tier_multiplier;
             medium -= amt;
             large += amt;
         }
-        if(small > 0 && value > SMALL_VALUE * (QrystalConfig.material_tier_multiplier - 1)) {
-            int amt = Math.min(small, value / (SMALL_VALUE * (QrystalConfig.material_tier_multiplier - 1)));
-            value -= amt * SMALL_VALUE * (QrystalConfig.material_tier_multiplier - 1);
+        if(value > BASE_VALUE * QrystalConfig.material_tier_multiplier) {
+            int amt = value / (BASE_VALUE * QrystalConfig.material_tier_multiplier);
+            value -= amt * BASE_VALUE * QrystalConfig.material_tier_multiplier;
             small -= amt;
             medium += amt;
         }
-        if(value > SMALL_VALUE) {
-            int amt = value / SMALL_VALUE;
-            value -= amt * SMALL_VALUE;
+        if(value > BASE_VALUE) {
+            int amt = value / BASE_VALUE;
+            value -= amt * BASE_VALUE;
             small += amt;
         }
         result.addAll(getResult(createCrystals(mat, tier, small, medium, large, next), null));
@@ -608,8 +581,8 @@ public class RecipeUtil {
                 }
             }
             if(mat.isEmpty()) {
-                if(MaterialManager.crushable.containsKey(item.getItem().getRegistryName()))
-                    mat = MaterialManager.crushable.get(item.getItem().getRegistryName()).material;
+                if(MaterialManager.dissolvable.containsKey(item.getItem().getRegistryName()))
+                    mat = MaterialManager.dissolvable.get(item.getItem().getRegistryName()).material;
             }
         }
         return mat;

@@ -6,7 +6,7 @@
   "fluid2Amt": 125,
   "result": "qrystal:aqua_regia",
   "resultAmt": 125,
-  "in1": "qrystal:dust_4320",
+  "in1": "qrystal:dust_1",
   "nbt1": "{material:gold}",
   "time": 600
 }

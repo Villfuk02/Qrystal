@@ -35,6 +35,7 @@ public class CustomCuttingRecipe implements IRecipe<IInventory> {
         public boolean laser;
         public float amt;
         public Item item;
+        public String material;
     }
     
     public CustomCuttingRecipe(ResourceLocation id, ResourceLocation[] inputs, ResourceLocation[] tags, int time, RecipeOutput[] outputs) {
@@ -159,6 +160,7 @@ public class CustomCuttingRecipe implements IRecipe<IInventory> {
                 
                 out.amt = JSONUtils.getFloat(o, "count", 1);
                 out.item = JSONUtils.getItem(o, "item");
+                out.material = JSONUtils.getString(o, "material", "");
                 outs.add(out);
             }
             return new CustomCuttingRecipe(recipeID, ins, tags, time, outs.toArray(new RecipeOutput[0]));

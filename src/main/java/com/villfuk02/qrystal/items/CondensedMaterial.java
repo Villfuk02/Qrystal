@@ -1,5 +1,9 @@
 package com.villfuk02.qrystal.items;
 
+import com.villfuk02.qrystal.Main;
+import com.villfuk02.qrystal.init.ModItems;
+import com.villfuk02.qrystal.util.handlers.ISTERHandler;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
@@ -8,10 +12,14 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class CondensedMaterial extends ItemBase {
+import static com.villfuk02.qrystal.Main.MOD_ITEM_GROUP;
+
+public class CondensedMaterial extends Item {
     
     public CondensedMaterial() {
-        super("condensed_material");
+        super(new Item.Properties().group(MOD_ITEM_GROUP).setISTER(ISTERHandler::condensedMaterial));
+        setRegistryName(Main.MODID, "condensed_material");
+        ModItems.ITEMS.add(this);
     }
     
     @Override

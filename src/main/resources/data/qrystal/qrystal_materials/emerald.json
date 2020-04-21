@@ -1,25 +1,17 @@
 {
   "name": "emerald",
   "locale": "item.minecraft.emerald",
-  "temp": 700,
   "seed": "qitae",
   "color_primary": "17DD77",
   "color_secondary": "80FFD4",
-  "crushable": [
-    {
-      "item": "minecraft:emerald_ore",
-      "min": 155520,
-      "max": 259200
-    }
-  ],
   "outputs": [
     {
       "item": "minecraft:emerald",
-      "value": 207360
+      "value": 36
     },
     {
       "item": "minecraft:emerald_block",
-      "value": 1866240
+      "value": 324
     }
   ]
 }

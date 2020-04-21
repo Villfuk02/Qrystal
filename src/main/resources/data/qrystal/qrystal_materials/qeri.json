@@ -1,7 +1,6 @@
 {
   "name": "qeri",
   "locale": "qrystal.mat.qeri",
-  "temp": 100,
   "seed": "qeri",
   "color_primary": "FFFF55",
   "color_secondary": "FFFFAA"

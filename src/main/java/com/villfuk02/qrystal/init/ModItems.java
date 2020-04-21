@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ModItems {
-    public static final long[] dust_sizes = new long[]{59719680, 7464960, 1244160, 207360, 34560, 4320, 540, 60, 10, 5, 1};
+    public static final int[] DUST_SIZES = new int[]{1296, 216, 36, 6, 1};
     
     public static final List<Item> ITEMS = new ArrayList<>();
     public static final Map<Integer, Item> FILLED_FLASKS = new HashMap<>();
@@ -38,7 +38,6 @@ public class ModItems {
     public static final Item FILLED_FLASK_250 = new FilledFlask(250);
     public static final Item FILLED_FLASK_125 = new FilledFlask(125);
     public static final Item FILLED_FLASK_25 = new FilledFlask(25);
-    public static final Item SURFACE_RENDERER = new ItemBase("surface_renderer");
     public static final Item TUBE = new ItemBase("tube");
     public static final Item FUNNEL = new ItemWithContainer("funnel");
     public static final Item CONDENSER = new ItemBase("condenser");
@@ -70,6 +69,8 @@ public class ModItems {
     public static final Item NANO_MESH = new ItemBase("nano_mesh");
     public static final Item ACTUATOR = new ItemBase("actuator");
     
+    public static final Item SURFACE_RENDERER = new Item(new Item.Properties()).setRegistryName("surface_renderer");
+    public static final Item CONDENSED_MATERIAL_CAGE_RENDERER = new Item(new Item.Properties()).setRegistryName("condensed_material_cage_renderer");
     
     public static void init() {
         for(int i = 0; i < 16; i++) {
@@ -80,8 +81,11 @@ public class ModItems {
                 }
             }
         }
-        for(long l : dust_sizes) {
+        for(int l : DUST_SIZES) {
             DUSTS.put("dust_" + l, new CrystalDust(l));
         }
+        
+        ITEMS.add(SURFACE_RENDERER);
+        ITEMS.add(CONDENSED_MATERIAL_CAGE_RENDERER);
     }
 }

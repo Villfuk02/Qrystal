@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "item": "qrystal:dust_7464960",
+      "item": "qrystal:dust_1296",
       "type": "forge:nbt",
       "count": 1,
       "nbt": "{material:qeri}"
     },
     {
-      "item": "qrystal:dust_7464960",
+      "item": "qrystal:dust_1296",
       "type": "forge:nbt",
       "count": 1,
       "nbt": "{material:qawa}"
@@ -21,7 +21,7 @@
     }
   ],
   "result": {
-    "item": "qrystal:dust_7464960",
+    "item": "qrystal:dust_1296",
     "type": "forge:nbt",
     "count": 1,
     "nbt": "{material:qitae}"

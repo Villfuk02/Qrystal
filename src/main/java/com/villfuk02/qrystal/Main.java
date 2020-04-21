@@ -2,13 +2,13 @@ package com.villfuk02.qrystal;
 
 import com.villfuk02.qrystal.crafting.*;
 import com.villfuk02.qrystal.dataserializers.FluidTierManager;
-import com.villfuk02.qrystal.dataserializers.HeatRegulatorManager;
 import com.villfuk02.qrystal.dataserializers.MaterialManager;
 import com.villfuk02.qrystal.gui.CutterScreen;
 import com.villfuk02.qrystal.gui.EvaporatorScreen;
 import com.villfuk02.qrystal.gui.FluidMixerScreen;
 import com.villfuk02.qrystal.init.*;
 import com.villfuk02.qrystal.tileentity.*;
+import com.villfuk02.qrystal.util.handlers.CondensedMaterialColorHandler;
 import com.villfuk02.qrystal.util.handlers.CrystalColorHandler;
 import com.villfuk02.qrystal.util.handlers.FilledFlaskColorHandler;
 import com.villfuk02.qrystal.util.handlers.SurfaceColorHandler;
@@ -96,14 +96,14 @@ public class Main {
         for(Item i : ModItems.CRYSTALS.values()) {
             Minecraft.getInstance().getItemColors().register(new CrystalColorHandler(), i);
         }
-        Minecraft.getInstance().getItemColors().register(new CrystalColorHandler(), ModItems.CONDENSED_MATERIAL);
         for(Item i : ModItems.DUSTS.values()) {
             Minecraft.getInstance().getItemColors().register(new CrystalColorHandler(), i);
         }
-        Minecraft.getInstance().getItemColors().register(new SurfaceColorHandler(), ModItems.SURFACE_RENDERER);
         for(Item i : ModItems.FILLED_FLASKS.values()) {
             Minecraft.getInstance().getItemColors().register(new FilledFlaskColorHandler(), i);
         }
+        Minecraft.getInstance().getItemColors().register(new SurfaceColorHandler(), ModItems.SURFACE_RENDERER);
+        Minecraft.getInstance().getItemColors().register(new CondensedMaterialColorHandler(), ModItems.CONDENSED_MATERIAL_CAGE_RENDERER);
         
         ClientRegistry.bindTileEntityRenderer(ModTileEntityTypes.DRYER, DryerTileEntityRenderer::new);
         ClientRegistry.bindTileEntityRenderer(ModTileEntityTypes.STEEL_CUTTER, CutterTileEntityRenderer::new);
@@ -144,7 +144,6 @@ public class Main {
     public static void onServerAboutToStart(FMLServerAboutToStartEvent event) {
         if(!addedServerListeners) {
             event.getServer().getResourceManager().addReloadListener(new MaterialManager());
-            event.getServer().getResourceManager().addReloadListener(new HeatRegulatorManager());
             event.getServer().getResourceManager().addReloadListener(new FluidTierManager());
             addedServerListeners = true;
         }

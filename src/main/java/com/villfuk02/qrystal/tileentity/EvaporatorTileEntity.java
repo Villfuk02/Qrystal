@@ -3,7 +3,6 @@ package com.villfuk02.qrystal.tileentity;
 import com.villfuk02.qrystal.QrystalConfig;
 import com.villfuk02.qrystal.crafting.FluidMixingRecipe;
 import com.villfuk02.qrystal.dataserializers.FluidTierManager;
-import com.villfuk02.qrystal.dataserializers.HeatRegulatorManager;
 import com.villfuk02.qrystal.dataserializers.MaterialManager;
 import com.villfuk02.qrystal.init.ModItems;
 import com.villfuk02.qrystal.items.Crystal;
@@ -24,7 +23,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
@@ -50,23 +48,20 @@ public abstract class EvaporatorTileEntity extends TileEntity implements INamedC
     public int fluidAmount = 0;
     public String material = "";
     public int materialColor = 0;
-    public int materialTemp = 0;
     public ResourceLocation fluid = new ResourceLocation("");
-    public int temperature = 0;
-    public int tempTarget = 0;
     public int currentBatch = 0;
     public int impurities = 0;
     public boolean reevaluate = true;
     public final byte requiredPower;
     
     
-    public EvaporatorTileEntity(TileEntityType<?> type, short cycle, byte requiredPower, int slots, Block block) {
+    public EvaporatorTileEntity(TileEntityType<?> type, short cycle, byte requiredPower, Block block) {
         super(type);
         this.cycle = cycle;
         this.block = block;
         this.requiredPower = requiredPower;
         
-        inventory = new ItemStackHandler(slots) {
+        inventory = new ItemStackHandler(14) {
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
                 if(stack.isEmpty())
@@ -81,8 +76,6 @@ public abstract class EvaporatorTileEntity extends TileEntity implements INamedC
                         return stack.getItem() instanceof Crystal && ((Crystal)stack.getItem()).size == CrystalUtil.Size.SEED && ((Crystal)stack.getItem()).tier == tier + 1 && materialAmount > 0 &&
                                 stack.hasTag() && stack.getTag().contains("material") && RecipeUtil.isQrystalMaterial(stack.getTag().getString("material"), false) &&
                                 stack.getTag().getString("material").equals(MaterialManager.materials.get(material).seed.toString());
-                    case 14:
-                        return HeatRegulatorManager.heat_regulators.containsKey(stack.getItem().getRegistryName());
                     default:
                         return false;
                 }
@@ -99,7 +92,7 @@ public abstract class EvaporatorTileEntity extends TileEntity implements INamedC
                 markDirty();
             }
         };
-        externalInventory = new ItemStackHandler(slots) {
+        externalInventory = new ItemStackHandler(14) {
             
             @Override
             public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
@@ -175,12 +168,9 @@ public abstract class EvaporatorTileEntity extends TileEntity implements INamedC
         fluidAmount = compound.getInt("fluidAmount");
         material = compound.getString("material");
         fluid = new ResourceLocation(compound.getString("fluid"));
-        temperature = compound.getInt("temperature");
         currentBatch = compound.getInt("currentBatch");
         impurities = compound.getInt("impurities");
         materialColor = compound.getInt("materialColor");
-        materialTemp = compound.getInt("materialTemp");
-        tempTarget = compound.getInt("tempTarget");
     }
     
     @Override
@@ -193,12 +183,9 @@ public abstract class EvaporatorTileEntity extends TileEntity implements INamedC
         compound.putInt("fluidAmount", fluidAmount);
         compound.putString("material", material);
         compound.putString("fluid", fluid.toString());
-        compound.putInt("temperature", temperature);
         compound.putInt("currentBatch", currentBatch);
         compound.putInt("impurities", impurities);
         compound.putInt("materialColor", materialColor);
-        compound.putInt("materialTemp", materialTemp);
-        compound.putInt("tempTarget", tempTarget);
         return compound;
     }
     
@@ -206,7 +193,6 @@ public abstract class EvaporatorTileEntity extends TileEntity implements INamedC
     public void tick() {
         if(isPowered())
             time++;
-        temperature += tickTemperature(temperature * 499 / 500 - temperature);
         if(fluidAmount > 0 && materialAmount > 0) {
             if(time >= cycle) {
                 time = 0;
@@ -214,11 +200,11 @@ public abstract class EvaporatorTileEntity extends TileEntity implements INamedC
                 fluidAmount -= 5;
                 materialAmount -= convert;
                 currentBatch += convert;
-                impurities += (((50 * getTemperatureMultiplier() * convert) / RecipeUtil.SMALL_VALUE) * convert) / RecipeUtil.SMALL_VALUE;
+                //impurities += (((50 * convert) / RecipeUtil.SMALL_VALUE) * convert) / RecipeUtil.SMALL_VALUE;
                 if(!world.isRemote) {
                     if(world.rand.nextInt(300000 * QrystalConfig.material_tier_multiplier * QrystalConfig.material_tier_multiplier) < impurities || fluidAmount <= 0) {
                         reevaluate = false;
-                        crystallizeCurrentBatch();
+                        //crystallizeCurrentBatch();
                         reevaluate = true;
                         reevaluate();
                     }
@@ -241,9 +227,7 @@ public abstract class EvaporatorTileEntity extends TileEntity implements INamedC
     }
     
     abstract boolean isPowered();
-    
-    public abstract int tickTemperature(int move);
-    
+     /*
     private void crystallizeCurrentBatch() {
         int x = inventory.getStackInSlot(2).isEmpty() ? 0 : inventory.getStackInSlot(2).getCount();
         int s = inventory.getStackInSlot(4).isEmpty() ? 0 : inventory.getStackInSlot(4).getCount();
@@ -294,7 +278,7 @@ public abstract class EvaporatorTileEntity extends TileEntity implements INamedC
             inventory.setStackInSlot(8, RecipeUtil.getStackWithMatTag(ModItems.DUSTS.get("dust_" + RecipeUtil.SMALL_VALUE / 6), w, material));
         else
             inventory.setStackInSlot(8, RecipeUtil.getStackWithMatTag(RecipeUtil.getCrystal(tier - 1, CrystalUtil.Size.SMALL), w, material));
-    }
+    }  */
     
     @Override
     public SUpdateTileEntityPacket getUpdatePacket() {
@@ -331,7 +315,7 @@ public abstract class EvaporatorTileEntity extends TileEntity implements INamedC
         if(!inventory.getStackInSlot(0).isEmpty() && fluidAmount > 0) {
             int value = validateAndGetValue(inventory.getStackInSlot(0));
             if(value > 0) {
-                if(materialAmount + value <= RecipeUtil.SMALL_VALUE * fluidAmount) {
+                if(materialAmount + value <= RecipeUtil.BASE_VALUE * fluidAmount) {
                     if(material.isEmpty())
                         material = inventory.getStackInSlot(0).getTag().getString("material");
                     materialAmount += value;
@@ -356,10 +340,6 @@ public abstract class EvaporatorTileEntity extends TileEntity implements INamedC
             }
         }
         materialColor = CrystalColorHandler.getColor(material, 3);
-        if(material.isEmpty())
-            materialTemp = 0;
-        else
-            materialTemp = MaterialManager.materials.get(material).temp;
         markDirty();
     }
     
@@ -377,7 +357,7 @@ public abstract class EvaporatorTileEntity extends TileEntity implements INamedC
             if(tier != 0)
                 return 0;
             CrystalDust d = (CrystalDust)stack.getItem();
-            if(d.size > 500 * RecipeUtil.SMALL_VALUE)
+            if(d.size > 500 * RecipeUtil.BASE_VALUE)
                 return 0;
             return (int)d.size;
         }
@@ -389,11 +369,11 @@ public abstract class EvaporatorTileEntity extends TileEntity implements INamedC
                 case SEED:
                     return 0;
                 case SMALL:
-                    return RecipeUtil.SMALL_VALUE;
+                    return RecipeUtil.BASE_VALUE;
                 case MEDIUM:
-                    return RecipeUtil.SMALL_VALUE * QrystalConfig.material_tier_multiplier;
+                    return RecipeUtil.BASE_VALUE * QrystalConfig.material_tier_multiplier;
                 case LARGE:
-                    return RecipeUtil.SMALL_VALUE * QrystalConfig.material_tier_multiplier * QrystalConfig.material_tier_multiplier;
+                    return RecipeUtil.BASE_VALUE * QrystalConfig.material_tier_multiplier * QrystalConfig.material_tier_multiplier;
             }
         }
         return 0;
@@ -413,13 +393,5 @@ public abstract class EvaporatorTileEntity extends TileEntity implements INamedC
             return inventoryCapabilityExternal.cast();
         }
         return super.getCapability(cap, side);
-    }
-    
-    public long getTemperatureMultiplier() {
-        long tempMulti = MathHelper.abs(temperature - materialTemp);
-        if(tempMulti <= 25)
-            return 100;
-        tempMulti *= 63 - Long.numberOfLeadingZeros(tempMulti);
-        return 2 * tempMulti;
     }
 }

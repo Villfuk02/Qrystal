@@ -2,7 +2,7 @@
   "parent": "item/generated",
   "textures": {
     "layer0": "qrystal:items/empty",
-    "layer1": "qrystal:items/dust_10",
-    "layer2": "qrystal:items/dust_10b"
+    "layer1": "qrystal:items/dust_36",
+    "layer2": "qrystal:items/dust_36b"
   }
 }

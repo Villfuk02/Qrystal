@@ -1,25 +1,17 @@
 {
   "name": "diamond",
   "locale": "item.minecraft.diamond",
-  "temp": 750,
   "seed": "qoid",
   "color_primary": "4AEDD9",
   "color_secondary": "80FFF2",
-  "crushable": [
-    {
-      "item": "minecraft:diamond_ore",
-      "min": 155520,
-      "max": 259200
-    }
-  ],
   "outputs": [
     {
       "item": "minecraft:diamond",
-      "value": 207360
+      "value": 36
     },
     {
       "item": "minecraft:diamond_block",
-      "value": 1866240
+      "value": 324
     }
   ]
 }

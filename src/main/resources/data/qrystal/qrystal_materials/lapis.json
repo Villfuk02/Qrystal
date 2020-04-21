@@ -1,25 +1,17 @@
 {
   "name": "lapis",
   "locale": "item.minecraft.lapis_lazuli",
-  "temp": -250,
   "seed": "qawa",
   "color_primary": "1C53A8",
   "color_secondary": "5A82E2",
-  "crushable": [
-    {
-      "item": "minecraft:lapis_ore",
-      "min": 829440,
-      "max": 1866240
-    }
-  ],
   "outputs": [
     {
       "item": "minecraft:lapis_lazuli",
-      "value": 207360
+      "value": 36
     },
     {
       "item": "minecraft:lapis_block",
-      "value": 1866240
+      "value": 324
     }
   ]
 }

@@ -1,0 +1,40 @@
+{
+  "type": "qrystal:cutting",
+  "input": "minecraft:lapis_ore",
+  "output": [
+    {
+      "types": ["hammer", "saw", "laser"],
+      "item": "qrystal:dust_216",
+      "count": 1,
+      "material": "lapis"
+    },
+    {
+      "types": ["hammer"],
+      "item": "qrystal:dust_36",
+      "count": 0.5,
+      "material": "lapis"
+    },
+    {
+      "types": ["saw"],
+      "item": "qrystal:dust_36",
+      "count": 1.2,
+      "material": "lapis"
+    },
+    {
+      "types": ["laser"],
+      "item": "qrystal:dust_36",
+      "count": 2.2,
+      "material": "lapis"
+    },
+    {
+      "types": ["saw"],
+      "item": "qrystal:stone_pebbles",
+      "count": 0.2
+    },
+    {
+      "types": ["laser"],
+      "item": "qrystal:stone_pebbles",
+      "count": 0.4
+    }
+  ]
+}
