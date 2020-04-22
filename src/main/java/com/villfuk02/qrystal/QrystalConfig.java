@@ -38,6 +38,9 @@ public class QrystalConfig {
     public static double qrystal_yield_multiplier;
     public static double base_seed_chance;
     
+    public static int barrel_base_size;
+    public static int barrel_tier_multiplier;
+    
     public static void rebuild() {
         Pair<Config, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Config::new);
         SPEC = specPair.getRight();
@@ -60,6 +63,9 @@ public class QrystalConfig {
         yield_tier_multiplier = CONFIG.yield_tier_multiplier.get();
         qrystal_yield_multiplier = CONFIG.qrystal_yield_multiplier.get();
         base_seed_chance = CONFIG.base_seed_chance.get();
+        
+        barrel_base_size = CONFIG.barrel_base_size.get();
+        barrel_tier_multiplier = CONFIG.barrel_tier_multiplier.get();
     }
     
     @SubscribeEvent
@@ -91,6 +97,9 @@ public class QrystalConfig {
         public ForgeConfigSpec.DoubleValue qrystal_yield_multiplier;
         public ForgeConfigSpec.DoubleValue base_seed_chance;
         
+        public ForgeConfigSpec.IntValue barrel_base_size;
+        public ForgeConfigSpec.IntValue barrel_tier_multiplier;
+        
         public Config(ForgeConfigSpec.Builder builder) {
             builder.comment(baked ? "" : "WARNING: Global configs are used when loading a world for the first time. For adjusting the config for an existing world, go to the world's serverconfig folder.")
                     .push("Qrystal");
@@ -115,6 +124,13 @@ public class QrystalConfig {
             qrystal_yield_multiplier = builder.comment("How many times more material you get for every tier (multiplicative)")
                     .defineInRange("qrystal_yield_multiplier", baked ? QrystalConfig.qrystal_yield_multiplier : 1.2, 1, 2);
             base_seed_chance = builder.comment("Chance for getting seeds of higher tier from a large crystal").defineInRange("base_seed_chance", baked ? QrystalConfig.base_seed_chance : 0.2, 0, 100);
+            builder.pop();
+            
+            builder.push("Barrels");
+            builder.comment("Please keep in mind, that barrels use longs for all values, so barrels with capacity over 2^63-1 will be broken");
+            barrel_base_size = builder.comment("How many items can the wooden barrel store").defineInRange("barrel_base_size", baked ? QrystalConfig.barrel_base_size : 1024, 64, Integer.MAX_VALUE);
+            barrel_tier_multiplier = builder.comment("How many times more items can a higher level barrel store (multiplicative)")
+                    .defineInRange("barrel_tier_multiplier", baked ? QrystalConfig.barrel_tier_multiplier : 16, 2, 4096);
             builder.pop();
             builder.pop();
         }

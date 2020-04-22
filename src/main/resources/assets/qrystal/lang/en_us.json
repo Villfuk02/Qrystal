@@ -176,5 +176,22 @@
   "qrystal.receiver+tier": "Power Receiver Tier",
   "qrystal.dryer.autodrop_true": "Drop items when finished: ON",
   "qrystal.dryer.autodrop_false": "Drop items when finished: OFF",
-  "gui.qrystal.impurities": "Defect rate: "
+  "gui.qrystal.button.true.X": "Don't Auto-Input",
+  "gui.qrystal.button.true.D": "Auto-Input from below",
+  "gui.qrystal.button.true.U": "Auto-Input from above",
+  "gui.qrystal.button.true.N": "Auto-Input from north",
+  "gui.qrystal.button.true.S": "Auto-Input from south",
+  "gui.qrystal.button.true.W": "Auto-Input from west",
+  "gui.qrystal.button.true.E": "Auto-Input from east",
+  "gui.qrystal.button.false.X": "Don't Auto-Output",
+  "gui.qrystal.button.false.D": "Auto-Output down",
+  "gui.qrystal.button.false.U": "Auto-Output up",
+  "gui.qrystal.button.false.N": "Auto-Output north",
+  "gui.qrystal.button.false.S": "Auto-Output south",
+  "gui.qrystal.button.false.W": "Auto-Output east",
+  "gui.qrystal.button.false.E": "Auto-Output west",
+  "gui.qrystal.energy": "Power: ",
+  "gui.qrystal.no_tool.steel_cutter": "Requires Steel Saw Blade",
+  "gui.qrystal.no_tool.diamond_cutter": "Requires Diamond Saw Blade",
+  "gui.qrystal.no_tool.laser_cutter": "Requires Large Qalb Crystal (Octagonal or better)"
 }

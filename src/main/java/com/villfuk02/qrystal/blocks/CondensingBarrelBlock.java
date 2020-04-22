@@ -31,12 +31,12 @@ import static com.villfuk02.qrystal.Main.MOD_ITEM_GROUP;
 
 public class CondensingBarrelBlock extends Block {
     
-    public int capacity;
+    public int tier;
     
-    public CondensingBarrelBlock(String name, int capacity, Material mat, MaterialColor color, SoundType sound) {
+    public CondensingBarrelBlock(String name, int tier, Material mat, MaterialColor color, SoundType sound) {
         super(Properties.create(mat, color).sound(sound).hardnessAndResistance(2f, 60f / 5f));
         String id = name + "_condensing_barrel";
-        this.capacity = capacity;
+        this.tier = tier;
         setRegistryName(MODID, id);
         ModBlocks.BLOCKS.add(this);
         Item item = new BlockItem(this, new Item.Properties().group(MOD_ITEM_GROUP));
@@ -84,7 +84,7 @@ public class CondensingBarrelBlock extends Block {
                     if(!itemstack.isEmpty()) {
                         if(itemstack.getItem() instanceof Hammer) {
                             e.giveAll(player);
-                        } else if(itemstack.getItem() instanceof BarrelUpgrade && ((BarrelUpgrade)itemstack.getItem()).level == capacity - 2) {
+                        } else if(itemstack.getItem() instanceof BarrelUpgrade && ((BarrelUpgrade)itemstack.getItem()).level == tier) {
                             worldIn.setBlockState(pos, ForgeRegistries.BLOCKS.getValue(new ResourceLocation(MODID, ((BarrelUpgrade)itemstack.getItem()).target + "_condensing_barrel")).getDefaultState(), 3);
                             itemstack.shrink(1);
                         } else if(e.acceptedAmt(itemstack) > 0) {

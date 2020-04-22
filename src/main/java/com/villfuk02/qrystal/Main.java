@@ -7,6 +7,7 @@ import com.villfuk02.qrystal.gui.CutterScreen;
 import com.villfuk02.qrystal.gui.EvaporatorScreen;
 import com.villfuk02.qrystal.gui.FluidMixerScreen;
 import com.villfuk02.qrystal.init.*;
+import com.villfuk02.qrystal.network.Networking;
 import com.villfuk02.qrystal.tileentity.*;
 import com.villfuk02.qrystal.util.handlers.CondensedMaterialColorHandler;
 import com.villfuk02.qrystal.util.handlers.CrystalColorHandler;
@@ -75,6 +76,7 @@ public class Main {
         MinecraftForge.EVENT_BUS.addListener(Main::onServerAboutToStart);
         
         MinecraftForge.EVENT_BUS.register(this);
+        Networking.registerMessages();
     }
     
     private static void setup(FMLCommonSetupEvent event) {

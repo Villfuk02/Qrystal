@@ -24,6 +24,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
@@ -32,7 +33,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 
-public abstract class CutterTileEntity extends TileEntity implements INamedContainerProvider, ITickableTileEntity, IPowerConsumer {
+public abstract class CutterTileEntity extends TileEntity implements INamedContainerProvider, ITickableTileEntity, IPowerConsumer, IAutoIO {
     
     public final ItemStackHandler inventory = new ItemStackHandler(7) {
         @Override
@@ -123,6 +124,8 @@ public abstract class CutterTileEntity extends TileEntity implements INamedConta
     private byte powered = 0;
     public final byte requiredPower;
     
+    private final IAutoIO.Button[] buttons = new IAutoIO.Button[]{new IAutoIO.Button(true, 121, 60, 0), new IAutoIO.Button(true, 108, 60, 1), new IAutoIO.Button(false, 159, 60, 2, 3, 4, 5, 6)};
+    
     public CutterTileEntity(TileEntityType<?> type, int speed, Predicate<ItemStack> acceptedTools, ToIntFunction<ItemStack> toolTier, byte requiredPower, RecipeUtil.CuttingType cutterType, Block block) {
         super(type);
         this.speed = speed;
@@ -136,10 +139,7 @@ public abstract class CutterTileEntity extends TileEntity implements INamedConta
     @Override
     public void read(CompoundNBT compound) {
         super.read(compound);
-        inventory.deserializeNBT(compound.getCompound("Items"));
-        time = compound.getShort("time");
-        totalTime = compound.getShort("totalTime");
-        setPower(compound.getByte("powered"));
+        readClient(compound);
         
         if(pos != null && world != null) {
             world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 2);
@@ -153,6 +153,7 @@ public abstract class CutterTileEntity extends TileEntity implements INamedConta
         time = compound.getShort("time");
         totalTime = compound.getShort("totalTime");
         setPower(compound.getByte("powered"));
+        IAutoIO.readButtonsNBT(compound, buttons);
     }
     
     @Override
@@ -162,6 +163,7 @@ public abstract class CutterTileEntity extends TileEntity implements INamedConta
         compound.putShort("time", time);
         compound.putShort("totalTime", totalTime);
         compound.putByte("powered", getPower());
+        IAutoIO.writeButtonsNBT(compound, buttons);
         return compound;
     }
     
@@ -194,6 +196,57 @@ public abstract class CutterTileEntity extends TileEntity implements INamedConta
                 }
             }
             markDirty();
+        }
+        
+        if((world.getGameTime() + RecipeUtil.hashPos(pos) & 7) == 0) {
+            for(int i = 0; i < buttons.length; i++) {
+                if(buttons[i].dir != null) {
+                    if(buttons[i].input) {
+                        if(world.getTileEntity(pos.offset(buttons[i].dir)) != null &&
+                                world.getTileEntity(pos.offset(buttons[i].dir)).getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, buttons[i].dir.getOpposite()).isPresent()) {
+                            IItemHandler inv = world.getTileEntity(pos.offset(buttons[i].dir)).getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, buttons[i].dir.getOpposite()).orElse(null);
+                            for(int j = 0; j < inv.getSlots(); j++) {
+                                ItemStack stack = inv.extractItem(j, 64, true);
+                                if(!stack.isEmpty()) {
+                                    boolean found = false;
+                                    for(int k : buttons[i].slots) {
+                                        if(externalInventory.insertItem(k, stack, true) != stack) {
+                                            int amt = stack.getCount() - externalInventory.insertItem(k, stack, true).getCount();
+                                            externalInventory.insertItem(k, inv.extractItem(j, amt, false), false);
+                                            found = true;
+                                            break;
+                                        }
+                                    }
+                                    if(found)
+                                        break;
+                                }
+                                
+                            }
+                        }
+                    } else {
+                        if(world.getTileEntity(pos.offset(buttons[i].dir)) != null &&
+                                world.getTileEntity(pos.offset(buttons[i].dir)).getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, buttons[i].dir.getOpposite()).isPresent()) {
+                            IItemHandler inv = world.getTileEntity(pos.offset(buttons[i].dir)).getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, buttons[i].dir.getOpposite()).orElse(null);
+                            for(int j : buttons[i].slots) {
+                                ItemStack stack = externalInventory.extractItem(j, 64, true);
+                                if(!stack.isEmpty()) {
+                                    boolean found = false;
+                                    for(int k = 0; k < inv.getSlots(); k++) {
+                                        if(inv.insertItem(k, stack, true) != stack) {
+                                            int amt = stack.getCount() - inv.insertItem(k, stack, true).getCount();
+                                            inv.insertItem(k, externalInventory.extractItem(j, amt, false), false);
+                                            found = true;
+                                            break;
+                                        }
+                                    }
+                                    if(found)
+                                        break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
     
@@ -291,6 +344,27 @@ public abstract class CutterTileEntity extends TileEntity implements INamedConta
     @Override
     public void setPower(byte power) {
         powered = power;
+        if(pos != null && world != null)
+            world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 2);
+    }
+    
+    public String getPowerString() {
+        return (getPower() >= requiredPower ? requiredPower : getPower()) + "/" + requiredPower;
+    }
+    
+    @Override
+    public int getButtonAmt() {
+        return buttons.length;
+    }
+    
+    @Override
+    public Button getButton(int i) {
+        return buttons[i];
+    }
+    
+    @Override
+    public void cycleButton(int i) {
+        getButton(i).cycleDir();
         if(pos != null && world != null)
             world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 2);
     }

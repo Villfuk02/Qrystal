@@ -1,13 +1,16 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "WPW",
+    "WIW",
     "WCW",
     "WPW"
   ],
   "key": {
     "W": {
-      "tag": "minecraft:logs"
+      "tag": "minecraft:planks"
+    },
+    "I": {
+      "tag": "qrystal:iron_lvl_ingots"
     },
     "P": {
       "item": "minecraft:piston"

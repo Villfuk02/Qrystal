@@ -5,6 +5,7 @@ import com.villfuk02.qrystal.blocks.QrystalBlock;
 import com.villfuk02.qrystal.blocks.ReceiverBlock;
 import com.villfuk02.qrystal.init.ModTileEntityTypes;
 import com.villfuk02.qrystal.util.CrystalUtil;
+import com.villfuk02.qrystal.util.RecipeUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.DirectionalBlock;
@@ -74,7 +75,7 @@ public class EmitterTileEntity extends TileEntity implements ITickableTileEntity
     
     @Override
     public void tick() {
-        if((world.getGameTime() + hashPos(pos) & 127) == 0) {
+        if((world.getGameTime() + RecipeUtil.hashPos(pos) & 127) == 0) {
             if(isActivated()) {
                 boolean gud = true;
                 byte newRange = 15;
@@ -133,7 +134,7 @@ public class EmitterTileEntity extends TileEntity implements ITickableTileEntity
             ReceiverBlock b = (ReceiverBlock)world.getBlockState(p).getBlock();
             if(b.tier == getTier(getBlockState()))
                 b.activate(world, p, uPos, pos);
-        } else if(world.getTileEntity(p) instanceof IPowerConsumer) {
+        } else if(world.getTileEntity(p) instanceof IPowerConsumer && ((IPowerConsumer)world.getTileEntity(p)).getPower() < getTier(getBlockState()) + 1) {
             ((IPowerConsumer)world.getTileEntity(p)).setPower((byte)(getTier(getBlockState()) + 1));
         }
     }
@@ -174,15 +175,6 @@ public class EmitterTileEntity extends TileEntity implements ITickableTileEntity
         for(int i = 1; i <= range; i++) {
             deactivate(pos.offset(state.get(DirectionalBlock.FACING), i), state);
         }
-    }
-    
-    private int hashPos(BlockPos p) {
-        int i = p.getX() * p.getZ();
-        i += 23;
-        i *= p.getY();
-        i = i ^ p.getZ();
-        i = (i * 7) ^ p.getX();
-        return (i * 3 + 41) ^ p.getY() ^ p.getZ();
     }
     
     @Override

@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -193,7 +194,7 @@ public class RecipeUtil {
         
     }
     
-    private static long longPositivePower(int base, int power) {
+    public static long longPositivePower(long base, int power) {
         long res = 1;
         while(true) {
             if((power & 1) == 1)
@@ -204,6 +205,12 @@ public class RecipeUtil {
             base *= base;
         }
         return res;
+    }
+    
+    public static long getCondensedValue(int power) {
+        if(power > 10 || power < 0)
+            return 0;
+        return ((long)1) << (6 * power);
     }
     
     public static ArrayList<Pair<ItemStack, Float>> getDustRecipe(long value, String mat, int stacks, boolean condense, int overshot) {
@@ -290,11 +297,11 @@ public class RecipeUtil {
     public static double getYieldRate(CuttingType cuttingType) {
         switch(cuttingType) {
             case HAMMER:
-                return 0.4;
-            case SAW:
-                return 0.6;
-            case LASER:
                 return 0.8;
+            case SAW:
+                return 0.9;
+            case LASER:
+                return 1;
         }
         return 0;
     }
@@ -586,6 +593,15 @@ public class RecipeUtil {
             }
         }
         return mat;
+    }
+    
+    public static int hashPos(BlockPos p) {
+        int i = p.getX() * p.getZ();
+        i += 23;
+        i *= p.getY();
+        i = i ^ p.getZ();
+        i = (i * 7) ^ p.getX();
+        return (i * 3 + 41) ^ p.getY() ^ p.getZ();
     }
     
 }
