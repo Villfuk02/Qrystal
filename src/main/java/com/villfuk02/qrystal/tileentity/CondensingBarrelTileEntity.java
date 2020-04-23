@@ -25,6 +25,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class CondensingBarrelTileEntity extends TileEntity {
     
@@ -312,14 +313,17 @@ public class CondensingBarrelTileEntity extends TileEntity {
     public String getRenderedText(boolean shiftKeyDown) {
         if(shiftKeyDown) {
             if(mode >= 0)
-                return Long.toString(RecipeUtil.getCondensedValue(mode));
-            return "0::" + ModItems.DUST_SIZES[-mode];
+                return String.format(Locale.US, "%,d", RecipeUtil.getCondensedValue(mode)).replace(",", " ");
+            return "0::" + String.format("%04d", ModItems.DUST_SIZES[-mode]);
         }
         if(stored <= 9999L) {
-            return stored + (dustOverflow <= 0 ? "" : "::" + dustOverflow);
+            return stored + (dustOverflow <= 0 ? "" : "::" + String.format("%04d", dustOverflow));
         }
+        /*
         int pow = (63 - Long.numberOfLeadingZeros(stored - 1)) / 6;
         return String.format("%.2f", stored / (float)RecipeUtil.getCondensedValue(pow)) + "x64^" + pow;
+        */
+        return String.format(Locale.US, "%,d", stored).replace(",", " ") + (dustOverflow > 0 ? "+" : "");
     }
     
     public void giveAll(PlayerEntity player) {

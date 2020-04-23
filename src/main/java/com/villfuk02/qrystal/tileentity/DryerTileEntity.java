@@ -39,13 +39,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.IntStream;
 
+import static com.villfuk02.qrystal.util.RecipeUtil.BASE_VALUE;
+
 public class DryerTileEntity extends TileEntity implements ISidedInventory, ITickableTileEntity {
     
     private int water;
     private String material = "";
     private int amt;
     private int seeds;
-    private int waste;
     private int crystallize;
     protected NonNullList<ItemStack> items = NonNullList.withSize(6, ItemStack.EMPTY);
     protected boolean autoDrop = false;
@@ -56,7 +57,7 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
     private final Map<String, Float> renderValues = new HashMap<>();
     
     private static final int PROCESS_MULTIPLIER = 8;
-    private static final int MAX_VALUE = PROCESS_MULTIPLIER * 40 * RecipeUtil.BASE_VALUE * QrystalConfig.material_tier_multiplier;
+    private static final int MAX_VALUE = PROCESS_MULTIPLIER * 40 * BASE_VALUE * QrystalConfig.material_tier_multiplier;
     
     public DryerTileEntity() {
         super(ModTileEntityTypes.DRYER);
@@ -71,7 +72,6 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
         material = compound.getString("material");
         amt = compound.getInt("amt");
         seeds = compound.getInt("seeds");
-        waste = compound.getInt("waste");
         crystallize = compound.getInt("crystallize");
         autoDrop = compound.getBoolean("autoDrop");
     }
@@ -84,7 +84,6 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
         compound.putString("material", material);
         compound.putInt("amt", amt);
         compound.putInt("seeds", seeds);
-        compound.putInt("waste", waste);
         compound.putInt("crystallize", crystallize);
         compound.putBoolean("autoDrop", autoDrop);
         return compound;
@@ -104,6 +103,7 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
         }
         compound.putInt("crystalData", crystalInt);
         compound.putString("material", material);
+        compound.putInt("crystallize", crystallize);
         compound.putBoolean("autoDrop", autoDrop);
         return compound;
     }
@@ -114,6 +114,7 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
         color = compound.getInt("color");
         crystalData = compound.getInt("crystalData");
         material = compound.getString("material");
+        crystallize = compound.getInt("crystallize");
         autoDrop = compound.getBoolean("autoDrop");
     }
     
@@ -132,7 +133,7 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
     
     public int acceptsItemAmt(ItemStack itemStackIn) {
         if(itemStackIn.getItem() == Items.WATER_BUCKET) {
-            if(isEmpty() && water == 0 && waste == 0 && crystallize == 0)
+            if(isEmpty() && water == 0 && crystallize == 0)
                 return 1;
             else
                 return 0;
@@ -237,10 +238,7 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
             return;
         
         if(water <= QrystalConfig.material_tier_multiplier) {
-            int temp = amt * 4 / 5;
-            crystallize += temp;
-            amt -= temp;
-            waste += amt;
+            crystallize += amt;
             amt = 0;
             setWater(0);
             crystallize();
@@ -253,13 +251,9 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
         } else {
             int processAmt = amt * QrystalConfig.material_tier_multiplier / water;
             amt -= processAmt;
-            int temp = processAmt * 4 / 5;
-            crystallize += temp;
-            if(world.rand.nextInt(PROCESS_MULTIPLIER * RecipeUtil.BASE_VALUE * QrystalConfig.material_tier_multiplier * QrystalConfig.material_tier_multiplier / 2) < temp)
+            crystallize += processAmt;
+            if(world.rand.nextInt(PROCESS_MULTIPLIER * BASE_VALUE * QrystalConfig.material_tier_multiplier * QrystalConfig.material_tier_multiplier / 2) < processAmt)
                 crystallize();
-            processAmt -= temp;
-            temp = processAmt;
-            waste += temp;
             setWater(water - QrystalConfig.material_tier_multiplier);
         }
     }
@@ -316,7 +310,6 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
     public void refill() {
         amt = 0;
         crystallize = 0;
-        waste = 0;
         setWater(MAX_VALUE);
         markDirty();
     }
@@ -377,9 +370,9 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
     
     public ItemStack[] removeWasteAsDust() {
         markDirty();
-        int temp = (waste + amt) / PROCESS_MULTIPLIER / QrystalConfig.material_tier_multiplier;
-        waste = 0;
+        int temp = (amt + crystallize) / PROCESS_MULTIPLIER / QrystalConfig.material_tier_multiplier;
         amt = 0;
+        crystallize = 0;
         return RecipeUtil.getResult(RecipeUtil.getDustRecipe(temp, material, 3, true, 7), world.rand).toArray(new ItemStack[0]);
     }
     
@@ -419,9 +412,9 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
     
     public void crystallize() {
         markDirty();
-        Pair<Pair<Integer, Integer>, ArrayList<ItemStack>> c = RecipeUtil.crystallize(material, seeds, crystallize / PROCESS_MULTIPLIER, 0, removeItems());
-        seeds = c.getKey().getKey();
-        waste += c.getKey().getValue() * PROCESS_MULTIPLIER;
+        int smalls = crystallize / PROCESS_MULTIPLIER / RecipeUtil.BASE_VALUE;
+        Pair<Integer, ArrayList<ItemStack>> c = RecipeUtil.crystallize(material, seeds, smalls, 0, removeItems());
+        seeds = c.getKey();
         for(int i = 0; i < c.getValue().size(); i++) {
             if(i + 1 >= getSizeInventory()) {
                 Main.LOGGER.error("Evaporating Bowl has run out of inventory space. HOW???");
@@ -429,7 +422,7 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
             }
             setInventorySlotContents(i + 1, c.getValue().get(i));
         }
-        crystallize -= (crystallize / PROCESS_MULTIPLIER) * PROCESS_MULTIPLIER;
+        crystallize -= smalls * PROCESS_MULTIPLIER * RecipeUtil.BASE_VALUE;
         world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 2);
     }
     
@@ -474,12 +467,16 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
     }
     
     public void conditionalDrop() {
-        if(water == 0 && (waste != 0 || !isEmpty())) {
+        if(water == 0 && (crystallize > 0 || !isEmpty())) {
             drop(false, removeItems());
             drop(false, removeWasteAsDust());
             drop(false, removeSeeds());
             material = "";
             world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 2);
         }
+    }
+    
+    public boolean displayWaste() {
+        return (amt + crystallize) / PROCESS_MULTIPLIER / QrystalConfig.material_tier_multiplier > 0;
     }
 }

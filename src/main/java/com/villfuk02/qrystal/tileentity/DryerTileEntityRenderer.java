@@ -79,14 +79,14 @@ public class DryerTileEntityRenderer extends TileEntityRenderer<DryerTileEntity>
             matrixStack.scale(0.75f, 1, 0.75f);
             Minecraft.getInstance().getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.NONE, light, OverlayTexture.NO_OVERLAY, matrixStack, buffer);
             matrixStack.pop();
-        } else if(!tileEntity.getMaterial().isEmpty()) {
+        } else if(!tileEntity.getMaterial().isEmpty() && tileEntity.displayWaste()) {
             matrixStack.push();
             matrixStack.rotate(Vector3f.XP.rotationDegrees(90));
             matrixStack.translate(0, 0, -0.125f);
             matrixStack.scale(0.75f, 0.75f, 0.75f);
             Minecraft.getInstance()
                     .getItemRenderer()
-                    .renderItem(RecipeUtil.getStackWithMatTag(ModItems.DUSTS.get("dust_36"), tileEntity.getMaterial()), ItemCameraTransforms.TransformType.NONE, light, OverlayTexture.NO_OVERLAY, matrixStack,
+                    .renderItem(RecipeUtil.getStackWithMatTag(ModItems.DUSTS.get("dust_6"), tileEntity.getMaterial()), ItemCameraTransforms.TransformType.NONE, light, OverlayTexture.NO_OVERLAY, matrixStack,
                                 buffer);
             matrixStack.pop();
         }

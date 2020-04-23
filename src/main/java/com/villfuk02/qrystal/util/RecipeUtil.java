@@ -470,38 +470,34 @@ public class RecipeUtil {
     }
     
     
-    public static Pair<Pair<Integer, Integer>, ArrayList<ItemStack>> crystallize(String mat, int seeds, int value, int tier, ItemStack... input) {
+    public static Pair<Integer, ArrayList<ItemStack>> crystallize(String mat, int seeds, int smalls, int tier, ItemStack... input) {
         Pair<int[], ArrayList<ItemStack>> separated = separateCrystals(mat, tier, input);
         int small = separated.getKey()[0];
         int medium = separated.getKey()[1];
         int large = separated.getKey()[2];
         int next = separated.getKey()[3];
         ArrayList<ItemStack> result = separated.getValue();
-        if(seeds > 0 && value > BASE_VALUE * QrystalConfig.material_tier_multiplier) {
-            int amt = Math.min(seeds, value / (BASE_VALUE * QrystalConfig.material_tier_multiplier));
-            value -= amt * BASE_VALUE * QrystalConfig.material_tier_multiplier;
+        if(seeds > 0 && smalls >= QrystalConfig.material_tier_multiplier) {
+            int amt = Math.min(seeds, smalls / QrystalConfig.material_tier_multiplier);
+            smalls -= amt * QrystalConfig.material_tier_multiplier;
             seeds -= amt;
             next += amt;
         }
-        if(value > BASE_VALUE * QrystalConfig.material_tier_multiplier * QrystalConfig.material_tier_multiplier) {
-            int amt = value / (BASE_VALUE * QrystalConfig.material_tier_multiplier * QrystalConfig.material_tier_multiplier);
-            value -= amt * BASE_VALUE * QrystalConfig.material_tier_multiplier * QrystalConfig.material_tier_multiplier;
-            medium -= amt;
+        if(smalls >= QrystalConfig.material_tier_multiplier * QrystalConfig.material_tier_multiplier) {
+            int amt = smalls / (QrystalConfig.material_tier_multiplier * QrystalConfig.material_tier_multiplier);
+            smalls -= amt * QrystalConfig.material_tier_multiplier * QrystalConfig.material_tier_multiplier;
             large += amt;
         }
-        if(value > BASE_VALUE * QrystalConfig.material_tier_multiplier) {
-            int amt = value / (BASE_VALUE * QrystalConfig.material_tier_multiplier);
-            value -= amt * BASE_VALUE * QrystalConfig.material_tier_multiplier;
-            small -= amt;
+        if(smalls >= QrystalConfig.material_tier_multiplier) {
+            int amt = smalls / QrystalConfig.material_tier_multiplier;
+            smalls -= amt * QrystalConfig.material_tier_multiplier;
             medium += amt;
         }
-        if(value > BASE_VALUE) {
-            int amt = value / BASE_VALUE;
-            value -= amt * BASE_VALUE;
-            small += amt;
+        if(smalls >= 1) {
+            small += smalls;
         }
         result.addAll(getResult(createCrystals(mat, tier, small, medium, large, next), null));
-        return new Pair<>(new Pair<>(seeds, value), result);
+        return new Pair<>(seeds, result);
     }
     
     private static ArrayList<Pair<ItemStack, Float>> createCrystals(String mat, int tier, int small, int medium, int large, int next) {
