@@ -1,0 +1,39 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "qrystal:conductive_alloy_block",
+      "qrystal:conductive_alloy_coil",
+      "qrystal:conductive_alloy_ingot_from_blasting",
+      "qrystal:conductive_alloy_ingots"
+    ]
+  },
+  "criteria": {
+    "has_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "qrystal:conductive_alloy_ingot"
+          }
+        ]
+      }
+    },
+    "has_item2": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "qrystal:conductive_alloy_mix"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_item",
+      "has_item2"
+    ]
+  ]
+}

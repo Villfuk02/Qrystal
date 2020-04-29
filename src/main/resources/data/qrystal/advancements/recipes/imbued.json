@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "qrystal:basic_evaporator",
+      "qrystal:burner_evaporator",
+      "qrystal:burner_fluid_mixer",
+      "qrystal:imbued_alloy_block",
+      "qrystal:imbued_alloy_chassis",
+      "qrystal:imbued_alloy_ingots",
+      "qrystal:imbued_alloy_ingot_from_blasting",
+      "qrystal:redstone_coil"
+    ]
+  },
+  "criteria": {
+    "has_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "qrystal:imbued_alloy_ingot"
+          }
+        ]
+      }
+    },
+    "has_item2": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "qrystal:imbued_alloy_mix"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_item",
+      "has_item2"
+    ]
+  ]
+}

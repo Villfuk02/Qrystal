@@ -36,6 +36,14 @@ public class ColorUtils {
         return ints;
     }
     
+    public static float[] int2Float(int... ints) {
+        float[] floats = new float[ints.length];
+        for(int i = 0; i < ints.length; i++) {
+            floats[i] = ints[i] / 255f;
+        }
+        return floats;
+    }
+    
     public static float[] hue2RGB(float hue) {
         return new float[]{hueCycle(hue + 1 / 3f), hueCycle(hue), hueCycle(hue + 2 / 3f)};
     }

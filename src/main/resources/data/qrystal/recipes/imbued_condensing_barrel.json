@@ -13,7 +13,7 @@
       "item": "qrystal:gold_condensing_barrel"
     },
     "C": {
-      "item": "qrystal:crystal_small_4",
+      "item": "qrystal:crystal_medium_4",
       "type": "forge:nbt",
       "count": 1,
       "nbt": "{material:qoid}"

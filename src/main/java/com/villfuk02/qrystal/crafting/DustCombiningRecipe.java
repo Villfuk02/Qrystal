@@ -14,6 +14,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 public class DustCombiningRecipe extends SpecialRecipe {
@@ -35,7 +36,7 @@ public class DustCombiningRecipe extends SpecialRecipe {
             if(item instanceof CrystalDust) {
                 if(itemStack.hasTag()) {
                     CompoundNBT tag = itemStack.getTag();
-                    if(tag.contains("material") && MaterialManager.material_names.contains(tag.getString("material"))) {
+                    if(tag.contains("material", Constants.NBT.TAG_STRING) && MaterialManager.material_names.contains(tag.getString("material"))) {
                         if(mat.isEmpty())
                             mat = tag.getString("material");
                         else if(!mat.equals(tag.getString("material")))

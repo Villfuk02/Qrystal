@@ -1,7 +1,8 @@
-package com.villfuk02.qrystal.tileentity;
+package com.villfuk02.qrystal.renderers;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.villfuk02.qrystal.init.ModItems;
+import com.villfuk02.qrystal.tileentity.DryerTileEntity;
 import com.villfuk02.qrystal.util.CrystalUtil;
 import com.villfuk02.qrystal.util.RecipeUtil;
 import net.minecraft.client.Minecraft;

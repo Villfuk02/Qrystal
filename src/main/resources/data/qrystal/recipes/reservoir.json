@@ -1,20 +1,26 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "QTQ",
-    "Q Q",
-    "QTQ"
+    "IQI",
+    "QCQ",
+    "IQI"
   ],
   "key": {
     "Q": {
       "tag": "forge:fused_quartz"
     },
-    "T": {
-      "item": "qrystal:tube"
+    "I": {
+      "item": "qrystal:imbued_alloy_ingot"
+    },
+    "C": {
+      "item": "qrystal:crystal_small_1",
+      "type": "forge:nbt",
+      "count": 1,
+      "nbt": "{material:qitae}"
     }
   },
   "result": {
     "item": "qrystal:reservoir",
-    "count": 2
+    "count": 1
   }
 }

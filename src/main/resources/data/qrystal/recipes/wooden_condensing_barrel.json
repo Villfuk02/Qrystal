@@ -16,7 +16,7 @@
       "item": "minecraft:piston"
     },
     "C": {
-      "item": "qrystal:crystal_small_0",
+      "item": "qrystal:crystal_medium_0",
       "type": "forge:nbt",
       "count": 1,
       "nbt": "{material:qoid}"
@@ -24,6 +24,6 @@
   },
   "result": {
     "item": "qrystal:wooden_condensing_barrel",
-    "count": 4
+    "count": 2
   }
 }

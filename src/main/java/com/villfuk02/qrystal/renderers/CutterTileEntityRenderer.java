@@ -1,6 +1,7 @@
-package com.villfuk02.qrystal.tileentity;
+package com.villfuk02.qrystal.renderers;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.villfuk02.qrystal.tileentity.CutterTileEntity;
 import net.minecraft.block.HorizontalBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;

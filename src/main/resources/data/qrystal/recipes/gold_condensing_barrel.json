@@ -13,7 +13,7 @@
       "item": "qrystal:iron_condensing_barrel"
     },
     "C": {
-      "item": "qrystal:crystal_small_3",
+      "item": "qrystal:crystal_medium_3",
       "type": "forge:nbt",
       "count": 1,
       "nbt": "{material:qoid}"

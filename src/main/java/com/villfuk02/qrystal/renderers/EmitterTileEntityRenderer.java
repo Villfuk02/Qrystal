@@ -1,8 +1,9 @@
-package com.villfuk02.qrystal.tileentity;
+package com.villfuk02.qrystal.renderers;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.villfuk02.qrystal.blocks.*;
+import com.villfuk02.qrystal.tileentity.EmitterTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.DirectionalBlock;
 import net.minecraft.client.Minecraft;

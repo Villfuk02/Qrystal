@@ -1,10 +1,11 @@
 package com.villfuk02.qrystal.util.handlers;
 
+import com.mojang.datafixers.util.Pair;
 import com.villfuk02.qrystal.dataserializers.MaterialManager;
 import com.villfuk02.qrystal.util.ColorUtils;
-import javafx.util.Pair;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.util.Constants;
 
 public class CrystalColorHandler implements IItemColor {
     
@@ -12,7 +13,7 @@ public class CrystalColorHandler implements IItemColor {
     public int getColor(ItemStack stack, int tintIndex) {
         if(tintIndex == 0)
             return 0xFFFFFF;
-        if(stack.hasTag() && stack.getTag().contains("material") && MaterialManager.material_names.contains(stack.getTag().getString("material"))) {
+        if(stack.hasTag() && stack.getTag().contains("material", Constants.NBT.TAG_STRING) && MaterialManager.material_names.contains(stack.getTag().getString("material"))) {
             return getColor(stack.getTag().getString("material"), tintIndex);
         } else {
             return tintIndex == 2 ? 0 : 0xFF00FF;
@@ -24,8 +25,8 @@ public class CrystalColorHandler implements IItemColor {
             return tintIndex == 2 ? 0 : 0xFF00FF;
         Pair<Integer, Integer> p = MaterialManager.materials.get(material).color;
         if(tintIndex >= 3) {
-            int[] mc = ColorUtils.unwrapRGB(p.getKey());
-            int[] nc = ColorUtils.unwrapRGB(p.getValue());
+            int[] mc = ColorUtils.unwrapRGB(p.getFirst());
+            int[] nc = ColorUtils.unwrapRGB(p.getSecond());
             int r = mc[0] + nc[0];
             int g = mc[1] + nc[1];
             int b = mc[2] + nc[2];
@@ -39,7 +40,7 @@ public class CrystalColorHandler implements IItemColor {
             b = (b * 255) / m;
             return ColorUtils.wrap(r, g, b);
         }
-        return tintIndex == 1 ? p.getKey() : p.getValue();
+        return tintIndex == 1 ? p.getFirst() : p.getSecond();
     }
     
     

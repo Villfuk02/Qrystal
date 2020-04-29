@@ -1,0 +1,29 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "qrystal:actuator",
+      "qrystal:conductive_alloy_mix",
+      "qrystal:gold_condensing_barrel",
+      "qrystal:heat_conduit",
+      "qrystal:upgrade_2"
+    ]
+  },
+  "criteria": {
+    "has_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "qrystal:crystal_seed_3"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_item"
+    ]
+  ]
+}

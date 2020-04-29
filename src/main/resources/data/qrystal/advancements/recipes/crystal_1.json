@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "qrystal:dust_qalb",
+      "qrystal:dust_qitae",
+      "qrystal:dust_qoid",
+      "qrystal:dust_qondo",
+      "qrystal:nano_mesh",
+      "qrystal:imbued_alloy_mix",
+      "qrystal:stone_condensing_barrel",
+      "qrystal:upgrade_0"
+    ]
+  },
+  "criteria": {
+    "has_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "qrystal:crystal_seed_1"
+          }
+        ]
+      }
+    },
+    "has_item2": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "qrystal:crystal_small_1"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_item",
+      "has_item2"
+    ]
+  ]
+}

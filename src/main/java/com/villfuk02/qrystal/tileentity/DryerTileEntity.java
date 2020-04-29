@@ -1,5 +1,6 @@
 package com.villfuk02.qrystal.tileentity;
 
+import com.mojang.datafixers.util.Pair;
 import com.villfuk02.qrystal.Main;
 import com.villfuk02.qrystal.QrystalConfig;
 import com.villfuk02.qrystal.dataserializers.MaterialManager;
@@ -8,7 +9,6 @@ import com.villfuk02.qrystal.items.Crystal;
 import com.villfuk02.qrystal.items.CrystalDust;
 import com.villfuk02.qrystal.util.CrystalUtil;
 import com.villfuk02.qrystal.util.RecipeUtil;
-import javafx.util.Pair;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ChestBlock;
@@ -32,6 +32,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -93,10 +94,10 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
         compound.putInt("water", water);
         compound.putInt("amt", amt);
         if(!material.isEmpty() && MaterialManager.materials != null && MaterialManager.materials.containsKey(material))
-            compound.putInt("color", MaterialManager.materials.get(material).color.getKey());
+            compound.putInt("color", MaterialManager.materials.get(material).color.getFirst());
         else
             compound.putInt("color", 0);
-        int[] crystals = RecipeUtil.separateCrystals(material, 0, items.toArray(new ItemStack[0])).getKey();
+        int[] crystals = RecipeUtil.separateCrystals(material, 0, items.toArray(new ItemStack[0])).getFirst();
         int crystalInt = Math.max(Math.min(seeds, 63), 0);
         for(int i = 0; i < 4; i++) {
             crystalInt = (crystalInt << 6) + Math.max(Math.min(crystals[i], 63), 0);
@@ -138,7 +139,7 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
             else
                 return 0;
         }
-        if(!itemStackIn.hasTag() || !itemStackIn.getTag().contains("material"))
+        if(!itemStackIn.hasTag() || !itemStackIn.getTag().contains("material", Constants.NBT.TAG_STRING))
             return 0;
         if(itemStackIn.getItem() instanceof CrystalDust) {
             if(itemStackIn.getTag().getString("material").equals(CrystalUtil.Color.QLEAR.toString())) {
@@ -287,7 +288,7 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
             world.playSound(null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
             drop(true, new ItemStack(Items.BUCKET));
         } else {
-            if(stack.hasTag() && stack.getTag().contains("material")) {
+            if(stack.hasTag() && stack.getTag().contains("material", Constants.NBT.TAG_STRING)) {
                 String mat = stack.getTag().getString("material");
                 if(!material.equals("qlear"))
                     material = mat;
@@ -414,13 +415,13 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
         markDirty();
         int smalls = crystallize / PROCESS_MULTIPLIER / RecipeUtil.BASE_VALUE;
         Pair<Integer, ArrayList<ItemStack>> c = RecipeUtil.crystallize(material, seeds, smalls, 0, removeItems());
-        seeds = c.getKey();
-        for(int i = 0; i < c.getValue().size(); i++) {
+        seeds = c.getFirst();
+        for(int i = 0; i < c.getSecond().size(); i++) {
             if(i + 1 >= getSizeInventory()) {
                 Main.LOGGER.error("Evaporating Bowl has run out of inventory space. HOW???");
                 break;
             }
-            setInventorySlotContents(i + 1, c.getValue().get(i));
+            setInventorySlotContents(i + 1, c.getSecond().get(i));
         }
         crystallize -= smalls * PROCESS_MULTIPLIER * RecipeUtil.BASE_VALUE;
         world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 2);

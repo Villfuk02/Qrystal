@@ -1,7 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "X#X",
+    "XQX",
     " # ",
     " # "
   ],
@@ -11,6 +11,12 @@
     },
     "X": {
       "tag": "qrystal:iron_lvl_ingots"
+    },
+    "Q": {
+      "item": "qrystal:crystal_medium_0",
+      "type": "forge:nbt",
+      "count": 1,
+      "nbt": "{material:qlear}"
     }
   },
   "result": {

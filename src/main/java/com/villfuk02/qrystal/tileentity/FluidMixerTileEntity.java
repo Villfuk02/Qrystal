@@ -141,10 +141,6 @@ public abstract class FluidMixerTileEntity extends TileEntity implements INamedC
         inventory.deserializeNBT(compound.getCompound("Items"));
         time = compound.getShort("time");
         totalTime = compound.getShort("totalTime");
-        
-        if(pos != null && world != null) {
-            world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 2);
-        }
     }
     
     

@@ -4,8 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.mojang.datafixers.util.Pair;
 import com.villfuk02.qrystal.Main;
-import javafx.util.Pair;
 import net.minecraft.client.resources.JsonReloadListener;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.resources.IResourceManager;
@@ -56,7 +56,7 @@ public class FluidTierManager extends JsonReloadListener {
             return;
         
         ResourceLocation rl = new ResourceLocation(name);
-        if(solvents.containsKey(rl) && solvents.get(rl).getValue() < priority)
+        if(solvents.containsKey(rl) && solvents.get(rl).getSecond() < priority)
             solvents.remove(rl);
         
         solvents.put(rl, new Pair<>(tier, priority));

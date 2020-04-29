@@ -1,0 +1,36 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "qrystal:stone_hammer",
+      "qrystal:iron_hammer",
+      "qrystal:diamond_hammer",
+      "qrystal:dust_6",
+      "qrystal:dust_36",
+      "qrystal:dust_216",
+      "qrystal:dust_1296",
+      "qrystal:dusts_1",
+      "qrystal:dusts_6",
+      "qrystal:dusts_36",
+      "qrystal:dusts_216",
+      "qrystal:wooden_condensing_barrel"
+    ]
+  },
+  "criteria": {
+    "has_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "qrystal:crystal_small_0"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_item"
+    ]
+  ]
+}

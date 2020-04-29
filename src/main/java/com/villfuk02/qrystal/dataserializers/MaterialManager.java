@@ -1,11 +1,11 @@
 package com.villfuk02.qrystal.dataserializers;
 
 import com.google.gson.*;
+import com.mojang.datafixers.util.Pair;
 import com.villfuk02.qrystal.Main;
 import com.villfuk02.qrystal.util.CrystalUtil;
 import com.villfuk02.qrystal.util.MaterialInfo;
 import com.villfuk02.qrystal.util.RecipeUtil;
-import javafx.util.Pair;
 import net.minecraft.client.resources.JsonReloadListener;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.resources.IResourceManager;
@@ -89,7 +89,7 @@ public class MaterialManager extends JsonReloadListener {
         if(json.has("outputs")) {
             JsonArray outputArray = JSONUtils.getJsonArray(json, "outputs");
             List<Pair<ResourceLocation, Integer>> o = StreamSupport.stream(outputArray.spliterator(), false)
-                    .map(e -> new javafx.util.Pair<>(new ResourceLocation(JSONUtils.getString(e.getAsJsonObject(), "item", "")), JSONUtils.getInt(e.getAsJsonObject(), "value", 36)))
+                    .map(e -> new Pair<>(new ResourceLocation(JSONUtils.getString(e.getAsJsonObject(), "item", "")), JSONUtils.getInt(e.getAsJsonObject(), "value", 36)))
                     .collect(Collectors.toList());
             outputs = o.toArray(new Pair[0]);
         } else {
@@ -112,7 +112,7 @@ public class MaterialManager extends JsonReloadListener {
                     if(!seed.isEmpty() && RecipeUtil.isQrystalMaterial(seed, true))
                         m.seed = CrystalUtil.Color.valueOf(seed);
                     if(!primaryColor.isEmpty() && !secondaryColor.isEmpty())
-                        m.color = new javafx.util.Pair<>(Integer.parseInt(primaryColor, 16), Integer.parseInt(secondaryColor, 16));
+                        m.color = new Pair<>(Integer.parseInt(primaryColor, 16), Integer.parseInt(secondaryColor, 16));
                 }
             }
             if(replaceIO) {
@@ -131,13 +131,13 @@ public class MaterialManager extends JsonReloadListener {
             materials.put(name, m);
             m.dataPriority = dataPriority;
             m.seed = CrystalUtil.Color.fromString(seed);
-            m.color = new javafx.util.Pair<>(Integer.parseInt(primaryColor, 16), Integer.parseInt(secondaryColor, 16));
+            m.color = new Pair<>(Integer.parseInt(primaryColor, 16), Integer.parseInt(secondaryColor, 16));
         }
         
         if(m.outputs == null)
             m.outputs = new HashMap<>();
         for(Pair<ResourceLocation, Integer> output : outputs) {
-            m.outputs.putIfAbsent(output.getKey(), output.getValue());
+            m.outputs.putIfAbsent(output.getFirst(), output.getSecond());
         }
         for(MaterialInfo.Unit value : inputs) {
             dissolvable.putIfAbsent(new ResourceLocation(value.material), new MaterialInfo.Unit(name, value.value));

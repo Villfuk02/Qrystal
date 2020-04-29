@@ -60,6 +60,7 @@ public class ModBlocks {
     public static final Block IMBUED_ALLOY_CHASSIS = new BlockBase("imbued_alloy_chassis", Material.ROCK, MaterialColor.DIAMOND, SoundType.STONE, 3f, 15f, ToolType.PICKAXE, 0);
     public static final Block STEEL_CHASSIS = new BlockBase("steel_chassis", Material.ROCK, MaterialColor.STONE, SoundType.STONE, 3f, 15f, ToolType.PICKAXE, 0);
     public static final Block ENDSTEEL_CHASSIS = new BlockBase("endsteel_chassis", Material.ROCK, MaterialColor.PURPLE, SoundType.STONE, 3f, 15f, ToolType.PICKAXE, 0);
+    public static final Block RESERVOIR = new ReservoirBlock();
     
     public static void init() {
         for(CrystalUtil.Color c : CrystalUtil.Color.values()) {

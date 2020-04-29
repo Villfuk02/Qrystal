@@ -11,6 +11,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 public class UncondensingRecipe extends SpecialRecipe {
@@ -30,7 +31,7 @@ public class UncondensingRecipe extends SpecialRecipe {
             if(!found && item instanceof CondensedMaterial) {
                 if(itemStack.hasTag()) {
                     CompoundNBT tag = itemStack.getTag();
-                    if(tag.contains("power") && tag.contains("material") && tag.contains("item") && tag.getInt("power") > 0) {
+                    if(tag.contains("power", Constants.NBT.TAG_INT) && tag.contains("item", Constants.NBT.TAG_COMPOUND) && tag.getInt("power") > 0) {
                         ItemStack stored = ItemStack.read(tag.getCompound("item"));
                         if(!stored.isEmpty())
                             found = true;

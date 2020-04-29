@@ -8,6 +8,7 @@ import com.villfuk02.qrystal.gui.EvaporatorScreen;
 import com.villfuk02.qrystal.gui.FluidMixerScreen;
 import com.villfuk02.qrystal.init.*;
 import com.villfuk02.qrystal.network.Networking;
+import com.villfuk02.qrystal.renderers.*;
 import com.villfuk02.qrystal.tileentity.*;
 import com.villfuk02.qrystal.util.handlers.CondensedMaterialColorHandler;
 import com.villfuk02.qrystal.util.handlers.CrystalColorHandler;
@@ -17,6 +18,8 @@ import com.villfuk02.qrystal.world.OreGeneration;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -113,6 +116,9 @@ public class Main {
         //ClientRegistry.bindTileEntityRenderer(ModTileEntityTypes.LASER_CUTTER, LaserCutterTileEntityRenderer::new);
         ClientRegistry.bindTileEntityRenderer(ModTileEntityTypes.CONDENSING_BARREL, CondensingBarrelTileEntityRenderer::new);
         ClientRegistry.bindTileEntityRenderer(ModTileEntityTypes.EMITTER, EmitterTileEntityRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(ModTileEntityTypes.RESERVOIR, ReservoirTileEntityRenderer::new);
+        
+        RenderTypeLookup.setRenderLayer(ModBlocks.RESERVOIR, RenderType.getTranslucent());
         
         
         DeferredWorkQueue.runLater(() -> {
@@ -202,6 +208,7 @@ public class Main {
                                                             ModBlocks.GOLD_CONDENSING_BARREL, ModBlocks.IMBUED_CONDENSING_BARREL, ModBlocks.STEEL_CONDENSING_BARREL, ModBlocks.DIAMOND_CONDENSING_BARREL,
                                                             ModBlocks.EMERALD_CONDENSING_BARREL, ModBlocks.ENDSTEEL_CONDENSING_BARREL).build(null).setRegistryName(MODID, "condensing_barrel"));
             event.getRegistry().register(TileEntityType.Builder.create(EmitterTileEntity::new, ModBlocks.EMITTER_0, ModBlocks.EMITTER_1, ModBlocks.EMITTER_2).build(null).setRegistryName(MODID, "emitter"));
+            event.getRegistry().register(TileEntityType.Builder.create(ReservoirTileEntity::new, ModBlocks.RESERVOIR).build(null).setRegistryName(MODID, "reservoir"));
         }
         
     }

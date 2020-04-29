@@ -41,7 +41,6 @@ public class ModItems {
     public static final Item TUBE = new ItemBase("tube");
     public static final Item FUNNEL = new ItemWithContainer("funnel");
     public static final Item CONDENSER = new ItemBase("condenser");
-    public static final Item RESERVOIR = new ItemBase("reservoir");
     public static final Item FILTER_PAPER = new ItemBase("filter_paper");
     public static final Item SALT = new ItemBase("salt");
     public static final Item UPGRADE_0 = new BarrelUpgrade(0, "stone");
@@ -60,8 +59,8 @@ public class ModItems {
     public static final Item CONDUCTIVE_ALLOY_INGOT = new ItemBase("conductive_alloy_ingot");
     public static final Item STEEL_INGOT = new ItemBase("steel_ingot");
     public static final Item ENDSTEEL_INGOT = new ItemBase("endsteel_ingot");
-    public static final Item STEEL_BLADE = new Blade("steel_blade", 1200);
-    public static final Item DIAMOND_BLADE = new Blade("diamond_blade", 1800);
+    public static final Item STEEL_BLADE = new Blade("steel_blade", 320);
+    public static final Item DIAMOND_BLADE = new Blade("diamond_blade", 640);
     public static final Item REDSTONE_COIL = new ItemBase("redstone_coil");
     public static final Item CONDUCTIVE_ALLOY_COIL = new ItemBase("conductive_alloy_coil");
     public static final Item ENDER_COIL = new ItemBase("ender_coil");
@@ -71,6 +70,10 @@ public class ModItems {
     
     public static final Item SURFACE_RENDERER = new Item(new Item.Properties()).setRegistryName("surface_renderer");
     public static final Item CONDENSED_MATERIAL_CAGE_RENDERER = new Item(new Item.Properties()).setRegistryName("condensed_material_cage_renderer");
+    public static final Item RESERVOIR_RENDERER = new Item(new Item.Properties()).setRegistryName("reservoir_renderer");
+    
+    public static final Item FILTERED_WATER_BUCKET = new CustomBucketItem(ModFluids.FILTERED_WATER);
+    public static final Item PURIFIED_WATER_BUCKET = new CustomBucketItem(ModFluids.PURIFIED_WATER);
     
     public static void init() {
         for(int i = 0; i < 16; i++) {
@@ -87,5 +90,6 @@ public class ModItems {
         
         ITEMS.add(SURFACE_RENDERER);
         ITEMS.add(CONDENSED_MATERIAL_CAGE_RENDERER);
+        ITEMS.add(RESERVOIR_RENDERER);
     }
 }

@@ -11,6 +11,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -29,7 +30,7 @@ public class Crystal extends ItemBase {
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
-        if(stack.hasTag() && stack.getTag().contains("material")) {
+        if(stack.hasTag() && stack.getTag().contains("material", Constants.NBT.TAG_STRING)) {
             if(!MaterialManager.material_names.contains(stack.getTag().getString("material")))
                 tooltip.add(new TranslationTextComponent("qrystal.mat.unknown").applyTextStyle(TextFormatting.RED));
         } else {
@@ -40,7 +41,7 @@ public class Crystal extends ItemBase {
     @Override
     public ITextComponent getDisplayName(ItemStack stack) {
         ITextComponent material;
-        if(stack.hasTag() && stack.getTag().contains("material")) {
+        if(stack.hasTag() && stack.getTag().contains("material", Constants.NBT.TAG_STRING)) {
             String mat = stack.getTag().getString("material");
             if(MaterialManager.material_names.contains(mat))
                 material = new TranslationTextComponent(MaterialManager.materials.get(mat).lang).appendText(" ");

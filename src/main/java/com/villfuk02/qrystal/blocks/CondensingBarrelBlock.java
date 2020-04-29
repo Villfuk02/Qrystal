@@ -102,6 +102,11 @@ public class CondensingBarrelBlock extends Block {
     }
     
     @Override
+    public boolean hasComparatorInputOverride(BlockState state) {
+        return true;
+    }
+    
+    @Override
     public int getComparatorInputOverride(BlockState blockState, World worldIn, BlockPos pos) {
         TileEntity tileEntity = worldIn.getTileEntity(pos);
         if(tileEntity instanceof CondensingBarrelTileEntity)

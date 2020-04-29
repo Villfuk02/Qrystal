@@ -140,10 +140,6 @@ public abstract class CutterTileEntity extends TileEntity implements INamedConta
     public void read(CompoundNBT compound) {
         super.read(compound);
         readClient(compound);
-        
-        if(pos != null && world != null) {
-            world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 2);
-        }
     }
     
     

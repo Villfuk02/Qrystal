@@ -1,16 +1,19 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "QBQ",
-    "BQB",
-    "QBQ"
+    "QPQ",
+    "PBP",
+    "QPQ"
   ],
   "key": {
     "B": {
       "item": "minecraft:iron_bars"
     },
+    "P": {
+      "item": "qrystal:filter_paper"
+    },
     "Q": {
-      "item": "qrystal:crystal_small_1",
+      "item": "qrystal:crystal_medium_1",
       "type": "forge:nbt",
       "count": 1,
       "nbt": "{material:qeri}"

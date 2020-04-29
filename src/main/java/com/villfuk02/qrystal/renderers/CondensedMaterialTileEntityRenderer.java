@@ -1,4 +1,4 @@
-package com.villfuk02.qrystal.items;
+package com.villfuk02.qrystal.renderers;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.villfuk02.qrystal.init.ModItems;
@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.util.Constants;
 
 public class CondensedMaterialTileEntityRenderer extends ItemStackTileEntityRenderer {
     
@@ -20,7 +21,8 @@ public class CondensedMaterialTileEntityRenderer extends ItemStackTileEntityRend
             return;
         matrix.push();
         matrix.translate(0.5, 0.5, 0.5);
-        if(stack.hasTag() && stack.getTag().contains("item") && stack.getTag().contains("power") && !ItemStack.read(stack.getTag().getCompound("item")).isEmpty()) {
+        if(stack.hasTag() && stack.getTag().contains("item", Constants.NBT.TAG_COMPOUND) && stack.getTag().contains("power", Constants.NBT.TAG_INT) &&
+                !ItemStack.read(stack.getTag().getCompound("item")).isEmpty()) {
             matrix.push();
             Quaternion q = Vector3f.YN.rotationDegrees(225);
             q.multiply(Vector3f.XN.rotationDegrees(30));

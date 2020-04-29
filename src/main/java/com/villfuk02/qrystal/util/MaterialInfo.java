@@ -1,6 +1,6 @@
 package com.villfuk02.qrystal.util;
 
-import javafx.util.Pair;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.Map;

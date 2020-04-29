@@ -1,11 +1,12 @@
 {
   "type": "minecraft:crafting_shapeless",
+  "group": "purified_water_bucket",
   "ingredients": [
     {
-      "item": "qrystal:filled_flask_500",
-      "type": "forge:nbt",
-      "count": 1,
-      "nbt": "{fluid:water}"
+      "item": "minecraft:water_bucket"
+    },
+    {
+      "item": "qrystal:activated_carbon"
     },
     {
       "item": "qrystal:activated_carbon"
@@ -20,13 +21,10 @@
       "item": "qrystal:funnel"
     },
     {
-      "item": "qrystal:flask"
+      "item": "minecraft:bucket"
     }
   ],
   "result": {
-    "item": "qrystal:filled_flask_500",
-    "type": "forge:nbt",
-    "count": 1,
-    "nbt": "{fluid:\"qrystal:purified_water\"}"
+    "item": "qrystal:purified_water_bucket"
   }
 }

@@ -13,7 +13,7 @@
       "tag": "forge:dusts/redstone"
     },
     "Q": {
-      "item": "qrystal:crystal_seed_3",
+      "item": "qrystal:crystal_small_3",
       "type": "forge:nbt",
       "count": 1,
       "nbt": "{material:qini}"
@@ -21,6 +21,6 @@
   },
   "result": {
     "item": "qrystal:heat_conduit",
-    "count": 2
+    "count": 1
   }
 }

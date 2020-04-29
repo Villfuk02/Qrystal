@@ -32,10 +32,6 @@ public class EmitterTileEntity extends TileEntity implements ITickableTileEntity
     public void read(CompoundNBT compound) {
         super.read(compound);
         readClient(compound);
-        
-        if(pos != null && world != null) {
-            world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 2);
-        }
     }
     
     

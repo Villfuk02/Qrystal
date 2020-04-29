@@ -11,6 +11,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -53,8 +54,6 @@ public class Hammer extends ToolItem {
         if(context.getFace() != Direction.DOWN && world.isAirBlock(blockpos.up())) {
             if(world.getBlockState(blockpos).getBlock() == Blocks.OBSIDIAN || world.getBlockState(blockpos).getBlock() == Blocks.SMOOTH_STONE || world.getBlockState(blockpos).getBlock() == Blocks.IRON_BLOCK) {
                 PlayerEntity playerentity = context.getPlayer();
-                
-                
                 List<ItemEntity> ies = world.getEntitiesWithinAABB(EntityType.ITEM, new AxisAlignedBB(blockpos.up()), e -> true);
                 for(ItemEntity ie : ies) {
                     if(RecipeUtil.doesCut(ie.getItem(), world, false)) {
@@ -69,7 +68,7 @@ public class Hammer extends ToolItem {
                                 ie.remove();
                                 
                                 if(playerentity != null) {
-                                    context.getItem().damageItem(1, playerentity, (p_220043_1_) -> {
+                                    context.getItem().damageItem(ie.getItem().getCount(), playerentity, (p_220043_1_) -> {
                                         p_220043_1_.sendBreakAnimation(context.getHand());
                                     });
                                 }
@@ -181,4 +180,17 @@ public class Hammer extends ToolItem {
         tooltip.add(new TranslationTextComponent("qrystal.hammer.tooltip2").applyTextStyle(TextFormatting.GOLD));
     }
     
+    @Override
+    public void onCreated(ItemStack stack, World worldIn, PlayerEntity playerIn) {
+        if(!withWorld && !worldIn.isRemote())
+            getEffectiveOn(worldIn);
+        super.onCreated(stack, worldIn, playerIn);
+    }
+    
+    @Override
+    public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
+        if(!withWorld && !worldIn.isRemote())
+            getEffectiveOn(worldIn);
+        super.inventoryTick(stack, worldIn, entityIn, itemSlot, isSelected);
+    }
 }

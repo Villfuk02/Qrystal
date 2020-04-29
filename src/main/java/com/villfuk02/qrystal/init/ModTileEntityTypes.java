@@ -21,4 +21,5 @@ public class ModTileEntityTypes {
     public static final TileEntityType<UltimateEvaporatorTileEntity> ULTIMATE_EVAPORATOR = null;
     public static final TileEntityType<CondensingBarrelTileEntity> CONDENSING_BARREL = null;
     public static final TileEntityType<EmitterTileEntity> EMITTER = null;
+    public static final TileEntityType<ReservoirTileEntity> RESERVOIR = null;
 }

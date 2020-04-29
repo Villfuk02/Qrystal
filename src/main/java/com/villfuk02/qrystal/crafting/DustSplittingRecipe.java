@@ -13,6 +13,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 public class DustSplittingRecipe extends SpecialRecipe {
@@ -31,7 +32,7 @@ public class DustSplittingRecipe extends SpecialRecipe {
             if(!found && itemStack.getItem() instanceof CrystalDust && ((CrystalDust)itemStack.getItem()).size > 1) {
                 if(itemStack.hasTag()) {
                     CompoundNBT tag = itemStack.getTag();
-                    if(tag.contains("material") && MaterialManager.material_names.contains(tag.getString("material"))) {
+                    if(tag.contains("material", Constants.NBT.TAG_STRING) && MaterialManager.material_names.contains(tag.getString("material"))) {
                         found = true;
                         continue;
                     }

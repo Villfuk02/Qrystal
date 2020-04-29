@@ -16,6 +16,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
@@ -40,8 +41,8 @@ public class FluidMixingRecipe implements IRecipe<IInventory> {
     
     public static final int DEFAULT_TIME = 600;//600 for evaporating 1 fluid, 1200 for two fluids, 300 for mixing, 1800 for long processes
     
-    public FluidMixingRecipe(ResourceLocation id, ResourceLocation in1, ResourceLocation tag1, String nbt1, ResourceLocation in2, ResourceLocation tag2, String nbt2,
-                             String fluid1, int fluid1Amt, String fluid2, int fluid2Amt, String result, int resultAmt, ResourceLocation resultItem, int time) {
+    public FluidMixingRecipe(ResourceLocation id, ResourceLocation in1, ResourceLocation tag1, String nbt1, ResourceLocation in2, ResourceLocation tag2, String nbt2, String fluid1, int fluid1Amt, String fluid2,
+                             int fluid2Amt, String result, int resultAmt, ResourceLocation resultItem, int time) {
         this.id = id;
         this.in1 = in1;
         this.tag1 = tag1;
@@ -111,7 +112,7 @@ public class FluidMixingRecipe implements IRecipe<IInventory> {
             Main.LOGGER.error("Flasks can only have 25, 125, 250 or 500 mB of fluid");
             return false;
         }
-        if(s.getItem() == ModItems.FILLED_FLASKS.get(amt) && s.hasTag() && s.getTag().contains("fluid") && s.getTag().getString("fluid").equals(fluid))
+        if(s.getItem() == ModItems.FILLED_FLASKS.get(amt) && s.hasTag() && s.getTag().contains("fluid", Constants.NBT.TAG_STRING) && s.getTag().getString("fluid").equals(fluid))
             return true;
         return false;
     }

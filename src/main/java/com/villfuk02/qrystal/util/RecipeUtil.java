@@ -1,21 +1,29 @@
 package com.villfuk02.qrystal.util;
 
+import com.mojang.datafixers.util.Pair;
 import com.villfuk02.qrystal.QrystalConfig;
 import com.villfuk02.qrystal.crafting.CustomCuttingRecipe;
 import com.villfuk02.qrystal.dataserializers.MaterialManager;
 import com.villfuk02.qrystal.init.ModItems;
+import com.villfuk02.qrystal.items.CondensedMaterial;
 import com.villfuk02.qrystal.items.Crystal;
 import com.villfuk02.qrystal.items.CrystalDust;
-import javafx.util.Pair;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.ICraftingRecipe;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -31,8 +39,8 @@ public class RecipeUtil {
     public static ArrayList<ItemStack> getResult(ArrayList<Pair<ItemStack, Float>> recipe, Random random) {
         ArrayList<ItemStack> result = new ArrayList<>();
         for(Pair<ItemStack, Float> p : recipe) {
-            ItemStack is = p.getKey();
-            float baseAmt = p.getValue();
+            ItemStack is = p.getFirst();
+            float baseAmt = p.getSecond();
             int amt = 0;
             if(baseAmt >= 1f) {
                 amt = is.getCount() * (int)baseAmt;
@@ -56,7 +64,7 @@ public class RecipeUtil {
     }
     
     public static boolean doesCut(ItemStack input, World world, boolean combineDust) {
-        if(combineDust && input.getItem() instanceof CrystalDust && input.hasTag() && input.getTag().contains("material")) {
+        if(combineDust && input.getItem() instanceof CrystalDust && input.hasTag() && input.getTag().contains("material", Constants.NBT.TAG_STRING)) {
             int value = ((CrystalDust)input.getItem()).size * input.getCount();
             if(value == ModItems.DUST_SIZES[0] * 64)
                 return true;
@@ -67,7 +75,7 @@ public class RecipeUtil {
             }
             return false;
         }
-        if(input.getItem() instanceof Crystal && input.hasTag() && input.getTag().contains("material")) {
+        if(input.getItem() instanceof Crystal && input.hasTag() && input.getTag().contains("material", Constants.NBT.TAG_STRING)) {
             if(isQrystalMaterial(input.getTag().getString("material"), false))
                 return ((Crystal)input.getItem()).size != CrystalUtil.Size.SEED;
             switch(((Crystal)input.getItem()).size) {
@@ -90,14 +98,14 @@ public class RecipeUtil {
     }
     
     public static ArrayList<Pair<ItemStack, Float>> getCuttingRecipe(CuttingType cuttingType, int tier, ItemStack input, World world, boolean combineDust) {
-        if(combineDust && input.getItem() instanceof CrystalDust && input.hasTag() && input.getTag().contains("material")) {
+        if(combineDust && input.getItem() instanceof CrystalDust && input.hasTag() && input.getTag().contains("material", Constants.NBT.TAG_STRING)) {
             return getDustRecipe(((CrystalDust)input.getItem()).size * input.getCount(), input.getTag().getString("material"), 64, false, 1);
         }
         
-        if(input.getItem() instanceof Crystal && input.hasTag() && input.getTag().contains("material")) {
+        if(input.getItem() instanceof Crystal && input.hasTag() && input.getTag().contains("material", Constants.NBT.TAG_STRING)) {
             ArrayList<Pair<ItemStack, Float>> r = getCrystalCuttingRecipe((Crystal)input.getItem(), input.getTag().getString("material"), cuttingType, tier);
             for(Pair<ItemStack, Float> p : r) {
-                p.getKey().setCount(input.getCount());
+                p.getFirst().setCount(input.getCount());
             }
             return r;
         }
@@ -141,6 +149,28 @@ public class RecipeUtil {
                     return result;
             }
         }
+        if(isQrystalMaterial(mat, true)) {
+            switch(input.size) {
+                case SEED:
+                    return result;
+                case SMALL:
+                    if(input.tier == 0) {
+                        if(QrystalConfig.material_tier_multiplier == 2)
+                            result.add(new Pair<>(getStackWithMatTag(ModItems.DUSTS.get("dust_6"), mat), 3f));
+                        else if(QrystalConfig.material_tier_multiplier == 3)
+                            result.add(new Pair<>(getStackWithMatTag(ModItems.DUSTS.get("dust_6"), mat), 2f));
+                        else
+                            result.add(new Pair<>(getStackWithMatTag(ModItems.DUSTS.get("dust_1"), mat), 36 / (float)QrystalConfig.material_tier_multiplier));
+                    }
+                    return result;
+                case MEDIUM:
+                    result.add(new Pair<>(getStackWithMatTag(getCrystal(input.tier, CrystalUtil.Size.SMALL), mat), (float)(QrystalConfig.material_tier_multiplier * QrystalConfig.qrystal_yield_multiplier)));
+                    return result;
+                case LARGE:
+                    result.add(new Pair<>(getStackWithMatTag(getCrystal(input.tier, CrystalUtil.Size.MEDIUM), mat), (float)(QrystalConfig.material_tier_multiplier * QrystalConfig.qrystal_yield_multiplier)));
+                    return result;
+            }
+        }
         double rawValue = BASE_VALUE;
         switch(input.size) {
             case SEED:
@@ -166,21 +196,21 @@ public class RecipeUtil {
         Map<ResourceLocation, Integer> outputs = MaterialManager.materials.get(mat).outputs;
         //BIGGEST
         Pair<ResourceLocation, Integer> biggest = getBiggestOutput(outputs, yield);
-        if(biggest.getValue() > 0) {
-            Pair<ItemStack, Double> output = condenseD(new ItemStack(ForgeRegistries.ITEMS.getValue(biggest.getKey())), mat, yield / biggest.getValue(), 65);
-            int amt = output.getKey().getCount();
-            yield -= biggest.getValue() * output.getValue();
-            rawValue -= biggest.getValue() * output.getValue() / yieldMulti;
-            output.getKey().setCount(1);
-            result.add(new Pair<>(output.getKey(), (float)amt));
+        if(biggest.getSecond() > 0) {
+            Pair<ItemStack, Double> output = condenseD(new ItemStack(ForgeRegistries.ITEMS.getValue(biggest.getFirst())), mat, yield / biggest.getSecond(), 65);
+            int amt = output.getFirst().getCount();
+            yield -= biggest.getSecond() * output.getSecond();
+            rawValue -= biggest.getSecond() * output.getSecond() / yieldMulti;
+            output.getFirst().setCount(1);
+            result.add(new Pair<>(output.getFirst(), (float)amt));
             //2ND BIGGEST
             biggest = getBiggestOutput(outputs, yield);
-            if(biggest.getValue() > 0) {
-                output = condenseD(new ItemStack(ForgeRegistries.ITEMS.getValue(biggest.getKey())), mat, yield / biggest.getValue(), 65);
-                amt = output.getKey().getCount();
-                rawValue -= biggest.getValue() * output.getValue() / yieldMulti;
-                output.getKey().setCount(1);
-                result.add(new Pair<>(output.getKey(), (float)amt));
+            if(biggest.getSecond() > 0) {
+                output = condenseD(new ItemStack(ForgeRegistries.ITEMS.getValue(biggest.getFirst())), mat, yield / biggest.getSecond(), 65);
+                amt = output.getFirst().getCount();
+                rawValue -= biggest.getSecond() * output.getSecond() / yieldMulti;
+                output.getFirst().setCount(1);
+                result.add(new Pair<>(output.getFirst(), (float)amt));
             }
         }
         rawValue /= BASE_VALUE;
@@ -224,10 +254,10 @@ public class RecipeUtil {
                     long amt = value / l;
                     if(amt >= 64 && condense) {
                         Pair<ItemStack, Long> output = condenseL(getStackWithMatTag(ModItems.DUSTS.get("dust_" + l), mat), mat, amt, 64);
-                        amt = output.getKey().getCount();
-                        output.getKey().setCount(1);
-                        value -= amt * l * output.getValue();
-                        result.add(new Pair<>(output.getKey(), (float)amt));
+                        amt = output.getFirst().getCount();
+                        output.getFirst().setCount(1);
+                        value -= amt * l * output.getSecond();
+                        result.add(new Pair<>(output.getFirst(), (float)amt));
                     } else {
                         if(amt > 64)
                             amt = 64;
@@ -246,7 +276,7 @@ public class RecipeUtil {
         ArrayList<Pair<ItemStack, Float>> result = new ArrayList<>();
         for(CustomCuttingRecipe.RecipeOutput o : recipe.getOutputs()) {
             if(cuttingType == CuttingType.HAMMER && o.hammer || cuttingType == CuttingType.SAW && o.saw || cuttingType == CuttingType.LASER && o.laser) {
-                result.add(new Pair(getStackWithMatTag(o.item, input.getCount(), o.material), o.amt));
+                result.add(new Pair<>(getStackWithMatTag(o.item, input.getCount(), o.material), o.amt));
             }
         }
         return result;
@@ -309,7 +339,7 @@ public class RecipeUtil {
     public static Pair<ResourceLocation, Integer> getBiggestOutput(Map<ResourceLocation, Integer> sources, double max) {
         Pair<ResourceLocation, Integer> result = new Pair<>(new ResourceLocation(""), 0);
         for(ResourceLocation k : sources.keySet()) {
-            if(sources.get(k) > result.getValue() && sources.get(k) <= max) {
+            if(sources.get(k) > result.getSecond() && sources.get(k) <= max) {
                 result = new Pair<>(k, sources.get(k));
             }
         }
@@ -432,7 +462,37 @@ public class RecipeUtil {
             @Override
             public void clear() {
             }
+            
+            
         };
+    }
+    
+    public static CraftingInventory FakeCraftingInventory(ItemStack stack, int slots) {
+        FakeWorkbenchContainer c = new FakeWorkbenchContainer(stack, slots);
+        return c.craftMatrix;
+    }
+    
+    public static class FakeWorkbenchContainer extends Container {
+        public CraftingInventory craftMatrix = new CraftingInventory(this, 3, 3);
+        
+        public FakeWorkbenchContainer(ItemStack in, int amt) {
+            super(ContainerType.CRAFTING, -999);
+            for(int i = 0; i < 3; ++i) {
+                for(int j = 0; j < 3; ++j) {
+                    addSlot(new Slot(craftMatrix, j + i * 3, 30 + j * 18, 17 + i * 18));
+                    if(amt == 2 && j + i * 3 == 2)
+                        continue;
+                    if(amt > 0)
+                        craftMatrix.setInventorySlotContents(j + i * 3, in.copy());
+                    amt--;
+                }
+            }
+        }
+        
+        @Override
+        public boolean canInteractWith(PlayerEntity playerIn) {
+            return false;
+        }
     }
     
     public static Pair<int[], ArrayList<ItemStack>> separateCrystals(String mat, int tier, ItemStack... input) {
@@ -442,7 +502,7 @@ public class RecipeUtil {
             if(!stack.isEmpty()) {
                 if(stack.getItem() instanceof Crystal) {
                     Crystal crystal = (Crystal)stack.getItem();
-                    if(stack.hasTag() && stack.getTag().contains("material") && stack.getTag().getString("material").equals(mat)) {
+                    if(stack.hasTag() && stack.getTag().contains("material", Constants.NBT.TAG_STRING) && stack.getTag().getString("material").equals(mat)) {
                         if(crystal.tier == tier) {
                             switch(crystal.size) {
                                 case SEED:
@@ -472,11 +532,11 @@ public class RecipeUtil {
     
     public static Pair<Integer, ArrayList<ItemStack>> crystallize(String mat, int seeds, int smalls, int tier, ItemStack... input) {
         Pair<int[], ArrayList<ItemStack>> separated = separateCrystals(mat, tier, input);
-        int small = separated.getKey()[0];
-        int medium = separated.getKey()[1];
-        int large = separated.getKey()[2];
-        int next = separated.getKey()[3];
-        ArrayList<ItemStack> result = separated.getValue();
+        int small = separated.getFirst()[0];
+        int medium = separated.getFirst()[1];
+        int large = separated.getFirst()[2];
+        int next = separated.getFirst()[3];
+        ArrayList<ItemStack> result = separated.getSecond();
         if(seeds > 0 && smalls >= QrystalConfig.material_tier_multiplier) {
             int amt = Math.min(seeds, smalls / QrystalConfig.material_tier_multiplier);
             smalls -= amt * QrystalConfig.material_tier_multiplier;
@@ -516,7 +576,7 @@ public class RecipeUtil {
     public static ArrayList<Pair<ItemStack, Float>> roundUp(ArrayList<Pair<ItemStack, Float>> recipe) {
         ArrayList<Pair<ItemStack, Float>> result = new ArrayList<>();
         for(Pair<ItemStack, Float> p : recipe) {
-            result.add(new Pair<>(p.getKey(), (float)MathHelper.ceil(p.getValue())));
+            result.add(new Pair<>(p.getFirst(), (float)MathHelper.ceil(p.getSecond())));
         }
         return result;
     }
@@ -574,7 +634,7 @@ public class RecipeUtil {
     
     public static String getAssociatedMaterial(ItemStack item) {
         String mat = "";
-        if(item.hasTag() && item.getTag().contains("material")) {
+        if(item.hasTag() && item.getTag().contains("material", Constants.NBT.TAG_STRING)) {
             mat = item.getTag().getString("material");
         } else {
             for(String m : MaterialManager.materials.keySet()) {
@@ -598,6 +658,119 @@ public class RecipeUtil {
         i = i ^ p.getZ();
         i = (i * 7) ^ p.getX();
         return (i * 3 + 41) ^ p.getY() ^ p.getZ();
+    }
+    
+    public static Pair<ItemStack, Integer>[] getComponentList(ItemStack in, World w) {
+        if(in.getItem() instanceof CondensedMaterial) {
+            if(in.hasTag() && in.getTag().contains("power", Constants.NBT.TAG_INT) && in.getTag().contains("item", Constants.NBT.TAG_COMPOUND))
+                in = ItemStack.read(in.getTag().getCompound("item"));
+            else
+                return new Pair[0];
+        }
+        ArrayList<Pair<ItemStack, Pair<Byte, Byte>>> open = new ArrayList<>();
+        ArrayList<Pair<ItemStack, Pair<Byte, Byte>>> closed = new ArrayList<>();
+        open.add(new Pair<>(in, new Pair<>((byte)0, (byte)0)));
+        while(open.size() > 0) {
+            Pair<ItemStack, Pair<Byte, Byte>> current = open.get(0);
+            closed.add(new Pair<>(current.getFirst(), current.getSecond()));
+            open.remove(0);
+            ItemStack temp = upstack(current.getFirst(), 9, w);
+            if(!temp.isEmpty())
+                open.add(new Pair<>(temp, new Pair<>(current.getSecond().getFirst(), (byte)(current.getSecond().getSecond() + (byte)2))));
+            temp = upstack(current.getFirst(), 6, w);
+            if(!temp.isEmpty())
+                open.add(new Pair<>(temp, new Pair<>((byte)(current.getSecond().getFirst() + (byte)1), (byte)(current.getSecond().getSecond() + (byte)1))));
+            temp = upstack(current.getFirst(), 4, w);
+            if(!temp.isEmpty())
+                open.add(new Pair<>(temp, new Pair<>((byte)(current.getSecond().getFirst() + (byte)2), current.getSecond().getSecond())));
+        }
+        Pair<ItemStack, Integer> base = new Pair<>(ItemStack.EMPTY, 0);
+        for(int i = 0; i < closed.size(); i++) {
+            long power = longPositivePower(3, closed.get(i).getSecond().getSecond().intValue()) << closed.get(i).getSecond().getFirst().intValue();
+            if(power > Integer.MAX_VALUE) {
+                base = new Pair<>(in, 1);
+                break;
+            }
+            if(power > base.getSecond())
+                base = new Pair<>(closed.get(i).getFirst(), (int)power);
+        }
+        open.clear();
+        closed.clear();
+        open.add(new Pair<>(base.getFirst(), new Pair<>((byte)0, (byte)0)));
+        byte max2 = 0;
+        byte max3 = 0;
+        long max = 1;
+        while(open.size() > 0) {
+            Pair<ItemStack, Pair<Byte, Byte>> current = open.get(0);
+            closed.add(new Pair<>(current.getFirst(), current.getSecond()));
+            open.remove(0);
+            Pair<ItemStack, Integer> temp = downstack(current.getFirst(), w);
+            max = longPositivePower(3, max3) << (int)(max2);
+            if(temp != null) {
+                if(temp.getSecond() == 9 && max * 9 < Integer.MAX_VALUE) {
+                    open.add(new Pair<>(temp.getFirst(), new Pair<>(current.getSecond().getFirst(), (byte)(current.getSecond().getSecond() + (byte)2))));
+                    if(current.getSecond().getSecond() + (byte)2 > max3)
+                        max3 = (byte)(current.getSecond().getSecond() + (byte)2);
+                } else if(temp.getSecond() == 6 && max * 6 < Integer.MAX_VALUE) {
+                    open.add(new Pair<>(temp.getFirst(), new Pair<>((byte)(current.getSecond().getFirst() + (byte)1), (byte)(current.getSecond().getSecond() + (byte)1))));
+                    if(current.getSecond().getSecond() + (byte)1 > max3)
+                        max3 = (byte)(current.getSecond().getSecond() + (byte)1);
+                    if(current.getSecond().getFirst() + (byte)1 > max2)
+                        max2 = (byte)(current.getSecond().getFirst() + (byte)1);
+                } else if(temp.getSecond() == 4 && max * 4 < Integer.MAX_VALUE) {
+                    open.add(new Pair<>(temp.getFirst(), new Pair<>((byte)(current.getSecond().getFirst() + (byte)2), current.getSecond().getSecond())));
+                    if(current.getSecond().getFirst() + (byte)2 > max2)
+                        max2 = (byte)(current.getSecond().getFirst() + (byte)2);
+                }
+            }
+        }
+        ArrayList<Pair<ItemStack, Integer>> map = new ArrayList<>();
+        for(int i = 0; i < closed.size(); i++) {
+            map.add(new Pair<>(closed.get(i).getFirst(), (int)(max / (longPositivePower(3, closed.get(i).getSecond().getSecond().intValue()) << closed.get(i).getSecond().getFirst().intValue()))));
+        }
+        return map.toArray(new Pair[0]);
+    }
+    
+    public static ItemStack upstack(ItemStack in, int amt, World w) {
+        CraftingInventory c = FakeCraftingInventory(in, amt);
+        Optional<ICraftingRecipe> o = w.getRecipeManager().getRecipe(IRecipeType.CRAFTING, c, w);
+        if(!o.isPresent())
+            return ItemStack.EMPTY;
+        ItemStack r = o.get().getCraftingResult(c);
+        if(r.isEmpty() || r.getCount() != 1)
+            return ItemStack.EMPTY;
+        c = FakeCraftingInventory(r, 1);
+        o = w.getRecipeManager().getRecipe(IRecipeType.CRAFTING, c, w);
+        if(!o.isPresent())
+            return ItemStack.EMPTY;
+        ItemStack s = o.get().getCraftingResult(c);
+        if(s.isEmpty() || s.getCount() != amt)
+            return ItemStack.EMPTY;
+        if(ItemHandlerHelper.canItemStacksStack(s, in))
+            return r;
+        return ItemStack.EMPTY;
+    }
+    
+    public static Pair<ItemStack, Integer> downstack(ItemStack in, World w) {
+        CraftingInventory c = FakeCraftingInventory(in, 1);
+        Optional<ICraftingRecipe> o = w.getRecipeManager().getRecipe(IRecipeType.CRAFTING, c, w);
+        if(!o.isPresent())
+            return null;
+        ItemStack r = o.get().getCraftingResult(c);
+        if(r.isEmpty() || r.getCount() <= 4)
+            return null;
+        ItemStack n = r.copy();
+        n.setCount(1);
+        c = FakeCraftingInventory(n, r.getCount());
+        o = w.getRecipeManager().getRecipe(IRecipeType.CRAFTING, c, w);
+        if(!o.isPresent())
+            return null;
+        ItemStack s = o.get().getCraftingResult(c);
+        if(s.isEmpty() || s.getCount() != 1)
+            return null;
+        if(ItemHandlerHelper.canItemStacksStack(s, in))
+            return new Pair<>(n, r.getCount());
+        return null;
     }
     
 }

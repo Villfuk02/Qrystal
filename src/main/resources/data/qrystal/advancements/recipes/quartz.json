@@ -1,0 +1,40 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "qrystal:condenser",
+      "qrystal:filter_paper",
+      "qrystal:flask",
+      "qrystal:filtered_water_bucket",
+      "qrystal:purfied_water_bucket_from_filtered_water",
+      "qrystal:purfied_water_bucket_from_water",
+      "qrystal:funnel",
+      "qrystal:fused_quartz_from_blasting",
+      "qrystal:melting_flask",
+      "qrystal:melting_filled_flask_25",
+      "qrystal:melting_filled_flask_125",
+      "qrystal:melting_filled_flask_250",
+      "qrystal:melting_filled_flask_500",
+      "qrystal:quartz_dust_pile",
+      "qrystal:reservoir",
+      "qrystal:tube"
+    ]
+  },
+  "criteria": {
+    "has_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:gems/quartz"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_item"
+    ]
+  ]
+}

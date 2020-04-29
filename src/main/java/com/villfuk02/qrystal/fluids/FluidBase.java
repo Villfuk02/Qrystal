@@ -14,6 +14,7 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class FluidBase extends Fluid {
     
@@ -48,6 +49,8 @@ public class FluidBase extends Fluid {
     
     @Override
     public Item getFilledBucket() {
+        if(ForgeRegistries.ITEMS.containsKey(new ResourceLocation(Main.MODID, name + "_bucket")))
+            return ForgeRegistries.ITEMS.getValue(new ResourceLocation(Main.MODID, name + "_bucket"));
         return null;
     }
     

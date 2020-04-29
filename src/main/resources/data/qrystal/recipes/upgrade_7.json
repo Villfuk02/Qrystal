@@ -13,7 +13,7 @@
       "item": "qrystal:emerald_condensing_barrel"
     },
     "C": {
-      "item": "qrystal:crystal_small_8",
+      "item": "qrystal:crystal_medium_8",
       "type": "forge:nbt",
       "count": 1,
       "nbt": "{material:qoid}"

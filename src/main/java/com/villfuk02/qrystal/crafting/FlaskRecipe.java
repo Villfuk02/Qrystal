@@ -14,12 +14,13 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 public class FlaskRecipe extends SpecialRecipe {
     
-    private FlaskRecipe(final ResourceLocation id) {
+    private FlaskRecipe(ResourceLocation id) {
         super(id);
     }
     
@@ -39,7 +40,7 @@ public class FlaskRecipe extends SpecialRecipe {
                 flasks++;
                 if(itemStack.hasTag()) {
                     CompoundNBT tag = itemStack.getTag();
-                    if(tag.contains("fluid") && ForgeRegistries.FLUIDS.containsKey(new ResourceLocation(itemStack.getTag().getString("fluid")))) {
+                    if(tag.contains("fluid", Constants.NBT.TAG_STRING) && ForgeRegistries.FLUIDS.containsKey(new ResourceLocation(itemStack.getTag().getString("fluid")))) {
                         if(fluid.isEmpty())
                             fluid = tag.getString("fluid");
                         else if(!fluid.equals(tag.getString("fluid")))
@@ -59,8 +60,7 @@ public class FlaskRecipe extends SpecialRecipe {
             }
         }
         
-        return (empty_flasks == 0 && flasks > 1 && (amt == 125 || amt == 250 || amt == 500)) ||
-                (empty_flasks > 0 && (amt / flasks == 25 || amt / flasks == 125 || amt / flasks == 250));
+        return (empty_flasks == 0 && flasks > 1 && (amt == 125 || amt == 250 || amt == 500)) || (empty_flasks > 0 && (amt / flasks == 25 || amt / flasks == 125 || amt / flasks == 250));
     }
     
     @Override
@@ -127,17 +127,17 @@ public class FlaskRecipe extends SpecialRecipe {
     
     public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<FlaskRecipe> {
         @Override
-        public FlaskRecipe read(final ResourceLocation recipeID, final JsonObject json) {
+        public FlaskRecipe read(ResourceLocation recipeID, JsonObject json) {
             return new FlaskRecipe(recipeID);
         }
         
         @Override
-        public FlaskRecipe read(final ResourceLocation recipeID, final PacketBuffer buffer) {
+        public FlaskRecipe read(ResourceLocation recipeID, PacketBuffer buffer) {
             return new FlaskRecipe(recipeID);
         }
         
         @Override
-        public void write(final PacketBuffer buffer, final FlaskRecipe recipe) {
+        public void write(PacketBuffer buffer, FlaskRecipe recipe) {
         }
     }
 }

@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "qrystal:diamond_condensing_barrel",
+      "qrystal:emitter_2",
+      "qrystal:receiver_2",
+      "qrystal:qeri_block_2",
+      "qrystal:qawa_block_2",
+      "qrystal:qini_block_2",
+      "qrystal:qitae_block_2",
+      "qrystal:qoid_block_2",
+      "qrystal:qondo_block_2",
+      "qrystal:upgrade_5"
+    ]
+  },
+  "criteria": {
+    "has_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "qrystal:crystal_seed_6"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_item"
+    ]
+  ]
+}

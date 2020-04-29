@@ -70,11 +70,11 @@ public abstract class EvaporatorTileEntity extends TileEntity implements INamedC
                     case 0:
                         return stack.getItem() instanceof CrystalDust || (stack.getItem() instanceof Crystal && ((Crystal)stack.getItem()).size != CrystalUtil.Size.SEED);
                     case 1:
-                        return stack.getItem() instanceof FilledFlask && stack.hasTag() && stack.getTag().contains("fluid") &&
+                        return stack.getItem() instanceof FilledFlask && stack.hasTag() && stack.getTag().contains("fluid", Constants.NBT.TAG_STRING) &&
                                 FluidTierManager.solvents.containsKey(new ResourceLocation(stack.getTag().getString("fluid")));
                     case 2:
                         return stack.getItem() instanceof Crystal && ((Crystal)stack.getItem()).size == CrystalUtil.Size.SEED && ((Crystal)stack.getItem()).tier == tier + 1 && materialAmount > 0 &&
-                                stack.hasTag() && stack.getTag().contains("material") && RecipeUtil.isQrystalMaterial(stack.getTag().getString("material"), false) &&
+                                stack.hasTag() && stack.getTag().contains("material", Constants.NBT.TAG_STRING) && RecipeUtil.isQrystalMaterial(stack.getTag().getString("material"), false) &&
                                 stack.getTag().getString("material").equals(MaterialManager.materials.get(material).seed.toString());
                     default:
                         return false;
@@ -152,10 +152,6 @@ public abstract class EvaporatorTileEntity extends TileEntity implements INamedC
     public void read(CompoundNBT compound) {
         super.read(compound);
         readClient(compound);
-        
-        if(pos != null && world != null) {
-            world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 2);
-        }
     }
     
     
@@ -333,7 +329,7 @@ public abstract class EvaporatorTileEntity extends TileEntity implements INamedC
                 if(FluidMixingRecipe.testEmptyFlaskOutput(inventory.getStackInSlot(3))) {
                     fluidAmount = ((FilledFlask)inventory.getStackInSlot(1).getItem()).amt;
                     fluid = new ResourceLocation(inventory.getStackInSlot(1).getTag().getString("fluid"));
-                    tier = FluidTierManager.solvents.get(fluid).getKey();
+                    tier = FluidTierManager.solvents.get(fluid).getFirst();
                     inventory.extractItem(1, 1, false);
                     RecipeUtil.forceInsertSameOrEmptyStack(inventory, 3, new ItemStack(ModItems.FLASK));
                 }
@@ -346,7 +342,7 @@ public abstract class EvaporatorTileEntity extends TileEntity implements INamedC
     public int validateAndGetValue(ItemStack stack) {
         if(tier == -1)
             return 0;
-        if(!stack.hasTag() || !stack.getTag().contains("material"))
+        if(!stack.hasTag() || !stack.getTag().contains("material", Constants.NBT.TAG_STRING))
             return 0;
         if(!material.isEmpty() && !stack.getTag().getString("material").equals(material) &&
                 !((material.equals("qeri") || material.equals("qawa") || material.equals("qini")) && stack.getTag().getString("material").equals("qlear")))
