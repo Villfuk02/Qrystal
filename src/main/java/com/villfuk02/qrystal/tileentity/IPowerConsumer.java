@@ -1,7 +1,13 @@
 package com.villfuk02.qrystal.tileentity;
 
 public interface IPowerConsumer {
-    abstract void setPower(byte power);
+    void setPower(byte power);
     
-    abstract byte getPower();
+    byte getPower();
+    
+    byte getRequiredPower();
+    
+    default String getPowerString() {
+        return (getPower() >= getRequiredPower() ? getRequiredPower() : getPower()) + "/" + getRequiredPower();
+    }
 }

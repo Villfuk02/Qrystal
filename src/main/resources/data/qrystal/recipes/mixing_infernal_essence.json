@@ -1,12 +1,12 @@
 {
   "type": "qrystal:fluid_mixing",
   "fluid1": "lava",
-  "fluid1Amt": 500,
+  "fluid1Amt": 400,
   "fluid2": "qrystal:aqua_regia",
-  "fluid2Amt": 250,
+  "fluid2Amt": 200,
   "result": "qrystal:infernal_essence",
-  "resultAmt": 500,
+  "resultAmt": 400,
   "in1": "minecraft:redstone",
   "in2": "minecraft:nether_wart",
-  "time": 900
+  "time": 300
 }

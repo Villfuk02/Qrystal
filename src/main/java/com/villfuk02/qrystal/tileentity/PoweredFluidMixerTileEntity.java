@@ -12,9 +12,10 @@ import javax.annotation.Nonnull;
 
 public class PoweredFluidMixerTileEntity extends FluidMixerTileEntity implements IPowerConsumer {
     private byte powered;
+    public static final byte REQUIRED_POWER = 2;
     
     public PoweredFluidMixerTileEntity() {
-        super(ModTileEntityTypes.POWERED_FLUID_MIXER, 1, 8, ModBlocks.POWERED_FLUID_MIXER);
+        super(ModTileEntityTypes.POWERED_FLUID_MIXER, 1, 2, ModBlocks.POWERED_FLUID_MIXER);
     }
     
     @Nonnull
@@ -27,6 +28,11 @@ public class PoweredFluidMixerTileEntity extends FluidMixerTileEntity implements
     @Override
     public byte getPower() {
         return powered;
+    }
+    
+    @Override
+    public byte getRequiredPower() {
+        return REQUIRED_POWER;
     }
     
     @Override
@@ -50,6 +56,6 @@ public class PoweredFluidMixerTileEntity extends FluidMixerTileEntity implements
     
     @Override
     protected boolean isPowered() {
-        return powered >= 2;
+        return powered >= REQUIRED_POWER;
     }
 }

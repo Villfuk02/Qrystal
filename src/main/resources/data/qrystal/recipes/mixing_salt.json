@@ -1,6 +1,0 @@
-{
-  "type": "qrystal:fluid_mixing",
-  "fluid1": "qrystal:sea_water",
-  "fluid1Amt": 250,
-  "resultItem": "qrystal:salt"
-}

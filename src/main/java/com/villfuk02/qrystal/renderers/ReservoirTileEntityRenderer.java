@@ -28,15 +28,26 @@ public class ReservoirTileEntityRenderer extends TileEntityRenderer<ReservoirTil
     public void render(ReservoirTileEntity te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLightIn, int combinedOverlayIn) {
         IFluidHandler cap = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY).orElse(null);
         if(!cap.getFluidInTank(0).isEmpty()) {
-            float v = cap.getFluidInTank(0).getAmount() / (float)(FluidAttributes.BUCKET_VOLUME * 8) * 0.98f;
-            int wc = cap.getFluidInTank(0).getFluid().getAttributes().getColor();
-            ResourceLocation rl = cap.getFluidInTank(0).getFluid().getAttributes().getStillTexture();
+            te.lastFluid = cap.getFluidInTank(0).getRawFluid();
+            te.lastHeight = (te.lastHeight * 9 + cap.getFluidInTank(0).getAmount() / (float)(FluidAttributes.BUCKET_VOLUME * 8) * 0.98f) / 10;
+        } else {
+            te.lastHeight = te.lastHeight * 9 / 10;
+        }
+        
+        if(te.lastFluid != null && te.lastHeight > 0.0001f) {
+            int wc = te.lastFluid.getAttributes().getColor();
+            ResourceLocation rl = te.lastFluid.getAttributes().getStillTexture();
             int textureHeight = Minecraft.getInstance().getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(rl).getFrameCount();
-            int offset = (int)(Minecraft.getInstance().world.getGameTime() / 2) % (textureHeight * 2 - 2);
-            if(offset >= textureHeight)
-                offset = textureHeight * 2 - 2 - offset;
+            int offset;
+            if(textureHeight <= 1) {
+                offset = 0;
+            } else {
+                offset = (int)(Minecraft.getInstance().world.getGameTime() / 2) % (textureHeight * 2 - 2);
+                if(offset >= textureHeight)
+                    offset = textureHeight * 2 - 2 - offset;
+            }
             matrixStack.push();
-            renderFluid(matrixStack, buffer.getBuffer(RenderType.getBeaconBeam(new ResourceLocation(rl.getNamespace(), "textures/" + rl.getPath() + ".png"), false)), wc, v, offset, textureHeight);
+            renderFluid(matrixStack, buffer.getBuffer(RenderType.getBeaconBeam(new ResourceLocation(rl.getNamespace(), "textures/" + rl.getPath() + ".png"), false)), wc, te.lastHeight, offset, textureHeight);
             matrixStack.pop();
         }
     }

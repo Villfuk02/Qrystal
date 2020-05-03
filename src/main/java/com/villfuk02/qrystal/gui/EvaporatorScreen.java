@@ -6,7 +6,6 @@ import com.villfuk02.qrystal.container.EvaporatorContainer;
 import com.villfuk02.qrystal.tileentity.EvaporatorTileEntity;
 import com.villfuk02.qrystal.util.ColorUtils;
 import com.villfuk02.qrystal.util.RecipeUtil;
-import com.villfuk02.qrystal.util.handlers.FilledFlaskColorHandler;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
@@ -72,8 +71,6 @@ public class EvaporatorScreen extends ContainerScreen<EvaporatorContainer> {
         blit(startX, startY, 0, 0, xSize, ySize);
         
         EvaporatorTileEntity tileEntity = container.tileEntity;
-        int[] fc = FilledFlaskColorHandler.getColor(tileEntity.fluid);
-        RenderSystem.color3f(fc[0] / 255f, fc[1] / 255f, fc[2] / 255f);
         if(tileEntity.fluidAmount > 0) {
             blit(startX + 53, startY + 92, 176, 152, 11, (-48 * tileEntity.fluidAmount + 1) / 500 - 1);
         }

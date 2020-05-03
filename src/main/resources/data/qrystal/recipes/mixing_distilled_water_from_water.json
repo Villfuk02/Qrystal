@@ -2,5 +2,5 @@
   "type": "qrystal:fluid_mixing",
   "fluid1": "minecraft:water",
   "result": "qrystal:distilled_water",
-  "time": 1200
+  "time": 120
 }

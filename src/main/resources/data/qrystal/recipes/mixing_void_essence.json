@@ -1,12 +1,12 @@
 {
   "type": "qrystal:fluid_mixing",
   "fluid1": "qrystal:energized_infernal_essence",
-  "fluid1Amt": 500,
+  "fluid1Amt": 400,
   "fluid2": "qrystal:ethanol",
-  "fluid2Amt": 500,
+  "fluid2Amt": 400,
   "result": "qrystal:void_essence",
-  "resultAmt": 250,
+  "resultAmt": 200,
   "in1": "minecraft:chorus_fruit",
   "tag2": "forge:ender_pearls",
-  "time": 3600
+  "time": 1800
 }

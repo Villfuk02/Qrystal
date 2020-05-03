@@ -24,7 +24,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
@@ -75,6 +74,10 @@ public abstract class CutterTileEntity extends TileEntity implements INamedConta
         @Override
         @Nonnull
         public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+            if(stack.isEmpty())
+                return ItemStack.EMPTY;
+            if(!isItemValid(slot, stack))
+                return stack;
             return inventory.insertItem(slot, stack, simulate);
         }
         
@@ -138,7 +141,6 @@ public abstract class CutterTileEntity extends TileEntity implements INamedConta
     
     @Override
     public void read(CompoundNBT compound) {
-        super.read(compound);
         readClient(compound);
     }
     
@@ -195,54 +197,7 @@ public abstract class CutterTileEntity extends TileEntity implements INamedConta
         }
         
         if((world.getGameTime() + RecipeUtil.hashPos(pos) & 7) == 0) {
-            for(int i = 0; i < buttons.length; i++) {
-                if(buttons[i].dir != null) {
-                    if(buttons[i].input) {
-                        if(world.getTileEntity(pos.offset(buttons[i].dir)) != null &&
-                                world.getTileEntity(pos.offset(buttons[i].dir)).getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, buttons[i].dir.getOpposite()).isPresent()) {
-                            IItemHandler inv = world.getTileEntity(pos.offset(buttons[i].dir)).getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, buttons[i].dir.getOpposite()).orElse(null);
-                            for(int j = 0; j < inv.getSlots(); j++) {
-                                ItemStack stack = inv.extractItem(j, 64, true);
-                                if(!stack.isEmpty()) {
-                                    boolean found = false;
-                                    for(int k : buttons[i].slots) {
-                                        if(externalInventory.insertItem(k, stack, true) != stack) {
-                                            int amt = stack.getCount() - externalInventory.insertItem(k, stack, true).getCount();
-                                            externalInventory.insertItem(k, inv.extractItem(j, amt, false), false);
-                                            found = true;
-                                            break;
-                                        }
-                                    }
-                                    if(found)
-                                        break;
-                                }
-                                
-                            }
-                        }
-                    } else {
-                        if(world.getTileEntity(pos.offset(buttons[i].dir)) != null &&
-                                world.getTileEntity(pos.offset(buttons[i].dir)).getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, buttons[i].dir.getOpposite()).isPresent()) {
-                            IItemHandler inv = world.getTileEntity(pos.offset(buttons[i].dir)).getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, buttons[i].dir.getOpposite()).orElse(null);
-                            for(int j : buttons[i].slots) {
-                                ItemStack stack = externalInventory.extractItem(j, 64, true);
-                                if(!stack.isEmpty()) {
-                                    boolean found = false;
-                                    for(int k = 0; k < inv.getSlots(); k++) {
-                                        if(inv.insertItem(k, stack, true) != stack) {
-                                            int amt = stack.getCount() - inv.insertItem(k, stack, true).getCount();
-                                            inv.insertItem(k, externalInventory.extractItem(j, amt, false), false);
-                                            found = true;
-                                            break;
-                                        }
-                                    }
-                                    if(found)
-                                        break;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            IAutoIO.tickAutoIO(buttons, world, pos, externalInventory, null);
         }
     }
     
@@ -338,14 +293,15 @@ public abstract class CutterTileEntity extends TileEntity implements INamedConta
     }
     
     @Override
+    public byte getRequiredPower() {
+        return requiredPower;
+    }
+    
+    @Override
     public void setPower(byte power) {
         powered = power;
         if(pos != null && world != null)
             world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 2);
-    }
-    
-    public String getPowerString() {
-        return (getPower() >= requiredPower ? requiredPower : getPower()) + "/" + requiredPower;
     }
     
     @Override

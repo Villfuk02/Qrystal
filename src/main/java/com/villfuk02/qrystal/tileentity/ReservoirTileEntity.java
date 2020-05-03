@@ -1,6 +1,7 @@
 package com.villfuk02.qrystal.tileentity;
 
 import com.villfuk02.qrystal.init.ModTileEntityTypes;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
@@ -9,9 +10,29 @@ import net.minecraftforge.fluids.capability.TileFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 public class ReservoirTileEntity extends TileFluidHandler {
+    
+    public float lastHeight = 0;
+    public Fluid lastFluid = null;
+    
     public ReservoirTileEntity() {
         super(ModTileEntityTypes.RESERVOIR);
-        tank = new FluidTank(FluidAttributes.BUCKET_VOLUME * 8);
+        tank = new FluidTank(FluidAttributes.BUCKET_VOLUME * 8) {
+            @Override
+            protected void onContentsChanged() {
+                world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 2);
+                super.onContentsChanged();
+            }
+        };
+    }
+    
+    @Override
+    public void read(CompoundNBT tag) {
+        super.read(tag);
+        if(lastFluid == null && !tank.isEmpty()) {
+            lastFluid = tank.getFluid().getRawFluid();
+            lastHeight = tank.getFluidAmount() / (float)(FluidAttributes.BUCKET_VOLUME * 8) * 0.98f;
+        }
+        
     }
     
     @Override

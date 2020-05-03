@@ -47,16 +47,10 @@ public class FluidMixerContainer extends Container {
         // Add all the slots for the tileEntity's inventory and the playerInventory to this container
         
         // Tile inventory slot(s)
-        addSlot(new SlotItemHandler(tileEntity.inventory, 0, 95, 51));
-        addSlot(new SlotItemHandler(tileEntity.inventory, 1, 56, 51));
-        addSlot(new SlotItemHandler(tileEntity.inventory, 2, 134, 51));
-        addSlot(new SlotItemHandler(tileEntity.inventory, 3, 86, 18));
-        addSlot(new SlotItemHandler(tileEntity.inventory, 4, 104, 18));
-        addSlot(new SlotItemHandler(tileEntity.inventory, 5, 95, 73));
-        addSlot(new SlotItemHandler(tileEntity.inventory, 6, 56, 77));
-        addSlot(new SlotItemHandler(tileEntity.inventory, 7, 134, 77));
+        addSlot(new SlotItemHandler(tileEntity.inventory, 0, 86, 18));
+        addSlot(new SlotItemHandler(tileEntity.inventory, 1, 104, 18));
         if(burner)
-            addSlot(new SlotItemHandler(tileEntity.inventory, 8, 11, 67));
+            addSlot(new SlotItemHandler(tileEntity.inventory, 2, 26, 77));
         
         
         final int playerInventoryStartX = 8;

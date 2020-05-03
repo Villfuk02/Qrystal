@@ -1,12 +1,12 @@
 {
   "type": "qrystal:fluid_mixing",
   "fluid1": "qrystal:hydrochloric_acid",
-  "fluid1Amt": 250,
+  "fluid1Amt": 200,
   "fluid2": "qrystal:nitric_acid",
-  "fluid2Amt": 125,
+  "fluid2Amt": 100,
   "result": "qrystal:aqua_regia",
-  "resultAmt": 125,
+  "resultAmt": 100,
   "in1": "qrystal:dust_1",
   "nbt1": "{material:gold}",
-  "time": 600
+  "time": 120
 }

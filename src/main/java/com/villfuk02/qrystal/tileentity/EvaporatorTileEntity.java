@@ -1,13 +1,9 @@
 package com.villfuk02.qrystal.tileentity;
 
 import com.villfuk02.qrystal.QrystalConfig;
-import com.villfuk02.qrystal.crafting.FluidMixingRecipe;
-import com.villfuk02.qrystal.dataserializers.FluidTierManager;
 import com.villfuk02.qrystal.dataserializers.MaterialManager;
-import com.villfuk02.qrystal.init.ModItems;
 import com.villfuk02.qrystal.items.Crystal;
 import com.villfuk02.qrystal.items.CrystalDust;
-import com.villfuk02.qrystal.items.FilledFlask;
 import com.villfuk02.qrystal.util.CrystalUtil;
 import com.villfuk02.qrystal.util.RecipeUtil;
 import com.villfuk02.qrystal.util.handlers.CrystalColorHandler;
@@ -70,8 +66,7 @@ public abstract class EvaporatorTileEntity extends TileEntity implements INamedC
                     case 0:
                         return stack.getItem() instanceof CrystalDust || (stack.getItem() instanceof Crystal && ((Crystal)stack.getItem()).size != CrystalUtil.Size.SEED);
                     case 1:
-                        return stack.getItem() instanceof FilledFlask && stack.hasTag() && stack.getTag().contains("fluid", Constants.NBT.TAG_STRING) &&
-                                FluidTierManager.solvents.containsKey(new ResourceLocation(stack.getTag().getString("fluid")));
+                        return false;
                     case 2:
                         return stack.getItem() instanceof Crystal && ((Crystal)stack.getItem()).size == CrystalUtil.Size.SEED && ((Crystal)stack.getItem()).tier == tier + 1 && materialAmount > 0 &&
                                 stack.hasTag() && stack.getTag().contains("material", Constants.NBT.TAG_STRING) && RecipeUtil.isQrystalMaterial(stack.getTag().getString("material"), false) &&
@@ -325,14 +320,6 @@ public abstract class EvaporatorTileEntity extends TileEntity implements INamedC
             } else if(!inventory.getStackInSlot(4).isEmpty() || !inventory.getStackInSlot(5).isEmpty() || !inventory.getStackInSlot(6).isEmpty() || !inventory.getStackInSlot(7).isEmpty() ||
                     !inventory.getStackInSlot(8).isEmpty() || !inventory.getStackInSlot(2).isEmpty()) {
                 tier = -1;
-            } else {
-                if(FluidMixingRecipe.testEmptyFlaskOutput(inventory.getStackInSlot(3))) {
-                    fluidAmount = ((FilledFlask)inventory.getStackInSlot(1).getItem()).amt;
-                    fluid = new ResourceLocation(inventory.getStackInSlot(1).getTag().getString("fluid"));
-                    tier = FluidTierManager.solvents.get(fluid).getFirst();
-                    inventory.extractItem(1, 1, false);
-                    RecipeUtil.forceInsertSameOrEmptyStack(inventory, 3, new ItemStack(ModItems.FLASK));
-                }
             }
         }
         materialColor = CrystalColorHandler.getColor(material, 3);
@@ -389,5 +376,9 @@ public abstract class EvaporatorTileEntity extends TileEntity implements INamedC
             return inventoryCapabilityExternal.cast();
         }
         return super.getCapability(cap, side);
+    }
+    
+    public byte getRequiredPower() {
+        return requiredPower;
     }
 }

@@ -18,7 +18,7 @@ public class BurnerFluidMixerTileEntity extends FluidMixerTileEntity {
     public int heatTotal = 0;
     
     public BurnerFluidMixerTileEntity() {
-        super(ModTileEntityTypes.BURNER_FLUID_MIXER, 2, 9, ModBlocks.BURNER_FLUID_MIXER);
+        super(ModTileEntityTypes.BURNER_FLUID_MIXER, 2, 3, ModBlocks.BURNER_FLUID_MIXER);
     }
     
     @Nonnull
@@ -29,15 +29,19 @@ public class BurnerFluidMixerTileEntity extends FluidMixerTileEntity {
     
     @Override
     protected boolean isPowered() {
-        if(heatLeft > 0)
+        if(heatLeft > 0) {
             heatLeft -= 2;
-        if(heatLeft <= 0) {
-            if(!inventory.getStackInSlot(8).isEmpty() && AbstractFurnaceTileEntity.isFuel(inventory.getStackInSlot(8))) {
-                heatTotal = ForgeHooks.getBurnTime(inventory.getStackInSlot(8));
+            return true;
+        } else {
+            if(!inventory.getStackInSlot(2).isEmpty() && AbstractFurnaceTileEntity.isFuel(inventory.getStackInSlot(2))) {
+                heatTotal = ForgeHooks.getBurnTime(inventory.getStackInSlot(2));
                 heatLeft += heatTotal;
-                inventory.extractItem(8, 1, false);
-            } else
+                inventory.extractItem(2, 1, false);
+            } else {
                 heatTotal = 0;
+                heatLeft = 0;
+                return false;
+            }
         }
         return heatLeft > 0;
     }

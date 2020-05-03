@@ -1,9 +1,9 @@
 {
   "type": "qrystal:fluid_mixing",
-  "fluid1": "qrystal:purified_water",
-  "fluid1Amt": 500,
+  "fluid1": "qrystal:distilled_water",
+  "fluid1Amt": 400,
   "result": "qrystal:wort",
-  "resultAmt": 500,
+  "resultAmt": 400,
   "tag1": "forge:dusts/sugar",
   "tag2": "forge:fruits",
   "time": 1200

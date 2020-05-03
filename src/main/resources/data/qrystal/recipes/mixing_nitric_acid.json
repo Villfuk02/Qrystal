@@ -3,9 +3,8 @@
   "fluid1": "qrystal:distilled_water",
   "fluid1Amt": 500,
   "result": "qrystal:nitric_acid",
-  "resultAmt": 125,
+  "resultAmt": 100,
   "tag1": "forge:dusts/saltpeter",
   "in2": "qrystal:dust_1",
-  "nbt2": "{material:iron}",
-  "time": 300
+  "nbt2": "{material:iron}"
 }

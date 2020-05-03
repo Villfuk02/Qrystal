@@ -1,10 +1,9 @@
 {
   "type": "qrystal:fluid_mixing",
   "fluid1": "qrystal:sulfuric_acid",
-  "fluid1Amt": 250,
+  "fluid1Amt": 200,
   "fluid2": "qrystal:ethanol",
-  "fluid2Amt": 250,
+  "fluid2Amt": 200,
   "result": "qrystal:dmso",
-  "resultAmt": 125,
-  "time": 600
+  "resultAmt": 100
 }

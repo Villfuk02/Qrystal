@@ -1,14 +1,13 @@
 package com.villfuk02.qrystal.tileentity;
 
 import com.villfuk02.qrystal.crafting.FluidMixingRecipe;
-import com.villfuk02.qrystal.init.ModItems;
-import com.villfuk02.qrystal.items.FilledFlask;
 import com.villfuk02.qrystal.util.RecipeUtil;
+import com.villfuk02.qrystal.util.handlers.FluidStackHandler;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.AbstractFurnaceTileEntity;
@@ -16,35 +15,114 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.wrapper.RecipeWrapper;
 
 import javax.annotation.Nonnull;
 import java.util.Optional;
 
-public abstract class FluidMixerTileEntity extends TileEntity implements INamedContainerProvider, ITickableTileEntity {
+public abstract class FluidMixerTileEntity extends TileEntity implements INamedContainerProvider, ITickableTileEntity, IAutoIO, ITrashableFluids {
     
     
     public final ItemStackHandler inventory;
     public final ItemStackHandler externalInventory;
     private final LazyOptional<ItemStackHandler> inventoryCapabilityExternal;
     
+    public final FluidStackHandler tanks = new FluidStackHandler(3, FluidAttributes.BUCKET_VOLUME * 2) {
+        
+        @Override
+        public void onContentsChanged() {
+            super.onContentsChanged();
+            reevaluate(false);
+            world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 2);
+            markDirty();
+        }
+    };
+    public final FluidStackHandler externalTanks = new FluidStackHandler(3, FluidAttributes.BUCKET_VOLUME * 2) {
+        @Override
+        public FluidStack getFluidInTank(int tank) {
+            return tanks.getFluidInTank(tank);
+        }
+        
+        @Override
+        public NonNullList<FluidStack> getContents() {
+            return tanks.getContents();
+        }
+        
+        @Override
+        public int getTanks() {
+            return tanks.getTanks();
+        }
+        
+        @Override
+        public int getTankCapacity(int tank) {
+            return tanks.getTankCapacity(tank);
+        }
+        
+        @Override
+        public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
+            if(stack.isEmpty())
+                return false;
+            switch(tank) {
+                case 0:
+                    return !tanks.getFluidInTank(1).getFluid().equals(stack.getFluid());
+                case 1:
+                    return !tanks.getFluidInTank(0).getFluid().equals(stack.getFluid());
+                default:
+                    return false;
+            }
+        }
+        
+        @Override
+        public int fill(int tank, FluidStack resource, IFluidHandler.FluidAction action) {
+            if(resource.isEmpty() || !isFluidValid(tank, resource)) {
+                return 0;
+            }
+            return tanks.fill(tank, resource, action);
+        }
+        
+        @Nonnull
+        @Override
+        public FluidStack drain(int tank, int maxDrain, FluidAction action) {
+            if(tank != 2)
+                return FluidStack.EMPTY;
+            return tanks.drain(tank, maxDrain, action);
+        }
+        
+        @Override
+        public boolean isEmpty() {
+            return tanks.isEmpty();
+        }
+    };
+    private final LazyOptional<IFluidHandler> fluidCapability = LazyOptional.of(() -> externalTanks);
+    
     public short time;
     public short totalTime;
     public final int speed;
     private final Block block;
     
+    private final IAutoIO.Button[] buttons;
+    
     public FluidMixerTileEntity(TileEntityType<?> type, int speed, int slots, Block block) {
         super(type);
         this.speed = speed;
         this.block = block;
+        
+        if(slots > 2)
+            buttons = new IAutoIO.Button[]{new IAutoIO.Button(true, 20, 16, 100), new IAutoIO.Button(true, 33, 16, 101), new IAutoIO.Button(true, 33, 29, 2), new IAutoIO.Button(true, 20, 29, 0, 1),
+                                           new IAutoIO.Button(false, 20, 47, 102)};
+        else
+            buttons = new IAutoIO.Button[]{new IAutoIO.Button(true, 20, 16, 100), new IAutoIO.Button(true, 33, 16, 101), new IAutoIO.Button(true, 20, 29, 0, 1), new IAutoIO.Button(false, 20, 47, 102)};
         
         inventory = new ItemStackHandler(slots) {
             @Override
@@ -53,18 +131,10 @@ public abstract class FluidMixerTileEntity extends TileEntity implements INamedC
                     return false;
                 switch(slot) {
                     case 0:
-                        return stack.getItem() == ModItems.FLASK;
+                        return (inventory.getStackInSlot(1).isEmpty() || !ItemHandlerHelper.canItemStacksStack(stack, inventory.getStackInSlot(1)));
                     case 1:
-                        return stack.getItem() instanceof FilledFlask && !ItemHandlerHelper.canItemStacksStack(stack, inventory.getStackInSlot(2)) && slots <= 8 ||
-                                !(AbstractFurnaceTileEntity.isFuel(stack) && !inventory.getStackInSlot(8).isEmpty() && ItemHandlerHelper.canItemStacksStack(stack, inventory.getStackInSlot(8)));
+                        return (inventory.getStackInSlot(0).isEmpty() || !ItemHandlerHelper.canItemStacksStack(stack, inventory.getStackInSlot(0)));
                     case 2:
-                        return stack.getItem() instanceof FilledFlask && !ItemHandlerHelper.canItemStacksStack(stack, inventory.getStackInSlot(1)) && slots <= 8 ||
-                                !(AbstractFurnaceTileEntity.isFuel(stack) && !inventory.getStackInSlot(8).isEmpty() && ItemHandlerHelper.canItemStacksStack(stack, inventory.getStackInSlot(8)));
-                    case 3:
-                        return !(stack.getItem() == ModItems.FLASK || stack.getItem() instanceof FilledFlask) && !ItemHandlerHelper.canItemStacksStack(stack, inventory.getStackInSlot(4));
-                    case 4:
-                        return !(stack.getItem() == ModItems.FLASK || stack.getItem() instanceof FilledFlask) && !ItemHandlerHelper.canItemStacksStack(stack, inventory.getStackInSlot(3));
-                    case 8:
                         return AbstractFurnaceTileEntity.isFuel(stack);
                     default:
                         return false;
@@ -95,20 +165,35 @@ public abstract class FluidMixerTileEntity extends TileEntity implements INamedC
             @Override
             @Nonnull
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+                if(stack.isEmpty())
+                    return ItemStack.EMPTY;
+                if(!isItemValid(slot, stack))
+                    return stack;
                 return inventory.insertItem(slot, stack, simulate);
             }
             
             @Nonnull
             @Override
             public ItemStack extractItem(int slot, int amount, boolean simulate) {
-                if(slot <= 4 || slot >= 8)
-                    return ItemStack.EMPTY;
-                return inventory.extractItem(slot, amount, simulate);
+                return ItemStack.EMPTY;
             }
             
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                return inventory.isItemValid(slot, stack);
+                if(stack.isEmpty())
+                    return false;
+                switch(slot) {
+                    case 0:
+                        return (inventory.getStackInSlot(1).isEmpty() || !ItemHandlerHelper.canItemStacksStack(stack, inventory.getStackInSlot(1))) &&
+                                (slots <= 2 || !AbstractFurnaceTileEntity.isFuel(stack) || (!inventory.getStackInSlot(2).isEmpty() && !ItemHandlerHelper.canItemStacksStack(stack, inventory.getStackInSlot(2))));
+                    case 1:
+                        return (inventory.getStackInSlot(0).isEmpty() || !ItemHandlerHelper.canItemStacksStack(stack, inventory.getStackInSlot(0))) &&
+                                (slots <= 2 || !AbstractFurnaceTileEntity.isFuel(stack) || (!inventory.getStackInSlot(2).isEmpty() && !ItemHandlerHelper.canItemStacksStack(stack, inventory.getStackInSlot(2))));
+                    case 2:
+                        return AbstractFurnaceTileEntity.isFuel(stack);
+                    default:
+                        return false;
+                }
             }
             
             @Override
@@ -118,18 +203,7 @@ public abstract class FluidMixerTileEntity extends TileEntity implements INamedC
             
             @Override
             public void deserializeNBT(CompoundNBT nbt) {
-                setSize(nbt.contains("Size", Constants.NBT.TAG_INT) ? nbt.getInt("Size") : stacks.size());
-                ListNBT tagList = nbt.getList("Items", Constants.NBT.TAG_COMPOUND);
-                for(int i = 0; i < tagList.size(); i++) {
-                    CompoundNBT itemTags = tagList.getCompound(i);
-                    int slot = itemTags.getInt("Slot");
-                    
-                    if(slot >= 0 && slot < stacks.size()) {
-                        stacks.set(slot, ItemStack.read(itemTags));
-                    }
-                }
                 inventory.deserializeNBT(nbt);
-                onLoad();
             }
         };
         inventoryCapabilityExternal = LazyOptional.of(() -> externalInventory);
@@ -137,26 +211,27 @@ public abstract class FluidMixerTileEntity extends TileEntity implements INamedC
     
     @Override
     public void read(CompoundNBT compound) {
-        super.read(compound);
-        inventory.deserializeNBT(compound.getCompound("Items"));
-        time = compound.getShort("time");
-        totalTime = compound.getShort("totalTime");
+        readClient(compound);
     }
     
     
     public void readClient(CompoundNBT compound) {
         super.read(compound);
         inventory.deserializeNBT(compound.getCompound("Items"));
+        tanks.deserializeNBT(compound.getCompound("Tanks"));
         time = compound.getShort("time");
         totalTime = compound.getShort("totalTime");
+        IAutoIO.readButtonsNBT(compound, buttons);
     }
     
     @Override
     public CompoundNBT write(CompoundNBT compound) {
         super.write(compound);
         compound.put("Items", inventory.serializeNBT());
+        compound.put("Tanks", tanks.serializeNBT());
         compound.putShort("time", time);
         compound.putShort("totalTime", totalTime);
+        IAutoIO.writeButtonsNBT(compound, buttons);
         return compound;
     }
     
@@ -167,26 +242,25 @@ public abstract class FluidMixerTileEntity extends TileEntity implements INamedC
                 if(time < totalTime)
                     time += speed;
                 if(time >= totalTime) {
-                    time -= totalTime;
-                    
                     if(!world.isRemote) {
-                        Optional<FluidMixingRecipe> recipe = world.getRecipeManager().getRecipe(FluidMixingRecipe.FluidMixingRecipeType.FLUID_MIXING, new RecipeWrapper(inventory), world);
+                        Optional<IRecipe<?>> recipe = world.getRecipeManager()
+                                .getRecipes()
+                                .stream()
+                                .filter(r -> r instanceof FluidMixingRecipe)
+                                .filter(r -> ((FluidMixingRecipe)r).realMatch(inventory, tanks))
+                                .findFirst();
                         if(recipe.isPresent()) {
-                            RecipeUtil.forceInsertSameOrEmptyStack(inventory, 5, recipe.get().getResult());
+                            FluidMixingRecipe r = (FluidMixingRecipe)recipe.get();
+                            time -= totalTime;
+                            tanks.fill(2, r.getResult(), IFluidHandler.FluidAction.EXECUTE);
+                            tanks.drain(r.getFluidStack(0), IFluidHandler.FluidAction.EXECUTE);
+                            tanks.drain(r.getFluidStack(1), IFluidHandler.FluidAction.EXECUTE);
+                            inventory.extractItem(0, 1, false);
+                            inventory.extractItem(1, 1, false);
+                            world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 2);
+                            reevaluate(false);
                         }
-                        
-                        if(!inventory.getStackInSlot(1).isEmpty())
-                            RecipeUtil.forceInsertSameOrEmptyStack(inventory, 6, new ItemStack(ModItems.FLASK));
-                        if(!inventory.getStackInSlot(2).isEmpty())
-                            RecipeUtil.forceInsertSameOrEmptyStack(inventory, 7, new ItemStack(ModItems.FLASK));
                     }
-                    inventory.extractItem(0, 1, false);
-                    inventory.extractItem(1, 1, false);
-                    inventory.extractItem(2, 1, false);
-                    inventory.extractItem(3, 1, false);
-                    inventory.extractItem(4, 1, false);
-                    world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 2);
-                    reevaluate(false);
                 }
             } else if(time > 0) {
                 time -= 5;
@@ -194,6 +268,10 @@ public abstract class FluidMixerTileEntity extends TileEntity implements INamedC
                     time = 0;
             }
             markDirty();
+        }
+        
+        if((world.getGameTime() + RecipeUtil.hashPos(pos) & 7) == 0) {
+            IAutoIO.tickAutoIO(buttons, world, pos, externalInventory, externalTanks);
         }
     }
     
@@ -225,13 +303,12 @@ public abstract class FluidMixerTileEntity extends TileEntity implements INamedC
     public void reevaluate(boolean resetTime) {
         if(resetTime)
             time = 0;
-        Optional<FluidMixingRecipe> recipe = world.getRecipeManager().getRecipe(FluidMixingRecipe.FluidMixingRecipeType.FLUID_MIXING, new RecipeWrapper(inventory), world);
+        Optional<IRecipe<?>> recipe = world.getRecipeManager().getRecipes().stream().filter(r -> r instanceof FluidMixingRecipe).filter(r -> ((FluidMixingRecipe)r).realMatch(inventory, tanks)).findFirst();
         if(recipe.isPresent()) {
-            totalTime = recipe.map(FluidMixingRecipe::getTime).orElse(600).shortValue();
+            totalTime = (short)((FluidMixingRecipe)recipe.get()).getTime();
         } else {
             totalTime = 0;
         }
-        
         if(totalTime <= 0)
             time = 0;
     }
@@ -249,6 +326,31 @@ public abstract class FluidMixerTileEntity extends TileEntity implements INamedC
         if(cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return inventoryCapabilityExternal.cast();
         }
+        if(cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+            return fluidCapability.cast();
+        }
         return super.getCapability(cap, side);
+    }
+    
+    @Override
+    public int getButtonAmt() {
+        return buttons.length;
+    }
+    
+    @Override
+    public Button getButton(int i) {
+        return buttons[i];
+    }
+    
+    @Override
+    public void cycleButton(int i) {
+        getButton(i).cycleDir();
+        if(pos != null && world != null)
+            world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 2);
+    }
+    
+    @Override
+    public void trashFluid(int i) {
+        tanks.drain(i, tanks.getTankCapacity(i), IFluidHandler.FluidAction.EXECUTE);
     }
 }

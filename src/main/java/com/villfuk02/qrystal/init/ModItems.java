@@ -33,16 +33,10 @@ public class ModItems {
     public static final Item QUARTZ_DUST_PILE = new ItemBase("quartz_dust_pile");
     public static final Item ACTIVATED_CARBON = new ItemFuel("activated_carbon", 400);
     public static final Item FUSED_QUARTZ = new ItemBase("fused_quartz");
-    public static final Item FLASK = new ItemBase("flask");
-    public static final Item FILLED_FLASK_500 = new FilledFlask(500);
-    public static final Item FILLED_FLASK_250 = new FilledFlask(250);
-    public static final Item FILLED_FLASK_125 = new FilledFlask(125);
-    public static final Item FILLED_FLASK_25 = new FilledFlask(25);
     public static final Item TUBE = new ItemBase("tube");
     public static final Item FUNNEL = new ItemWithContainer("funnel");
     public static final Item CONDENSER = new ItemBase("condenser");
     public static final Item FILTER_PAPER = new ItemBase("filter_paper");
-    public static final Item SALT = new ItemBase("salt");
     public static final Item UPGRADE_0 = new BarrelUpgrade(0, "stone");
     public static final Item UPGRADE_1 = new BarrelUpgrade(1, "iron");
     public static final Item UPGRADE_2 = new BarrelUpgrade(2, "gold");

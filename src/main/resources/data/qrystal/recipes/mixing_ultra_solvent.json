@@ -1,11 +1,11 @@
 {
   "type": "qrystal:fluid_mixing",
   "fluid1": "qrystal:nitric_acid",
-  "fluid1Amt": 500,
+  "fluid1Amt": 800,
   "fluid2": "qrystal:void_essence",
-  "fluid2Amt": 250,
+  "fluid2Amt": 200,
   "result": "qrystal:ultra_solvent",
-  "resultAmt": 250,
+  "resultAmt": 200,
   "tag1": "forge:gems",
   "tag2": "forge:gems",
   "time": 2400

@@ -12,7 +12,6 @@ import com.villfuk02.qrystal.renderers.*;
 import com.villfuk02.qrystal.tileentity.*;
 import com.villfuk02.qrystal.util.handlers.CondensedMaterialColorHandler;
 import com.villfuk02.qrystal.util.handlers.CrystalColorHandler;
-import com.villfuk02.qrystal.util.handlers.FilledFlaskColorHandler;
 import com.villfuk02.qrystal.util.handlers.SurfaceColorHandler;
 import com.villfuk02.qrystal.world.OreGeneration;
 import net.minecraft.block.Block;
@@ -104,9 +103,6 @@ public class Main {
         for(Item i : ModItems.DUSTS.values()) {
             Minecraft.getInstance().getItemColors().register(new CrystalColorHandler(), i);
         }
-        for(Item i : ModItems.FILLED_FLASKS.values()) {
-            Minecraft.getInstance().getItemColors().register(new FilledFlaskColorHandler(), i);
-        }
         Minecraft.getInstance().getItemColors().register(new SurfaceColorHandler(), ModItems.SURFACE_RENDERER);
         Minecraft.getInstance().getItemColors().register(new CondensedMaterialColorHandler(), ModItems.CONDENSED_MATERIAL_CAGE_RENDERER);
         
@@ -184,8 +180,6 @@ public class Main {
             event.getRegistry().register(new DustCombiningRecipe.Serializer().setRegistryName(MODID, "dust_combining"));
             event.getRegistry().register(new DustSplittingRecipe.Serializer().setRegistryName(MODID, "dust_splitting"));
             event.getRegistry().register(new CustomCuttingRecipe.Serializer().setRegistryName(MODID, "cutting"));
-            event.getRegistry().register(new FlaskRecipe.Serializer().setRegistryName(MODID, "flask_recipe"));
-            event.getRegistry().register(new SourceFlasksRecipe.Serializer().setRegistryName(MODID, "source_flasks"));
             event.getRegistry().register(new FluidMixingRecipe.Serializer().setRegistryName(MODID, "fluid_mixing"));
             event.getRegistry().register(new ActivationRecipe.Serializer().setRegistryName(MODID, "activation"));
         }

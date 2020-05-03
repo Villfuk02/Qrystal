@@ -36,7 +36,7 @@ public class CutterScreen extends ContainerScreen<CutterContainer> {
         boolean energyBarHovered = relMouseX > 37 && relMouseX < 56 && relMouseY > 54 && relMouseY < 73;
         if(energyBarHovered) {
             String tooltip = new TranslationTextComponent("gui." + Main.MODID + ".energy").appendSibling(new StringTextComponent(tileEntity.getPowerString()))
-                    .applyTextStyle(tileEntity.getPower() >= tileEntity.requiredPower ? TextFormatting.GOLD : TextFormatting.RED)
+                    .applyTextStyle(tileEntity.getPower() >= tileEntity.getRequiredPower() ? TextFormatting.GOLD : TextFormatting.RED)
                     .getFormattedText();
             renderTooltip(tooltip, mouseX, mouseY);
         }
@@ -64,7 +64,7 @@ public class CutterScreen extends ContainerScreen<CutterContainer> {
         font.drawString(s, (float)(xSize / 2 - font.getStringWidth(s) / 2), 6.0F, 0x404040);
         font.drawString(playerInventory.getDisplayName().getFormattedText(), 8.0F, (float)(ySize - 96 + 2), 0x404040);
         
-        if(container.tileEntity.getPower() < container.tileEntity.requiredPower)
+        if(container.tileEntity.getPower() < container.tileEntity.getRequiredPower())
             font.drawStringWithShadow(container.tileEntity.getPowerString(), 38, 61, 16733525);
         
         for(int i = 0; i < container.tileEntity.getButtonAmt(); i++) {
@@ -94,7 +94,7 @@ public class CutterScreen extends ContainerScreen<CutterContainer> {
             blit(startX + 38, startY + 34, 176, 33, 18, 18);
         }
         
-        if(tileEntity.getPower() >= tileEntity.requiredPower) {
+        if(tileEntity.getPower() >= tileEntity.getRequiredPower()) {
             blit(startX + 39, startY + 56, 176, 0, 16, 16);
         }
         

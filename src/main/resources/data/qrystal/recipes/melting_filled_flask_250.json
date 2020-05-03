@@ -1,9 +1,0 @@
-{
-  "type": "minecraft:blasting",
-  "ingredient": {
-    "item": "qrystal:filled_flask_250"
-  },
-  "result": "qrystal:fused_quartz",
-  "experience": 0,
-  "cookingtime": 400
-}

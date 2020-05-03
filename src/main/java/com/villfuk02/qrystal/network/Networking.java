@@ -17,6 +17,7 @@ public class Networking {
         INSTANCE = NetworkRegistry.newSimpleChannel(new ResourceLocation(Main.MODID, "network_channel"), () -> "1.0", s -> true, s -> true);
         
         INSTANCE.registerMessage(nextID(), PacketCycleAutoIO.class, PacketCycleAutoIO::toBytes, PacketCycleAutoIO::new, PacketCycleAutoIO::handle);
+        INSTANCE.registerMessage(nextID(), PacketTrashFluid.class, PacketTrashFluid::toBytes, PacketTrashFluid::new, PacketTrashFluid::handle);
     }
     
 }

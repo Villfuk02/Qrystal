@@ -30,8 +30,6 @@ import static com.villfuk02.qrystal.Main.MOD_ITEM_GROUP;
 
 public abstract class FluidMixerBlock extends HorizontalBlock {
     
-    //protected static final VoxelShape SHAPE = Block.makeCuboidShape(0, 0, 0, 16, 11, 16);
-    
     public FluidMixerBlock(String id) {
         super(Properties.create(Material.IRON, MaterialColor.IRON).sound(SoundType.STONE).hardnessAndResistance(2f, 60f / 5f));
         setRegistryName(MODID, id);

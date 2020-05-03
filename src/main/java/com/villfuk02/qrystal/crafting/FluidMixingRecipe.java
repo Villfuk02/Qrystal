@@ -2,9 +2,7 @@ package com.villfuk02.qrystal.crafting;
 
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.villfuk02.qrystal.Main;
-import com.villfuk02.qrystal.init.ModItems;
-import com.villfuk02.qrystal.util.RecipeUtil;
+import com.villfuk02.qrystal.util.handlers.FluidStackHandler;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -16,8 +14,8 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.items.ItemHandlerHelper;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
@@ -30,19 +28,18 @@ public class FluidMixingRecipe implements IRecipe<IInventory> {
     protected final ResourceLocation in2;
     protected final ResourceLocation tag2;
     protected final CompoundNBT nbt2;
-    protected final String fluid1;
+    protected final ResourceLocation fluid1;
     protected final int fluid1Amt;
-    protected final String fluid2;
+    protected final ResourceLocation fluid2;
     protected final int fluid2Amt;
-    protected final String result;
+    protected final ResourceLocation result;
     protected final int resultAmt;
-    protected final ResourceLocation resultItem;
     protected final int time;
     
-    public static final int DEFAULT_TIME = 600;//600 for evaporating 1 fluid, 1200 for two fluids, 300 for mixing, 1800 for long processes
+    public static final int DEFAULT_TIME = 150;
     
-    public FluidMixingRecipe(ResourceLocation id, ResourceLocation in1, ResourceLocation tag1, String nbt1, ResourceLocation in2, ResourceLocation tag2, String nbt2, String fluid1, int fluid1Amt, String fluid2,
-                             int fluid2Amt, String result, int resultAmt, ResourceLocation resultItem, int time) {
+    public FluidMixingRecipe(ResourceLocation id, ResourceLocation in1, ResourceLocation tag1, String nbt1, ResourceLocation in2, ResourceLocation tag2, String nbt2, ResourceLocation fluid1, int fluid1Amt,
+                             ResourceLocation fluid2, int fluid2Amt, ResourceLocation result, int resultAmt, int time) {
         this.id = id;
         this.in1 = in1;
         this.tag1 = tag1;
@@ -54,7 +51,6 @@ public class FluidMixingRecipe implements IRecipe<IInventory> {
         this.fluid2Amt = fluid2Amt;
         this.result = result;
         this.resultAmt = resultAmt;
-        this.resultItem = resultItem;
         this.time = time;
         CompoundNBT tmp1;
         CompoundNBT tmp2;
@@ -74,78 +70,47 @@ public class FluidMixingRecipe implements IRecipe<IInventory> {
     
     @Override
     public boolean matches(IInventory inv, World worldIn) {
-        if(resultItem.getPath().isEmpty()) {
-            if(inv.getStackInSlot(0).getItem() != ModItems.FLASK)
-                return false;
-        } else {
-            if(!inv.getStackInSlot(0).isEmpty())
-                return false;
-        }
-        if(testFluid(inv.getStackInSlot(1), fluid1, fluid1Amt)) {
-            if(!testFluid(inv.getStackInSlot(2), fluid2, fluid2Amt))
-                return false;
-        } else {
-            if(!testFluid(inv.getStackInSlot(2), fluid1, fluid1Amt) || !testFluid(inv.getStackInSlot(1), fluid2, fluid2Amt))
-                return false;
-        }
-        if(testItem(inv.getStackInSlot(3), in1, tag1, nbt1)) {
-            if(!testItem(inv.getStackInSlot(4), in2, tag2, nbt2))
-                return false;
-        } else {
-            if(!testItem(inv.getStackInSlot(4), in1, tag1, nbt1) || !testItem(inv.getStackInSlot(3), in2, tag2, nbt2))
-                return false;
-        }
-        ItemStack out = inv.getStackInSlot(5);
-        if(!out.isEmpty() && (!ItemHandlerHelper.canItemStacksStack(getResult(), out) || out.getCount() >= out.getMaxStackSize()))
-            return false;
-        if(!inv.getStackInSlot(1).isEmpty() && !testEmptyFlaskOutput(inv.getStackInSlot(6)))
-            return false;
-        if(!inv.getStackInSlot(2).isEmpty() && !testEmptyFlaskOutput(inv.getStackInSlot(7)))
-            return false;
         return true;
-    }
-    
-    public static boolean testFluid(ItemStack s, String fluid, int amt) {
-        if(s.isEmpty())
-            return fluid.isEmpty();
-        if(!ModItems.FILLED_FLASKS.containsKey(amt)) {
-            Main.LOGGER.error("Flasks can only have 25, 125, 250 or 500 mB of fluid");
-            return false;
-        }
-        if(s.getItem() == ModItems.FILLED_FLASKS.get(amt) && s.hasTag() && s.getTag().contains("fluid", Constants.NBT.TAG_STRING) && s.getTag().getString("fluid").equals(fluid))
-            return true;
-        return false;
     }
     
     public static boolean testItem(ItemStack s, ResourceLocation in, ResourceLocation tag, CompoundNBT nbt) {
         if(s.isEmpty())
             return in.getPath().isEmpty() && tag.getPath().isEmpty();
-        if(s.getItem().getTags().contains(tag) || s.getItem() == ForgeRegistries.ITEMS.getValue(in)) {
+        if(s.getItem().getTags().contains(tag) || s.getItem().getRegistryName().equals(in)) {
             if(nbt.isEmpty() || (s.hasTag() && s.getTag().equals(nbt)))
                 return true;
         }
         return false;
     }
     
-    public static boolean testEmptyFlaskOutput(ItemStack s) {
-        return s.isEmpty() || (s.getItem() == ModItems.FLASK && s.getCount() < s.getMaxStackSize());
+    public static boolean testFluid(FluidStack f, ResourceLocation fluid, int amt) {
+        if(f.isEmpty())
+            return fluid.getPath().isEmpty() || amt == 0;
+        return f.getFluid().getRegistryName().equals(fluid) && f.getAmount() >= amt;
+    }
+    
+    public boolean realMatch(IItemHandler inventory, FluidStackHandler fluids) {
+        if(!fluids.getFluidInTank(2).isEmpty() && (fluids.getFluidInTank(2).getFluid() != getResult().getFluid() || fluids.getFluidInTank(2).getAmount() + resultAmt > fluids.getTankCapacity(2)))
+            return false;
+        if((!testItem(inventory.getStackInSlot(0), in1, tag1, nbt1) || !testItem(inventory.getStackInSlot(1), in2, tag2, nbt2)) &&
+                (!testItem(inventory.getStackInSlot(1), in1, tag1, nbt1) || !testItem(inventory.getStackInSlot(0), in2, tag2, nbt2)))
+            return false;
+        return (testFluid(fluids.getFluidInTank(0), fluid1, fluid1Amt) && testFluid(fluids.getFluidInTank(1), fluid2, fluid2Amt)) ||
+                (testFluid(fluids.getFluidInTank(1), fluid1, fluid1Amt) && testFluid(fluids.getFluidInTank(0), fluid2, fluid2Amt));
     }
     
     public int getTime() {
         return time;
     }
     
-    public ItemStack getResult() {
-        if(resultItem.getPath().isEmpty()) {
-            if(!ModItems.FILLED_FLASKS.containsKey(resultAmt)) {
-                Main.LOGGER.error("Flasks can only have 25, 125, 250 or 500 mB of fluid");
-                return ItemStack.EMPTY;
-            }
-            CompoundNBT nbt = new CompoundNBT();
-            nbt.putString("fluid", result);
-            return RecipeUtil.getStackWithTag(ModItems.FILLED_FLASKS.get(resultAmt), nbt);
-        }
-        return new ItemStack(ForgeRegistries.ITEMS.getValue(resultItem));
+    public FluidStack getResult() {
+        return new FluidStack(ForgeRegistries.FLUIDS.getValue(result), resultAmt);
+    }
+    
+    public FluidStack getFluidStack(int i) {
+        if((i == 0 && fluid1.getPath().isEmpty()) || (i == 1 && fluid2.getPath().isEmpty()))
+            return FluidStack.EMPTY;
+        return i == 0 ? new FluidStack(ForgeRegistries.FLUIDS.getValue(fluid1), fluid1Amt) : new FluidStack(ForgeRegistries.FLUIDS.getValue(fluid2), fluid2Amt);
     }
     
     @Override
@@ -178,6 +143,7 @@ public class FluidMixingRecipe implements IRecipe<IInventory> {
         return FluidMixingRecipeType.FLUID_MIXING;
     }
     
+    
     public static class FluidMixingRecipeType<FluidMixingRecipe extends IRecipe<?>> implements IRecipeType<com.villfuk02.qrystal.crafting.FluidMixingRecipe> {
         public static final FluidMixingRecipeType FLUID_MIXING = new FluidMixingRecipeType<>();
     }
@@ -191,15 +157,14 @@ public class FluidMixingRecipe implements IRecipe<IInventory> {
             ResourceLocation in2 = new ResourceLocation(JSONUtils.getString(json, "in2", ""));
             ResourceLocation tag2 = new ResourceLocation(JSONUtils.getString(json, "tag2", ""));
             String nbt2 = JSONUtils.getString(json, "nbt2", "");
-            String fluid1 = JSONUtils.getString(json, "fluid1", "");
-            int fluid1Amt = JSONUtils.getInt(json, "fluid1Amt", 500);
-            String fluid2 = JSONUtils.getString(json, "fluid2", "");
-            int fluid2Amt = JSONUtils.getInt(json, "fluid2Amt", 500);
-            String result = JSONUtils.getString(json, "result", "water");
-            int resultAmt = JSONUtils.getInt(json, "resultAmt", 500);
-            ResourceLocation resultItem = new ResourceLocation(JSONUtils.getString(json, "resultItem", ""));
+            ResourceLocation fluid1 = new ResourceLocation(JSONUtils.getString(json, "fluid1", ""));
+            int fluid1Amt = JSONUtils.getInt(json, "fluid1Amt", 100);
+            ResourceLocation fluid2 = new ResourceLocation(JSONUtils.getString(json, "fluid2", ""));
+            int fluid2Amt = JSONUtils.getInt(json, "fluid2Amt", 100);
+            ResourceLocation result = new ResourceLocation(JSONUtils.getString(json, "result", "water"));
+            int resultAmt = JSONUtils.getInt(json, "resultAmt", 100);
             int time = JSONUtils.getInt(json, "time", DEFAULT_TIME);
-            return new FluidMixingRecipe(recipeID, in1, tag1, nbt1, in2, tag2, nbt2, fluid1, fluid1Amt, fluid2, fluid2Amt, result, resultAmt, resultItem, time);
+            return new FluidMixingRecipe(recipeID, in1, tag1, nbt1, in2, tag2, nbt2, fluid1, fluid1Amt, fluid2, fluid2Amt, result, resultAmt, time);
         }
         
         @Override
@@ -210,15 +175,14 @@ public class FluidMixingRecipe implements IRecipe<IInventory> {
             ResourceLocation in2 = buffer.readResourceLocation();
             ResourceLocation tag2 = buffer.readResourceLocation();
             String nbt2 = buffer.readString();
-            String fluid1 = buffer.readString();
+            ResourceLocation fluid1 = buffer.readResourceLocation();
             int fluid1Amt = buffer.readVarInt();
-            String fluid2 = buffer.readString();
+            ResourceLocation fluid2 = buffer.readResourceLocation();
             int fluid2Amt = buffer.readVarInt();
-            String result = buffer.readString();
+            ResourceLocation result = buffer.readResourceLocation();
             int resultAmt = buffer.readVarInt();
-            ResourceLocation resultItem = buffer.readResourceLocation();
             int time = buffer.readVarInt();
-            return new FluidMixingRecipe(recipeID, in1, tag1, nbt1, in2, tag2, nbt2, fluid1, fluid1Amt, fluid2, fluid2Amt, result, resultAmt, resultItem, time);
+            return new FluidMixingRecipe(recipeID, in1, tag1, nbt1, in2, tag2, nbt2, fluid1, fluid1Amt, fluid2, fluid2Amt, result, resultAmt, time);
         }
         
         @Override
@@ -229,13 +193,12 @@ public class FluidMixingRecipe implements IRecipe<IInventory> {
             buffer.writeResourceLocation(recipe.in2);
             buffer.writeResourceLocation(recipe.tag2);
             buffer.writeString(recipe.nbt2.toString());
-            buffer.writeString(recipe.fluid1);
+            buffer.writeResourceLocation(recipe.fluid1);
             buffer.writeVarInt(recipe.fluid1Amt);
-            buffer.writeString(recipe.fluid2);
+            buffer.writeResourceLocation(recipe.fluid2);
             buffer.writeVarInt(recipe.fluid2Amt);
-            buffer.writeString(recipe.result);
+            buffer.writeResourceLocation(recipe.result);
             buffer.writeVarInt(recipe.resultAmt);
-            buffer.writeResourceLocation(recipe.resultItem);
             buffer.writeVarInt(recipe.time);
         }
     }
