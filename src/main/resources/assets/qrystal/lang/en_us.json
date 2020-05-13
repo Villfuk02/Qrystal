@@ -124,6 +124,8 @@
   "qrystal.dust.1296.prefix": "Big Pile of ",
   "qrystal.dust.1296.suffix": "Dust",
   "qrystal.crystal": "Crystal",
+  "qrystal.crystals": "Crystals",
+  "qrystal.seeds": "Seeds",
   "qrystal.condensed": "Condensed",
   "qrystal.power.1": "",
   "qrystal.power.2": "Double ",
@@ -203,5 +205,7 @@
   "gui.qrystal.amount": "Amount: ",
   "gui.qrystal.seeds": "Seeds: ",
   "gui.qrystal.empty": "Empty",
-  "gui.qrystal.expected": "Expected Crystals:"
+  "gui.qrystal.expected": "Expected Crystals:",
+  "gui.qrystal.tier_error": "This solvent can dissolve only ",
+  "gui.qrystal.seed_error": "This material needs "
 }

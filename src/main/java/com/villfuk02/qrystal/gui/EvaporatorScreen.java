@@ -6,6 +6,7 @@ import com.villfuk02.qrystal.QrystalConfig;
 import com.villfuk02.qrystal.container.EvaporatorContainer;
 import com.villfuk02.qrystal.dataserializers.FluidTierManager;
 import com.villfuk02.qrystal.dataserializers.MaterialManager;
+import com.villfuk02.qrystal.items.Crystal;
 import com.villfuk02.qrystal.network.Networking;
 import com.villfuk02.qrystal.network.PacketCycleAutoIO;
 import com.villfuk02.qrystal.network.PacketTrashFluid;
@@ -107,10 +108,10 @@ public class EvaporatorScreen extends ContainerScreen<EvaporatorContainer> {
                                          .getFormattedText());
                     tooltips.add(new TranslationTextComponent("gui." + Main.MODID + ".amount").appendSibling(
                             new StringTextComponent(tileEntity.tier == 0 ? String.format("%.2f", tileEntity.materialAmount / (float)tileEntity.tierMultiplier()) : Integer.toString(tileEntity.materialAmount)))
-                                         .applyTextStyle(TextFormatting.GREEN)
+                                         .applyTextStyle(TextFormatting.YELLOW)
                                          .getFormattedText());
                     tooltips.add(new TranslationTextComponent("gui." + Main.MODID + ".seeds").appendSibling(new StringTextComponent(Integer.toString(tileEntity.seeds)))
-                                         .applyTextStyle(TextFormatting.AQUA)
+                                         .applyTextStyle(TextFormatting.GREEN)
                                          .getFormattedText());
                     float[] values = RecipeUtil.getCrystalChances(tileEntity.materialAmount / tileEntity.tierMultiplier(), tileEntity.seeds);
                     if(values[0] > 0) {
@@ -144,6 +145,40 @@ public class EvaporatorScreen extends ContainerScreen<EvaporatorContainer> {
                 }
             }
             renderTooltip(tooltips, mouseX, mouseY);
+        }
+        
+        if(!tileEntity.fluid.isEmpty()) {
+            if(relMouseX > 64 && relMouseX < 73 && relMouseY > 22 && relMouseY < 39 && !tileEntity.inventory.getStackInSlot(0).isEmpty() &&
+                    ((Crystal)tileEntity.inventory.getStackInSlot(0).getItem()).tier != tileEntity.tier) {
+                String tooltip = new TranslationTextComponent("gui." + Main.MODID + ".tier_error").appendSibling(new TranslationTextComponent("qrystal.tier." + tileEntity.tier))
+                        .appendText(" ")
+                        .appendSibling(new TranslationTextComponent("qrystal.crystals"))
+                        .applyTextStyle(TextFormatting.RED)
+                        .getFormattedText();
+                renderTooltip(tooltip, mouseX, mouseY);
+            }
+            
+            if(relMouseX > 64 && relMouseX < 73 && relMouseY > 46 && relMouseY < 63 && !tileEntity.inventory.getStackInSlot(1).isEmpty() &&
+                    ((Crystal)tileEntity.inventory.getStackInSlot(1).getItem()).tier != tileEntity.tier + 1) {
+                String tooltip = new TranslationTextComponent("gui." + Main.MODID + ".tier_error").appendSibling(new TranslationTextComponent("qrystal.tier." + (tileEntity.tier + 1)))
+                        .appendText(" ")
+                        .appendSibling(new TranslationTextComponent("qrystal.seeds"))
+                        .applyTextStyle(TextFormatting.RED)
+                        .getFormattedText();
+                renderTooltip(tooltip, mouseX, mouseY);
+            }
+            
+            if(relMouseX > 64 && relMouseX < 73 && relMouseY > 46 && relMouseY < 63 && !tileEntity.inventory.getStackInSlot(1).isEmpty() && tileEntity.materialAmount > 0 &&
+                    !tileEntity.inventory.getStackInSlot(1).getTag().getString("material").equals(MaterialManager.materials.get(tileEntity.material).seed.toString())) {
+                String tooltip = new TranslationTextComponent("gui." + Main.MODID + ".seed_error").appendSibling(
+                        new TranslationTextComponent("qrystal.mat." + MaterialManager.materials.get(tileEntity.material).seed.toString()))
+                        .appendText(" ")
+                        .appendSibling(new TranslationTextComponent("qrystal.seeds"))
+                        .applyTextStyle(TextFormatting.RED)
+                        .getFormattedText();
+                renderTooltip(tooltip, mouseX, mouseY);
+            }
+            
         }
         
         for(int i = 0; i < tileEntity.getButtonAmt(); i++) {
@@ -204,6 +239,17 @@ public class EvaporatorScreen extends ContainerScreen<EvaporatorContainer> {
         
         if(tileEntity.time > 0)
             blit(startX + 128, startY + 50, 176, 43, 11, (int)(-29 * getProgress()));
+        
+        if(!tileEntity.fluid.isEmpty()) {
+            if(!tileEntity.inventory.getStackInSlot(0).isEmpty() && ((Crystal)tileEntity.inventory.getStackInSlot(0).getItem()).tier != tileEntity.tier)
+                blit(startX + 65, startY + 23, 190, 0, 6, 14);
+            if(!tileEntity.inventory.getStackInSlot(1).isEmpty() && ((Crystal)tileEntity.inventory.getStackInSlot(1).getItem()).tier != tileEntity.tier + 1)
+                blit(startX + 65, startY + 47, 190, 0, 6, 14);
+            if(!tileEntity.inventory.getStackInSlot(1).isEmpty() && tileEntity.materialAmount > 0 &&
+                    !tileEntity.inventory.getStackInSlot(1).getTag().getString("material").equals(MaterialManager.materials.get(tileEntity.material).seed.toString()))
+                blit(startX + 65, startY + 47, 190, 0, 6, 14);
+        }
+        
         
         int relMouseX = mouseX - guiLeft;
         int relMouseY = mouseY - guiTop;

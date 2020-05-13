@@ -1,0 +1,52 @@
+{
+  "type": "qrystal:cutting",
+  "input": "qrystal:qeri_ore_rich",
+  "output": [
+    {
+      "types": ["hammer"],
+      "item": "qrystal:crystal_small_0",
+      "material": "qeri",
+      "count": 5.6
+    },
+    {
+      "types": ["saw", "laser"],
+      "item": "qrystal:crystal_small_0",
+      "material": "qeri",
+      "count": 8.6
+    },
+    {
+      "types": ["hammer"],
+      "item": "qrystal:crystal_medium_0",
+      "material": "qeri",
+      "count": 0.4
+    },
+    {
+      "types": ["saw", "laser"],
+      "item": "qrystal:crystal_medium_0",
+      "material": "qeri",
+      "count": 0.7
+    },
+    {
+      "types": ["hammer"],
+      "item": "qrystal:crystal_small_1",
+      "material": "qeri",
+      "count": 0.5
+    },
+    {
+      "types": ["saw", "laser"],
+      "item": "qrystal:crystal_small_1",
+      "material": "qeri",
+      "count": 0.875
+    },
+    {
+      "types": ["saw"],
+      "item": "qrystal:stone_pebbles",
+      "count": 0.2
+    },
+    {
+      "types": ["laser"],
+      "item": "qrystal:stone_pebbles",
+      "count": 0.4
+    }
+  ]
+}

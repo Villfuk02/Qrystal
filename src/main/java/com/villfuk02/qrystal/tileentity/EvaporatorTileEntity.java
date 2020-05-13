@@ -318,12 +318,13 @@ public abstract class EvaporatorTileEntity extends TileEntity implements INamedC
         }
         if(!fluid.isEmpty() && fluid.getAmount() == 100 && !inventory.getStackInSlot(0).isEmpty()) {
             if(tier == 0) {
-                if(inventory.getStackInSlot(0).getItem() instanceof Crystal && ((Crystal)inventory.getStackInSlot(0).getItem()).tier == tier) {
+                if(inventory.getStackInSlot(0).getItem() instanceof Crystal && ((Crystal)inventory.getStackInSlot(0).getItem()).tier == tier &&
+                        !inventory.getStackInSlot(0).getTag().getString("material").equals("qlear")) {
                     int amt = Math.min(inventory.getStackInSlot(0).getCount(), getMaxAmt() / BASE_VALUE);
                     materialAmount += amt * BASE_VALUE;
                     material = inventory.getStackInSlot(0).getTag().getString("material");
                     inventory.extractItem(0, amt, false);
-                } else if(inventory.getStackInSlot(0).getItem() instanceof CrystalDust) {
+                } else if(inventory.getStackInSlot(0).getItem() instanceof CrystalDust && !inventory.getStackInSlot(0).getTag().getString("material").equals("qlear")) {
                     CrystalDust dust = (CrystalDust)inventory.getStackInSlot(0).getItem();
                     int amt = Math.min(inventory.getStackInSlot(0).getCount(), getMaxAmt() / QrystalConfig.material_tier_multiplier / dust.size);
                     materialAmount += amt * QrystalConfig.material_tier_multiplier * dust.size;
@@ -331,7 +332,8 @@ public abstract class EvaporatorTileEntity extends TileEntity implements INamedC
                     inventory.extractItem(0, amt, false);
                 }
             } else {
-                if(inventory.getStackInSlot(0).getItem() instanceof Crystal && ((Crystal)inventory.getStackInSlot(0).getItem()).tier == tier) {
+                if(inventory.getStackInSlot(0).getItem() instanceof Crystal && ((Crystal)inventory.getStackInSlot(0).getItem()).tier == tier &&
+                        !inventory.getStackInSlot(0).getTag().getString("material").equals("qlear")) {
                     int amt = Math.min(inventory.getStackInSlot(0).getCount(), getMaxAmt());
                     materialAmount += amt;
                     material = inventory.getStackInSlot(0).getTag().getString("material");
@@ -340,6 +342,7 @@ public abstract class EvaporatorTileEntity extends TileEntity implements INamedC
             }
         }
         if(!fluid.isEmpty() && fluid.getAmount() == 100 && materialAmount >= getMaxAmt() / 4 && !inventory.getStackInSlot(1).isEmpty() && ((Crystal)inventory.getStackInSlot(1).getItem()).tier == tier + 1 &&
+                !inventory.getStackInSlot(1).getTag().getString("material").equals("qlear") &&
                 inventory.getStackInSlot(1).getTag().getString("material").equals(MaterialManager.materials.get(material).seed.toString())) {
             int amt = Math.min(inventory.getStackInSlot(1).getCount(), 4 * materialAmount / getMaxAmt());
             seeds = (byte)amt;
