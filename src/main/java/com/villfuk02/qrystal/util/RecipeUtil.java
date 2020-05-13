@@ -25,7 +25,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.*;
@@ -35,6 +34,8 @@ public class RecipeUtil {
     public static final int BASE_VALUE = 36;
     
     public enum CuttingType {HAMMER, SAW, LASER}
+    
+    public static HashMap<Integer, float[]> chances = new HashMap<>();
     
     public static ArrayList<ItemStack> getResult(ArrayList<Pair<ItemStack, Float>> recipe, Random random) {
         ArrayList<ItemStack> result = new ArrayList<>();
@@ -622,16 +623,6 @@ public class RecipeUtil {
         return result;
     }
     
-    public static void forceInsertSameOrEmptyStack(ItemStackHandler inventory, int i, ItemStack stack) {
-        ItemStack result = inventory.getStackInSlot(i);
-        if(result.isEmpty()) {
-            inventory.setStackInSlot(i, stack.copy());
-        } else {
-            result.setCount(result.getCount() + stack.getCount());
-            inventory.setStackInSlot(i, result);
-        }
-    }
-    
     public static String getAssociatedMaterial(ItemStack item) {
         String mat = "";
         if(item.hasTag() && item.getTag().contains("material", Constants.NBT.TAG_STRING)) {
@@ -773,4 +764,63 @@ public class RecipeUtil {
         return null;
     }
     
+    public static float getLargeChance() {
+        if(QrystalConfig.material_tier_multiplier > 5)
+            return 0.9f;
+        return QrystalConfig.material_tier_multiplier * (13 - QrystalConfig.material_tier_multiplier) * 0.025f - 0.15f;
+    }
+    
+    public static boolean checkCrystalStack(ItemStack stack, int tier, CrystalUtil.Size size, String material, int maxAmt) {
+        if(stack.isEmpty())
+            return true;
+        if(!ItemHandlerHelper.canItemStacksStack(stack, getStackWithMatTag(getCrystal(tier, size), material)))
+            return false;
+        return stack.getCount() <= maxAmt;
+    }
+    
+    public static float[] getCrystalChances(int material, int seeds) {
+        if(material == 0)
+            return new float[4];
+        int i = material + (seeds << 16) + (QrystalConfig.material_tier_multiplier << 24);
+        if(chances.containsKey(i))
+            return chances.get(i);
+        float[] values = new float[4];
+        float chanceLeft = 1;
+        if(seeds > 0 && material >= QrystalConfig.material_tier_multiplier) {
+            values = multiplyFloats(0.8f, getCrystalChances(material - QrystalConfig.material_tier_multiplier, seeds - 1));
+            values[3] += 0.8f;
+            chanceLeft -= 0.8f;
+        }
+        if(material >= QrystalConfig.material_tier_multiplier * QrystalConfig.material_tier_multiplier) {
+            values = addFloats(values, multiplyFloats(chanceLeft * getLargeChance(), getCrystalChances(material - QrystalConfig.material_tier_multiplier * QrystalConfig.material_tier_multiplier, seeds)));
+            values[2] += chanceLeft * getLargeChance();
+            chanceLeft -= chanceLeft * getLargeChance();
+        }
+        if(material >= QrystalConfig.material_tier_multiplier) {
+            values = addFloats(values, multiplyFloats(chanceLeft * 0.8f, getCrystalChances(material - QrystalConfig.material_tier_multiplier, seeds)));
+            values[1] += chanceLeft * 0.8f;
+            chanceLeft -= chanceLeft * 0.8f;
+        }
+        values = addFloats(values, multiplyFloats(chanceLeft, getCrystalChances(material - 1, seeds)));
+        values[0] += chanceLeft;
+        
+        chances.put(i, values);
+        return values;
+    }
+    
+    public static float[] multiplyFloats(float multiplier, float... array) {
+        float[] r = new float[array.length];
+        for(int i = 0; i < array.length; i++) {
+            r[i] = array[i] * multiplier;
+        }
+        return r;
+    }
+    
+    public static float[] addFloats(float[] a, float[] b) {
+        float[] r = new float[a.length];
+        for(int i = 0; i < a.length; i++) {
+            r[i] = a[i] + b[i];
+        }
+        return r;
+    }
 }

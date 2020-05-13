@@ -1,12 +1,13 @@
 package com.villfuk02.qrystal.tileentity;
 
 import com.villfuk02.qrystal.QrystalConfig;
+import com.villfuk02.qrystal.dataserializers.FluidTierManager;
 import com.villfuk02.qrystal.dataserializers.MaterialManager;
 import com.villfuk02.qrystal.items.Crystal;
 import com.villfuk02.qrystal.items.CrystalDust;
 import com.villfuk02.qrystal.util.CrystalUtil;
 import com.villfuk02.qrystal.util.RecipeUtil;
-import com.villfuk02.qrystal.util.handlers.CrystalColorHandler;
+import com.villfuk02.qrystal.util.handlers.FluidStackHandler;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
@@ -14,80 +15,145 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
+import net.minecraft.tileentity.AbstractFurnaceTileEntity;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 
-public abstract class EvaporatorTileEntity extends TileEntity implements INamedContainerProvider, ITickableTileEntity {
+import static com.villfuk02.qrystal.util.RecipeUtil.BASE_VALUE;
+
+public abstract class EvaporatorTileEntity extends TileEntity implements INamedContainerProvider, ITickableTileEntity, IAutoIO, ITrashableFluids {
     
     
     public final ItemStackHandler inventory;
     public final ItemStackHandler externalInventory;
     private final LazyOptional<ItemStackHandler> inventoryCapabilityExternal;
+    public final FluidStackHandler tanks = new FluidStackHandler(1, FluidAttributes.BUCKET_VOLUME * 2) {
+        
+        @Override
+        public void onContentsChanged() {
+            super.onContentsChanged();
+            world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 2);
+            markDirty();
+        }
+    };
+    public final FluidStackHandler externalTanks = new FluidStackHandler(1, FluidAttributes.BUCKET_VOLUME * 2) {
+        @Override
+        public FluidStack getFluidInTank(int tank) {
+            return tanks.getFluidInTank(tank);
+        }
+        
+        @Override
+        public NonNullList<FluidStack> getContents() {
+            return tanks.getContents();
+        }
+        
+        @Override
+        public int getTanks() {
+            return tanks.getTanks();
+        }
+        
+        @Override
+        public int getTankCapacity(int tank) {
+            return tanks.getTankCapacity(tank);
+        }
+        
+        @Override
+        public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
+            if(stack.isEmpty() || tank != 0)
+                return false;
+            return FluidTierManager.solvents.containsKey(stack.getFluid().getRegistryName());
+        }
+        
+        @Override
+        public int fill(int tank, FluidStack resource, IFluidHandler.FluidAction action) {
+            if(resource.isEmpty() || !isFluidValid(tank, resource)) {
+                return 0;
+            }
+            return tanks.fill(tank, resource, action);
+        }
+        
+        @Nonnull
+        @Override
+        public FluidStack drain(int tank, int maxDrain, FluidAction action) {
+            return FluidStack.EMPTY;
+        }
+        
+        @Override
+        public boolean isEmpty() {
+            return tanks.isEmpty();
+        }
+    };
+    private final LazyOptional<IFluidHandler> fluidCapability = LazyOptional.of(() -> externalTanks);
     
     public short time = 0;
     public final short cycle;
     private final Block block;
     public int materialAmount = 0;
     public int tier = -1;
-    public int fluidAmount = 0;
     public String material = "";
-    public int materialColor = 0;
-    public ResourceLocation fluid = new ResourceLocation("");
-    public int currentBatch = 0;
-    public int impurities = 0;
-    public boolean reevaluate = true;
     public final byte requiredPower;
+    public FluidStack fluid = FluidStack.EMPTY;
+    public byte seeds = 0;
     
+    private final IAutoIO.Button[] buttons;
     
-    public EvaporatorTileEntity(TileEntityType<?> type, short cycle, byte requiredPower, Block block) {
+    public EvaporatorTileEntity(TileEntityType<?> type, short cycle, int slots, byte requiredPower, Block block) {
         super(type);
         this.cycle = cycle;
         this.block = block;
         this.requiredPower = requiredPower;
         
-        inventory = new ItemStackHandler(14) {
+        if(slots > 6)
+            buttons = new IAutoIO.Button[]{new IAutoIO.Button(true, 9, 54, 100), new IAutoIO.Button(true, 9, 67, 0, 1), new IAutoIO.Button(false, 27, 54, 2), new IAutoIO.Button(false, 27, 67, 3, 4),
+                                           new IAutoIO.Button(false, 27, 80, 5), new IAutoIO.Button(true, 9, 80, 6)};
+        else
+            buttons = new IAutoIO.Button[]{new IAutoIO.Button(true, 9, 54, 100), new IAutoIO.Button(true, 9, 67, 0, 1), new IAutoIO.Button(false, 27, 54, 2), new IAutoIO.Button(false, 27, 67, 3, 4),
+                                           new IAutoIO.Button(false, 27, 80, 5)};
+        
+        inventory = new ItemStackHandler(slots) {
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
                 if(stack.isEmpty())
                     return false;
                 switch(slot) {
                     case 0:
-                        return stack.getItem() instanceof CrystalDust || (stack.getItem() instanceof Crystal && ((Crystal)stack.getItem()).size != CrystalUtil.Size.SEED);
+                        return (stack.getItem() instanceof CrystalDust || (stack.getItem() instanceof Crystal && ((Crystal)stack.getItem()).size == CrystalUtil.Size.SMALL)) && stack.hasTag() &&
+                                stack.getTag().contains("material", Constants.NBT.TAG_STRING);
                     case 1:
-                        return false;
-                    case 2:
-                        return stack.getItem() instanceof Crystal && ((Crystal)stack.getItem()).size == CrystalUtil.Size.SEED && ((Crystal)stack.getItem()).tier == tier + 1 && materialAmount > 0 &&
-                                stack.hasTag() && stack.getTag().contains("material", Constants.NBT.TAG_STRING) && RecipeUtil.isQrystalMaterial(stack.getTag().getString("material"), false) &&
-                                stack.getTag().getString("material").equals(MaterialManager.materials.get(material).seed.toString());
+                        return stack.getItem() instanceof Crystal && ((Crystal)stack.getItem()).size == CrystalUtil.Size.SEED && stack.hasTag() && stack.getTag().contains("material", Constants.NBT.TAG_STRING);
+                    case 6:
+                        return AbstractFurnaceTileEntity.isFuel(stack);
                     default:
-                        return false;
+                        return true;
                 }
             }
             
             @Override
             protected void onContentsChanged(int slot) {
                 super.onContentsChanged(slot);
-                if(slot <= 3)
-                    reevaluate();
-                if(slot >= 4 && slot <= 9 && getStackInSlot(slot).isEmpty())
-                    reevaluate();
                 world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 2);
                 markDirty();
             }
         };
-        externalInventory = new ItemStackHandler(14) {
+        externalInventory = new ItemStackHandler(slots) {
             
             @Override
             public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
@@ -116,7 +182,9 @@ public abstract class EvaporatorTileEntity extends TileEntity implements INamedC
             
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                return inventory.isItemValid(slot, stack);
+                if(slot <= 1 || slot == 6)
+                    return inventory.isItemValid(slot, stack);
+                return false;
             }
             
             @Override
@@ -153,123 +221,143 @@ public abstract class EvaporatorTileEntity extends TileEntity implements INamedC
     public void readClient(CompoundNBT compound) {
         super.read(compound);
         inventory.deserializeNBT(compound.getCompound("Items"));
+        tanks.deserializeNBT(compound.getCompound("Tanks"));
         time = compound.getShort("time");
         materialAmount = compound.getInt("materialAmount");
         tier = compound.getInt("tier");
-        fluidAmount = compound.getInt("fluidAmount");
         material = compound.getString("material");
-        fluid = new ResourceLocation(compound.getString("fluid"));
-        currentBatch = compound.getInt("currentBatch");
-        impurities = compound.getInt("impurities");
-        materialColor = compound.getInt("materialColor");
+        seeds = compound.getByte("seeds");
+        fluid = new FluidStack(ForgeRegistries.FLUIDS.getValue(new ResourceLocation(compound.getString("fluid"))), compound.getInt("fluidAmount"));
+        IAutoIO.readButtonsNBT(compound, buttons);
     }
     
     @Override
     public CompoundNBT write(CompoundNBT compound) {
         compound = super.write(compound);
         compound.put("Items", inventory.serializeNBT());
+        compound.put("Tanks", tanks.serializeNBT());
         compound.putShort("time", time);
         compound.putInt("materialAmount", materialAmount);
         compound.putInt("tier", tier);
-        compound.putInt("fluidAmount", fluidAmount);
         compound.putString("material", material);
-        compound.putString("fluid", fluid.toString());
-        compound.putInt("currentBatch", currentBatch);
-        compound.putInt("impurities", impurities);
-        compound.putInt("materialColor", materialColor);
+        compound.putString("fluid", fluid.getFluid().getRegistryName().toString());
+        compound.putInt("fluidAmount", fluid.getAmount());
+        compound.putByte("seeds", seeds);
+        IAutoIO.writeButtonsNBT(compound, buttons);
         return compound;
     }
     
     @Override
     public void tick() {
-        if(isPowered())
-            time++;
-        if(fluidAmount > 0 && materialAmount > 0) {
-            if(time >= cycle) {
-                time = 0;
-                int convert = (int)(((long)materialAmount * 5) / fluidAmount);
-                fluidAmount -= 5;
-                materialAmount -= convert;
-                currentBatch += convert;
-                //impurities += (((50 * convert) / RecipeUtil.SMALL_VALUE) * convert) / RecipeUtil.SMALL_VALUE;
-                if(!world.isRemote) {
-                    if(world.rand.nextInt(300000 * QrystalConfig.material_tier_multiplier * QrystalConfig.material_tier_multiplier) < impurities || fluidAmount <= 0) {
-                        reevaluate = false;
-                        //crystallizeCurrentBatch();
-                        reevaluate = true;
-                        reevaluate();
-                    }
-                }
-            }
-        } else {
-            for(int i = 2; i < 9; i++) {
-                if(i == 3)
-                    continue;
-                if(!inventory.getStackInSlot(i).isEmpty()) {
-                    for(int j = 9; j < 14; j++) {
-                        if(inventory.getStackInSlot(j).isEmpty()) {
-                            inventory.setStackInSlot(j, inventory.extractItem(i, 64, false));
+        if(isPowered()) {
+            if(!world.isRemote()) {
+                if(!fluid.isEmpty() && (materialAmount >= tierMultiplier() || fluid.getAmount() != 100)) {
+                    time++;
+                    if(time >= cycle) {
+                        if(tier == 0 && materialAmount % BASE_VALUE > 0)
+                            materialAmount -= materialAmount % BASE_VALUE;
+                        int targetMaterialAmt = (fluid.getAmount() - 10) * getMaxAmt() / 100;
+                        
+                        if(RecipeUtil.checkCrystalStack(inventory.getStackInSlot(2), tier, CrystalUtil.Size.SMALL, material,
+                                                        64 - (materialAmount - targetMaterialAmt + tierMultiplier() - 1) / tierMultiplier()) &&
+                                RecipeUtil.checkCrystalStack(inventory.getStackInSlot(3), tier, CrystalUtil.Size.MEDIUM, material, 64 -
+                                        (materialAmount - targetMaterialAmt + tierMultiplier() * QrystalConfig.material_tier_multiplier - 1) / QrystalConfig.material_tier_multiplier / tierMultiplier()) &&
+                                RecipeUtil.checkCrystalStack(inventory.getStackInSlot(4), tier, CrystalUtil.Size.LARGE, material, 64 -
+                                        (materialAmount - targetMaterialAmt + tierMultiplier() * QrystalConfig.material_tier_multiplier * QrystalConfig.material_tier_multiplier - 1) /
+                                                QrystalConfig.material_tier_multiplier / QrystalConfig.material_tier_multiplier / tierMultiplier()) &&
+                                RecipeUtil.checkCrystalStack(inventory.getStackInSlot(5), tier + 1, CrystalUtil.Size.SMALL, material, 64 -
+                                        Math.min((materialAmount - targetMaterialAmt + tierMultiplier() * QrystalConfig.material_tier_multiplier - 1) / QrystalConfig.material_tier_multiplier / tierMultiplier(),
+                                                 seeds))) {
+                            time -= cycle;
+                            fluid.shrink(10);
+                            while(materialAmount > targetMaterialAmt) {
+                                if(seeds > 0 && materialAmount >= QrystalConfig.material_tier_multiplier * tierMultiplier() && world.rand.nextFloat() < 0.8f) {
+                                    seeds--;
+                                    materialAmount -= QrystalConfig.material_tier_multiplier * tierMultiplier();
+                                    inventory.insertItem(5, RecipeUtil.getStackWithMatTag(RecipeUtil.getCrystal(tier + 1, CrystalUtil.Size.SMALL), material), false);
+                                } else if(materialAmount >= QrystalConfig.material_tier_multiplier * QrystalConfig.material_tier_multiplier * tierMultiplier() &&
+                                        world.rand.nextFloat() < RecipeUtil.getLargeChance()) {
+                                    materialAmount -= QrystalConfig.material_tier_multiplier * QrystalConfig.material_tier_multiplier * tierMultiplier();
+                                    inventory.insertItem(4, RecipeUtil.getStackWithMatTag(RecipeUtil.getCrystal(tier, CrystalUtil.Size.LARGE), material), false);
+                                } else if(materialAmount >= QrystalConfig.material_tier_multiplier * tierMultiplier() && world.rand.nextFloat() < 0.8f) {
+                                    materialAmount -= QrystalConfig.material_tier_multiplier * tierMultiplier();
+                                    inventory.insertItem(3, RecipeUtil.getStackWithMatTag(RecipeUtil.getCrystal(tier, CrystalUtil.Size.MEDIUM), material), false);
+                                } else {
+                                    materialAmount -= tierMultiplier();
+                                    inventory.insertItem(2, RecipeUtil.getStackWithMatTag(RecipeUtil.getCrystal(tier, CrystalUtil.Size.SMALL), material), false);
+                                }
+                            }
+                            world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 2);
+                        } else {
+                            time--;
+                            if(this instanceof IBurnerEvaporator)
+                                ((IBurnerEvaporator)this).restoreHeat();
                         }
                     }
+                } else {
+                    time = 0;
+                    if(this instanceof IBurnerEvaporator)
+                        ((IBurnerEvaporator)this).restoreHeat();
+                    world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 2);
+                }
+            }
+            if(fluid.isEmpty() || materialAmount == 0) {
+                reevaluate();
+            }
+        }
+        
+        if((world.getGameTime() + RecipeUtil.hashPos(pos) & 7) == 0) {
+            IAutoIO.tickAutoIO(buttons, world, pos, inventory, tanks);
+        }
+    }
+    
+    void reevaluate() {
+        if(fluid.isEmpty() && tanks.getFluidInTank(0).getAmount() >= 100) {
+            fluid = tanks.drain(0, 100, IFluidHandler.FluidAction.EXECUTE);
+            tier = FluidTierManager.solvents.get(fluid.getFluid().getRegistryName()).getFirst();
+        }
+        if(!fluid.isEmpty() && fluid.getAmount() == 100 && !inventory.getStackInSlot(0).isEmpty()) {
+            if(tier == 0) {
+                if(inventory.getStackInSlot(0).getItem() instanceof Crystal && ((Crystal)inventory.getStackInSlot(0).getItem()).tier == tier) {
+                    int amt = Math.min(inventory.getStackInSlot(0).getCount(), getMaxAmt() / BASE_VALUE);
+                    materialAmount += amt * BASE_VALUE;
+                    material = inventory.getStackInSlot(0).getTag().getString("material");
+                    inventory.extractItem(0, amt, false);
+                } else if(inventory.getStackInSlot(0).getItem() instanceof CrystalDust) {
+                    CrystalDust dust = (CrystalDust)inventory.getStackInSlot(0).getItem();
+                    int amt = Math.min(inventory.getStackInSlot(0).getCount(), getMaxAmt() / QrystalConfig.material_tier_multiplier / dust.size);
+                    materialAmount += amt * QrystalConfig.material_tier_multiplier * dust.size;
+                    material = inventory.getStackInSlot(0).getTag().getString("material");
+                    inventory.extractItem(0, amt, false);
+                }
+            } else {
+                if(inventory.getStackInSlot(0).getItem() instanceof Crystal && ((Crystal)inventory.getStackInSlot(0).getItem()).tier == tier) {
+                    int amt = Math.min(inventory.getStackInSlot(0).getCount(), getMaxAmt());
+                    materialAmount += amt;
+                    material = inventory.getStackInSlot(0).getTag().getString("material");
+                    inventory.extractItem(0, amt, false);
                 }
             }
         }
-        markDirty();
+        if(!fluid.isEmpty() && fluid.getAmount() == 100 && materialAmount >= getMaxAmt() / 4 && !inventory.getStackInSlot(1).isEmpty() && ((Crystal)inventory.getStackInSlot(1).getItem()).tier == tier + 1 &&
+                inventory.getStackInSlot(1).getTag().getString("material").equals(MaterialManager.materials.get(material).seed.toString())) {
+            int amt = Math.min(inventory.getStackInSlot(1).getCount(), 4 * materialAmount / getMaxAmt());
+            seeds = (byte)amt;
+            inventory.extractItem(1, amt, false);
+        }
+    }
+    
+    public int getMaxAmt() {
+        return QrystalConfig.material_tier_multiplier * 8 * tierMultiplier();
+    }
+    
+    public int tierMultiplier() {
+        if(!fluid.isEmpty() && tier == 0)
+            return BASE_VALUE;
+        return 1;
     }
     
     abstract boolean isPowered();
-     /*
-    private void crystallizeCurrentBatch() {
-        int x = inventory.getStackInSlot(2).isEmpty() ? 0 : inventory.getStackInSlot(2).getCount();
-        int s = inventory.getStackInSlot(4).isEmpty() ? 0 : inventory.getStackInSlot(4).getCount();
-        int m = inventory.getStackInSlot(5).isEmpty() ? 0 : inventory.getStackInSlot(5).getCount();
-        int l = inventory.getStackInSlot(6).isEmpty() ? 0 : inventory.getStackInSlot(6).getCount();
-        int n = inventory.getStackInSlot(7).isEmpty() ? 0 : inventory.getStackInSlot(7).getCount();
-        int w = inventory.getStackInSlot(8).isEmpty() ? 0 : inventory.getStackInSlot(8).getCount();
-        int walue = RecipeUtil.SMALL_VALUE / (tier == 0 ? 6 : QrystalConfig.material_tier_multiplier);
-        boolean change = true;
-        while(currentBatch >= RecipeUtil.SMALL_VALUE || !change) {
-            change = false;
-            if(x > 0 && n < 64 && currentBatch >= RecipeUtil.SMALL_VALUE * QrystalConfig.material_tier_multiplier) {
-                x--;
-                n++;
-                currentBatch -= RecipeUtil.SMALL_VALUE * QrystalConfig.material_tier_multiplier;
-                change = true;
-            }
-            if((m > 2 * l || m > 64) && l < 127 && currentBatch >= RecipeUtil.SMALL_VALUE * QrystalConfig.material_tier_multiplier * (QrystalConfig.material_tier_multiplier - 1)) {
-                m--;
-                l++;
-                currentBatch -= RecipeUtil.SMALL_VALUE * QrystalConfig.material_tier_multiplier * (QrystalConfig.material_tier_multiplier - 1);
-                change = true;
-            }
-            if((s > 2 * m || s > 64) && m < 127 && currentBatch >= RecipeUtil.SMALL_VALUE * (QrystalConfig.material_tier_multiplier - 1)) {
-                s--;
-                m++;
-                currentBatch -= RecipeUtil.SMALL_VALUE * (QrystalConfig.material_tier_multiplier - 1);
-                change = true;
-            }
-            if(s < 127 && currentBatch >= RecipeUtil.SMALL_VALUE) {
-                s++;
-                currentBatch -= RecipeUtil.SMALL_VALUE;
-                change = true;
-            }
-        }
-        w += currentBatch / walue;
-        if(w > 127)
-            w = 127;
-        currentBatch = 0;
-        impurities = 0;
-        
-        inventory.setStackInSlot(2, RecipeUtil.getStackWithMatTag(RecipeUtil.getCrystal(tier + 1, CrystalUtil.Size.SEED), x, MaterialManager.materials.get(material).seed.toString()));
-        inventory.setStackInSlot(4, RecipeUtil.getStackWithMatTag(RecipeUtil.getCrystal(tier, CrystalUtil.Size.SMALL), s, material));
-        inventory.setStackInSlot(5, RecipeUtil.getStackWithMatTag(RecipeUtil.getCrystal(tier, CrystalUtil.Size.MEDIUM), m, material));
-        inventory.setStackInSlot(6, RecipeUtil.getStackWithMatTag(RecipeUtil.getCrystal(tier, CrystalUtil.Size.LARGE), l, material));
-        inventory.setStackInSlot(7, RecipeUtil.getStackWithMatTag(RecipeUtil.getCrystal(tier + 1, CrystalUtil.Size.SMALL), n, material));
-        if(tier == 0)
-            inventory.setStackInSlot(8, RecipeUtil.getStackWithMatTag(ModItems.DUSTS.get("dust_" + RecipeUtil.SMALL_VALUE / 6), w, material));
-        else
-            inventory.setStackInSlot(8, RecipeUtil.getStackWithMatTag(RecipeUtil.getCrystal(tier - 1, CrystalUtil.Size.SMALL), w, material));
-    }  */
     
     @Override
     public SUpdateTileEntityPacket getUpdatePacket() {
@@ -293,75 +381,6 @@ public abstract class EvaporatorTileEntity extends TileEntity implements INamedC
         readClient(tag);
     }
     
-    
-    public void reevaluate() {
-        if(world.isRemote || !reevaluate)
-            return;
-        if(materialAmount == 0) {
-            if(inventory.getStackInSlot(2).isEmpty())
-                material = "";
-            else
-                material = inventory.getStackInSlot(2).getTag().getString("material");
-        }
-        if(!inventory.getStackInSlot(0).isEmpty() && fluidAmount > 0) {
-            int value = validateAndGetValue(inventory.getStackInSlot(0));
-            if(value > 0) {
-                if(materialAmount + value <= RecipeUtil.BASE_VALUE * fluidAmount) {
-                    if(material.isEmpty())
-                        material = inventory.getStackInSlot(0).getTag().getString("material");
-                    materialAmount += value;
-                    inventory.extractItem(0, 1, false);
-                }
-            }
-        }
-        if(fluidAmount == 0) {
-            if(inventory.getStackInSlot(1).isEmpty()) {
-                tier = -1;
-            } else if(!inventory.getStackInSlot(4).isEmpty() || !inventory.getStackInSlot(5).isEmpty() || !inventory.getStackInSlot(6).isEmpty() || !inventory.getStackInSlot(7).isEmpty() ||
-                    !inventory.getStackInSlot(8).isEmpty() || !inventory.getStackInSlot(2).isEmpty()) {
-                tier = -1;
-            }
-        }
-        materialColor = CrystalColorHandler.getColor(material, 3);
-        markDirty();
-    }
-    
-    public int validateAndGetValue(ItemStack stack) {
-        if(tier == -1)
-            return 0;
-        if(!stack.hasTag() || !stack.getTag().contains("material", Constants.NBT.TAG_STRING))
-            return 0;
-        if(!material.isEmpty() && !stack.getTag().getString("material").equals(material) &&
-                !((material.equals("qeri") || material.equals("qawa") || material.equals("qini")) && stack.getTag().getString("material").equals("qlear")))
-            return 0;
-        if(material.isEmpty() && stack.getTag().getString("material").equals("qlear"))
-            return 0;
-        if(stack.getItem() instanceof CrystalDust) {
-            if(tier != 0)
-                return 0;
-            CrystalDust d = (CrystalDust)stack.getItem();
-            if(d.size > 500 * RecipeUtil.BASE_VALUE)
-                return 0;
-            return (int)d.size;
-        }
-        if(stack.getItem() instanceof Crystal) {
-            Crystal c = (Crystal)stack.getItem();
-            if(c.tier != tier)
-                return 0;
-            switch(c.size) {
-                case SEED:
-                    return 0;
-                case SMALL:
-                    return RecipeUtil.BASE_VALUE;
-                case MEDIUM:
-                    return RecipeUtil.BASE_VALUE * QrystalConfig.material_tier_multiplier;
-                case LARGE:
-                    return RecipeUtil.BASE_VALUE * QrystalConfig.material_tier_multiplier * QrystalConfig.material_tier_multiplier;
-            }
-        }
-        return 0;
-    }
-    
     @Nonnull
     @Override
     public ITextComponent getDisplayName() {
@@ -375,10 +394,35 @@ public abstract class EvaporatorTileEntity extends TileEntity implements INamedC
         if(cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return inventoryCapabilityExternal.cast();
         }
+        if(cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+            return fluidCapability.cast();
+        }
         return super.getCapability(cap, side);
     }
     
     public byte getRequiredPower() {
         return requiredPower;
+    }
+    
+    @Override
+    public int getButtonAmt() {
+        return buttons.length;
+    }
+    
+    @Override
+    public Button getButton(int i) {
+        return buttons[i];
+    }
+    
+    @Override
+    public void cycleButton(int i) {
+        getButton(i).cycleDir();
+        if(pos != null && world != null)
+            world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 2);
+    }
+    
+    @Override
+    public void trashFluid(int i) {
+        tanks.drain(i, tanks.getTankCapacity(i), IFluidHandler.FluidAction.EXECUTE);
     }
 }

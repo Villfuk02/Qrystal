@@ -156,8 +156,10 @@ public class FluidMixerScreen extends ContainerScreen<FluidMixerContainer> {
         }
         
         if(burner) {
-            blit(startX + 57, startY + 86, 176, 12, 14, (int)(-13 * getBurnTime()) - 1);
-            blit(startX + 133, startY + 86, 176, 12, 14, (int)(-13 * getBurnTime()) - 1);
+            if(getBurnTime() >= 0) {
+                blit(startX + 57, startY + 86, 176, 12, 14, (int)(-13 * getBurnTime()) - 1);
+                blit(startX + 133, startY + 86, 176, 12, 14, (int)(-13 * getBurnTime()) - 1);
+            }
         } else if(((IPowerConsumer)tileEntity).getPower() >= ((IPowerConsumer)tileEntity).getRequiredPower()) {
             blit(startX + 57, startY + 75, 176, 60, 16, 16);
             blit(startX + 133, startY + 75, 176, 60, 16, 16);
@@ -208,7 +210,7 @@ public class FluidMixerScreen extends ContainerScreen<FluidMixerContainer> {
         int smeltTimeLeft = tileEntity.heatLeft;
         int maxSmeltTime = tileEntity.heatTotal;
         if(smeltTimeLeft <= 0 || maxSmeltTime <= 0)
-            return 0;
+            return -1;
         return smeltTimeLeft / (float)maxSmeltTime;
     }
     

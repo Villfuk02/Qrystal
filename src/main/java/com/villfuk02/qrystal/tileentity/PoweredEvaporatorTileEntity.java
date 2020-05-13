@@ -15,7 +15,7 @@ public class PoweredEvaporatorTileEntity extends EvaporatorTileEntity implements
     private byte powered;
     
     public PoweredEvaporatorTileEntity() {
-        super(ModTileEntityTypes.POWERED_EVAPORATOR, (short)8, (byte)2, ModBlocks.POWERED_EVAPORATOR);
+        super(ModTileEntityTypes.POWERED_EVAPORATOR, (short)10, 6, (byte)2, ModBlocks.POWERED_EVAPORATOR);
     }
     
     @Nonnull

@@ -14,7 +14,7 @@ public class UltimateEvaporatorTileEntity extends EvaporatorTileEntity implement
     private byte powered;
     
     public UltimateEvaporatorTileEntity() {
-        super(ModTileEntityTypes.ULTIMATE_EVAPORATOR, (short)2, (byte)3, ModBlocks.ULTIMATE_EVAPORATOR);
+        super(ModTileEntityTypes.ULTIMATE_EVAPORATOR, (short)2, 6, (byte)3, ModBlocks.ULTIMATE_EVAPORATOR);
     }
     
     @Nonnull

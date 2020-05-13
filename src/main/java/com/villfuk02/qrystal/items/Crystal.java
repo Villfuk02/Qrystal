@@ -51,8 +51,6 @@ public class Crystal extends ItemBase {
             material = new StringTextComponent("");
         }
         if(size == CrystalUtil.Size.SEED) {
-            if(tier == 0)
-                return material.appendSibling(new TranslationTextComponent("item.qrystal.waste"));
             return new TranslationTextComponent("qrystal.tier." + tier).appendText(" ")
                     .appendSibling(material)
                     .appendSibling(new TranslationTextComponent("qrystal.crystal"))

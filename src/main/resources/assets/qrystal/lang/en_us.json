@@ -198,5 +198,10 @@
   "gui.qrystal.trash_button": "Click to Void contents",
   "gui.qrystal.no_tool.steel_cutter": "Requires Steel Saw Blade",
   "gui.qrystal.no_tool.diamond_cutter": "Requires Diamond Saw Blade",
-  "gui.qrystal.no_tool.laser_cutter": "Requires Large Qalb Crystal (Octagonal or better)"
+  "gui.qrystal.no_tool.laser_cutter": "Requires Large Qalb Crystal (Octagonal or better)",
+  "gui.qrystal.material": "Material: ",
+  "gui.qrystal.amount": "Amount: ",
+  "gui.qrystal.seeds": "Seeds: ",
+  "gui.qrystal.empty": "Empty",
+  "gui.qrystal.expected": "Expected Crystals:"
 }

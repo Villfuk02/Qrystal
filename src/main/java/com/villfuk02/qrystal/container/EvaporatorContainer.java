@@ -43,25 +43,32 @@ public class EvaporatorContainer extends Container {
         
         // Add tracking for data (Syncs to client/updates value when it changes)
         trackInt(new FunctionalIntReferenceHolder(() -> tileEntity.time, v -> tileEntity.time = (short)v));
-        trackInt(new FunctionalIntReferenceHolder(() -> tileEntity.fluidAmount, v -> tileEntity.fluidAmount = v));
         trackInt(new FunctionalIntReferenceHolder(() -> tileEntity.materialAmount, v -> tileEntity.materialAmount = v));
-        
+        trackInt(new FunctionalIntReferenceHolder(() -> tileEntity.seeds, v -> tileEntity.seeds = (byte)v));
+        if(tileEntity instanceof BasicEvaporatorTileEntity) {
+            trackInt(new FunctionalIntReferenceHolder(() -> ((BasicEvaporatorTileEntity)tileEntity).heatLeft, v -> ((BasicEvaporatorTileEntity)tileEntity).heatLeft = v));
+            trackInt(new FunctionalIntReferenceHolder(() -> ((BasicEvaporatorTileEntity)tileEntity).heatTotal, v -> ((BasicEvaporatorTileEntity)tileEntity).heatTotal = v));
+        }
+        if(tileEntity instanceof BurnerEvaporatorTileEntity) {
+            trackInt(new FunctionalIntReferenceHolder(() -> ((BurnerEvaporatorTileEntity)tileEntity).heatLeft, v -> ((BurnerEvaporatorTileEntity)tileEntity).heatLeft = v));
+            trackInt(new FunctionalIntReferenceHolder(() -> ((BurnerEvaporatorTileEntity)tileEntity).heatTotal, v -> ((BurnerEvaporatorTileEntity)tileEntity).heatTotal = v));
+        }
         
         // Add all the slots for the tileEntity's inventory and the playerInventory to this container
         
         // Tile inventory slot(s)
-        addSlot(new SlotItemHandler(tileEntity.inventory, 0, 35, 17));
-        addSlot(new SlotItemHandler(tileEntity.inventory, 1, 53, 17));
-        addSlot(new SlotItemHandler(tileEntity.inventory, 2, 103, 67));
-        addSlot(new SlotItemHandler(tileEntity.inventory, 3, 50, 103));
-        for(int i = 0; i < 5; i++) {
-            addSlot(new SlotItemHandler(tileEntity.inventory, 4 + i, 75 + 18 * i, 17));
-            addSlot(new SlotItemHandler(tileEntity.inventory, 9 + i, 75 + 18 * i, 103));
-        }
+        addSlot(new SlotItemHandler(tileEntity.inventory, 0, 74, 23));
+        addSlot(new SlotItemHandler(tileEntity.inventory, 1, 74, 47));
+        addSlot(new SlotItemHandler(tileEntity.inventory, 2, 74, 73));
+        addSlot(new SlotItemHandler(tileEntity.inventory, 3, 102, 73));
+        addSlot(new SlotItemHandler(tileEntity.inventory, 4, 120, 73));
+        addSlot(new SlotItemHandler(tileEntity.inventory, 5, 148, 73));
+        if(burner)
+            addSlot(new SlotItemHandler(tileEntity.inventory, 6, 148, 47));
         
         
         final int playerInventoryStartX = 8;
-        final int playerInventoryStartY = 139;
+        final int playerInventoryStartY = 110;
         final int slotSizePlus2 = 18; // slots are 16x16, plus 2 (for spacing/borders) is 18x18
         
         // Player Top Inventory slots
