@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "EEE",
+    "CAC",
+    "SIS"
+  ],
+  "key": {
+    "C": {
+      "item": "qrystal:conductive_alloy_coil"
+    },
+    "E": {
+      "item": "qrystal:burner_evaporator"
+    },
+    "I": {
+      "item": "qrystal:steel_chassis"
+    },
+    "A": {
+      "item": "qrystal:actuator"
+    },
+    "S": {
+      "tag": "forge:ingots/steel"
+    }
+  },
+  "result": {
+    "item": "qrystal:powered_evaporator",
+    "count": 1
+  }
+}

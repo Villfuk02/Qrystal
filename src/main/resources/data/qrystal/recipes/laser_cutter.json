@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "RQR",
+    "cCc",
+    "cEc"
+  ],
+  "key": {
+    "R": {
+      "item": "minecraft:redstone_block"
+    },
+    "Q": {
+      "tag": "forge:fused_quartz"
+    },
+    "C": {
+      "item": "qrystal:diamond_cutter"
+    },
+    "E": {
+      "item": "qrystal:endsteel_chassis"
+    },
+    "c": {
+      "item": "qrystal:ender_coil"
+    }
+  },
+  "result": {
+    "item": "qrystal:laser_cutter",
+    "count": 1
+  }
+}

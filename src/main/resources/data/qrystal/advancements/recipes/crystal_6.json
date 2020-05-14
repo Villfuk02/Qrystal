@@ -11,7 +11,10 @@
       "qrystal:qitae_block_2",
       "qrystal:qoid_block_2",
       "qrystal:qondo_block_2",
-      "qrystal:upgrade_5"
+      "qrystal:upgrade_5",
+      "qrystal:ultimate_fluid_mixer",
+      "qrystal:ultimate_evaporator",
+      "qrystal:laser_cutter"
     ]
   },
   "criteria": {

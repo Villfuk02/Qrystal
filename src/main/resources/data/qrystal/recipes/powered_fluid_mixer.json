@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SAS",
+    "CFC",
+    "HIH"
+  ],
+  "key": {
+    "C": {
+      "item": "qrystal:conductive_alloy_coil"
+    },
+    "F": {
+      "item": "qrystal:burner_fluid_mixer"
+    },
+    "I": {
+      "item": "qrystal:steel_chassis"
+    },
+    "H": {
+      "item": "qrystal:heat_conduit"
+    },
+    "A": {
+      "item": "qrystal:actuator"
+    },
+    "S": {
+      "tag": "forge:ingots/steel"
+    }
+  },
+  "result": {
+    "item": "qrystal:powered_fluid_mixer",
+    "count": 1
+  }
+}

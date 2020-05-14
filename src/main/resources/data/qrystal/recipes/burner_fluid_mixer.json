@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     "CYC",
-    "HfH",
+    "fff",
     "FIF"
   ],
   "key": {
@@ -11,9 +11,6 @@
     },
     "Y": {
       "item": "qrystal:funnel"
-    },
-    "H": {
-      "item": "qrystal:heat_conduit"
     },
     "f": {
       "item": "qrystal:reservoir"

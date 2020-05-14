@@ -1,9 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "TTT",
-    "RRM",
-    "FIE"
+    "TMT",
+    "REF",
+    "iIi"
   ],
   "key": {
     "T": {
@@ -23,6 +23,9 @@
     },
     "I": {
       "item": "qrystal:imbued_alloy_chassis"
+    },
+    "i": {
+      "tag": "qrystal:iron_lvl_ingots"
     }
   },
   "result": {

@@ -1,8 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "TTT",
-    "EME",
+    "TMT",
+    "ECE",
     "iIi"
   ],
   "key": {
@@ -15,8 +15,11 @@
     "E": {
       "item": "qrystal:basic_evaporator"
     },
+    "C": {
+      "item": "qrystal:redstone_coil"
+    },
     "i": {
-      "tag": "forge:ingots/iron"
+      "tag": "qrystal:iron_lvl_ingots"
     },
     "I": {
       "item": "qrystal:imbued_alloy_chassis"

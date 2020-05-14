@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "FFF",
+    "CAC",
+    "HIH"
+  ],
+  "key": {
+    "C": {
+      "item": "qrystal:ender_coil"
+    },
+    "F": {
+      "item": "qrystal:powered_fluid_mixer"
+    },
+    "I": {
+      "item": "qrystal:endsteel_chassis"
+    },
+    "H": {
+      "item": "qrystal:heat_conduit"
+    },
+    "A": {
+      "item": "qrystal:actuator"
+    }
+  },
+  "result": {
+    "item": "qrystal:ultimate_fluid_mixer",
+    "count": 1
+  }
+}
