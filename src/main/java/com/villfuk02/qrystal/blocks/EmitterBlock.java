@@ -11,7 +11,6 @@ import net.minecraft.block.EndRodBlock;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.PushReaction;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -29,7 +28,7 @@ public class EmitterBlock extends EndRodBlock {
         super(Block.Properties.create(Material.MISCELLANEOUS).lightValue(4).sound(SoundType.WOOD).hardnessAndResistance(0, 0));
         setRegistryName(MODID, name);
         ModBlocks.BLOCKS.add(this);
-        Item item = new BlockItem(this, new Item.Properties().group(MOD_ITEM_GROUP));
+        Item item = new BlockBase.BlockItemWithTooltip(this, new Item.Properties().group(MOD_ITEM_GROUP), 2);
         item.setRegistryName(MODID, name);
         ModItems.ITEMS.add(item);
         this.tier = tier;

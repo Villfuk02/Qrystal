@@ -10,6 +10,8 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.block.material.PushReaction;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.BlockItemUseContext;
@@ -19,6 +21,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
@@ -27,6 +30,7 @@ import net.minecraftforge.common.ToolType;
 
 import javax.annotation.Nullable;
 import java.util.HashSet;
+import java.util.List;
 
 import static com.villfuk02.qrystal.Main.MODID;
 import static com.villfuk02.qrystal.Main.MOD_ITEM_GROUP;
@@ -43,7 +47,11 @@ public class ReceiverBlock extends Block {
         this.tier = tier;
         setRegistryName(MODID, name);
         ModBlocks.BLOCKS.add(this);
-        Item item = new ReceiverBlockItem(this, new Item.Properties().group(MOD_ITEM_GROUP));
+        Item item;
+        if(activated)
+            item = new ReceiverBlockItem(this, new Item.Properties().group(MOD_ITEM_GROUP));
+        else
+            item = new ReceiverBlockItem(this, new Item.Properties());
         item.setRegistryName(MODID, name);
         ModItems.ITEMS.add(item);
     }
@@ -84,6 +92,11 @@ public class ReceiverBlock extends Block {
         
     }
     
+    @Override
+    public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player) {
+        return new ItemStack(ModBlocks.RECEIVERS.get(Integer.toString(tier)));
+    }
+    
     class ReceiverBlockItem extends BlockItem {
         public ReceiverBlockItem(Block blockIn, Properties builder) {
             super(blockIn, builder);
@@ -93,10 +106,16 @@ public class ReceiverBlock extends Block {
         public ITextComponent getDisplayName(ItemStack stack) {
             return new TranslationTextComponent("qrystal.receiver+tier").appendText(" " + (tier + 1));
         }
-    }
-    
-    @Override
-    public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player) {
-        return new ItemStack(ModBlocks.RECEIVERS.get(Integer.toString(tier)));
+        
+        @Override
+        public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+            super.addInformation(stack, worldIn, tooltip, flagIn);
+            if(Screen.hasShiftDown()) {
+                tooltip.add(new TranslationTextComponent("qrystal.tooltip.receiver.0", tier + 1).applyTextStyle(TextFormatting.BLUE));
+                tooltip.add(new TranslationTextComponent("qrystal.tooltip.receiver.1", tier + 1).applyTextStyle(TextFormatting.BLUE));
+            } else {
+                tooltip.add(new TranslationTextComponent("qrystal.tooltip.shift").applyTextStyle(TextFormatting.BLUE));
+            }
+        }
     }
 }

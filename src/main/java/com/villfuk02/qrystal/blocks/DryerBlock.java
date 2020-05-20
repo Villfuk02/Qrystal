@@ -34,7 +34,7 @@ public class DryerBlock extends BlockBase {
     protected static final VoxelShape COMBINED = VoxelShapes.or(BOTTOM, VoxelShapes.combine(X_CROSS, Z_CROSS, IBooleanFunction.NOT_SAME));
     
     public DryerBlock() {
-        super("dryer", Block.Properties.create(Material.ROCK, MaterialColor.ADOBE).sound(SoundType.STONE).hardnessAndResistance(4f, 60f / 5f).harvestTool(ToolType.PICKAXE).harvestLevel(0));
+        super("dryer", Block.Properties.create(Material.ROCK, MaterialColor.ADOBE).sound(SoundType.STONE).hardnessAndResistance(4f, 60f / 5f).harvestTool(ToolType.PICKAXE).harvestLevel(0), 2);
     }
     
     @Override
@@ -108,7 +108,8 @@ public class DryerBlock extends BlockBase {
                             world.playSound(null, pos, SoundEvents.ENTITY_ITEM_FRAME_ADD_ITEM, SoundCategory.BLOCKS, 1.0F, 1.0F);
                         }
                     } else {
-                        return ActionResultType.CONSUME;
+                        te.conditionalDrop();
+                        return ActionResultType.SUCCESS;
                     }
                 }
             }

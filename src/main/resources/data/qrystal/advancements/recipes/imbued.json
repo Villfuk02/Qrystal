@@ -9,6 +9,7 @@
       "qrystal:imbued_alloy_chassis",
       "qrystal:imbued_alloy_ingots",
       "qrystal:imbued_alloy_ingot_from_blasting",
+      "qrystal:imbued_alloy_ingot_from_smelting",
       "qrystal:redstone_coil"
     ]
   },

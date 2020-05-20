@@ -11,6 +11,8 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.PushReaction;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.BlockItemUseContext;
@@ -24,12 +26,15 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 import static com.villfuk02.qrystal.Main.MODID;
 import static com.villfuk02.qrystal.Main.MOD_ITEM_GROUP;
@@ -39,6 +44,7 @@ public class QrystalBlock extends Block {
     public final boolean activated;
     public final int tier;
     public final CrystalUtil.Color color;
+    public ResourceLocation up;
     
     public QrystalBlock(CrystalUtil.Color color, int tier, boolean activated) {
         super(Block.Properties.create(Material.ROCK, color.getMapColor()).sound(SoundType.STONE).hardnessAndResistance(3f, 15f / 5).harvestTool(ToolType.PICKAXE).harvestLevel(0));
@@ -48,7 +54,11 @@ public class QrystalBlock extends Block {
         this.color = color;
         setRegistryName(MODID, name);
         ModBlocks.BLOCKS.add(this);
-        Item item = new QrystalBlockItem(this, new Item.Properties().group(MOD_ITEM_GROUP));
+        Item item;
+        if(activated && (color == CrystalUtil.Color.QALB || color == CrystalUtil.Color.QONDO))
+            item = new QrystalBlockItem(this, new Item.Properties());
+        else
+            item = new QrystalBlockItem(this, new Item.Properties().group(MOD_ITEM_GROUP));
         item.setRegistryName(MODID, name);
         ModItems.ITEMS.add(item);
     }
@@ -146,7 +156,7 @@ public class QrystalBlock extends Block {
                         .filter(r -> ((ActivationRecipe)r).color == color)
                         .findFirst()
                         .get();
-                ResourceLocation up = tier == 0 ? recipe.tier1 : (tier == 1 ? recipe.tier2 : recipe.tier3);
+                up = tier == 0 ? recipe.tier1 : (tier == 1 ? recipe.tier2 : recipe.tier3);
                 if(worldIn.getBlockState(pos.west()).getBlock().getRegistryName().equals(up) && worldIn.getBlockState(pos.east()).getBlock().getRegistryName().equals(up) &&
                         worldIn.getBlockState(pos.south()).getBlock().getRegistryName().equals(up) && worldIn.getBlockState(pos.north()).getBlock().getRegistryName().equals(up)) {
                     worldIn.setBlockState(pos.west(), Blocks.AIR.getDefaultState(), 3);
@@ -218,7 +228,7 @@ public class QrystalBlock extends Block {
                         .filter(r -> ((ActivationRecipe)r).color == color)
                         .findFirst()
                         .get();
-                ResourceLocation up = tier == 0 ? recipe.tier1 : (tier == 1 ? recipe.tier2 : recipe.tier3);
+                up = tier == 0 ? recipe.tier1 : (tier == 1 ? recipe.tier2 : recipe.tier3);
                 if(worldIn.getBlockState(pos.west()).getBlock().getRegistryName().equals(up) && worldIn.getBlockState(pos.east()).getBlock().getRegistryName().equals(up) &&
                         worldIn.getBlockState(pos.south()).getBlock().getRegistryName().equals(up) && worldIn.getBlockState(pos.north()).getBlock().getRegistryName().equals(up)) {
                     worldIn.setBlockState(pos.west(), Blocks.AIR.getDefaultState(), 3);
@@ -297,6 +307,11 @@ public class QrystalBlock extends Block {
         }
     }
     
+    @Override
+    public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player) {
+        return new ItemStack(ModBlocks.QRYSTAL_BLOCKS.get(color.toString() + "_" + tier));
+    }
+    
     class QrystalBlockItem extends BlockItem {
         public QrystalBlockItem(Block blockIn, Properties builder) {
             super(blockIn, builder);
@@ -312,10 +327,42 @@ public class QrystalBlock extends Block {
                         .appendText(" " + (tier + 1));
             return new TranslationTextComponent("qrystal.mat." + color.toString()).appendText(" ").appendSibling(new TranslationTextComponent("qrystal.block+tier")).appendText(" " + (tier + 1));
         }
-    }
-    
-    @Override
-    public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player) {
-        return new ItemStack(ModBlocks.QRYSTAL_BLOCKS.get(color.toString() + "_" + tier));
+        
+        @Override
+        public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+            super.addInformation(stack, worldIn, tooltip, flagIn);
+            if(Screen.hasShiftDown()) {
+                if(color == CrystalUtil.Color.QALB) {
+                    tooltip.add(new TranslationTextComponent("qrystal.tooltip.qalb_block.0", tier + 1).applyTextStyle(TextFormatting.BLUE));
+                    tooltip.add(new TranslationTextComponent("qrystal.tooltip.qalb_block.1", tier + 1).applyTextStyle(TextFormatting.BLUE));
+                    if(tier == 1)
+                        tooltip.add(new TranslationTextComponent("qrystal.tooltip.qalb_block.2").applyTextStyle(TextFormatting.BLUE));
+                    else if(tier == 2)
+                        tooltip.add(new TranslationTextComponent("qrystal.tooltip.qalb_block.3").applyTextStyle(TextFormatting.BLUE));
+                } else if(color == CrystalUtil.Color.QONDO) {
+                    tooltip.add(new TranslationTextComponent("qrystal.tooltip.qondo_block.0", tier + 1).applyTextStyle(TextFormatting.BLUE));
+                    tooltip.add(new TranslationTextComponent("qrystal.tooltip.qondo_block.1", tier + 1).applyTextStyle(TextFormatting.BLUE));
+                    tooltip.add(new TranslationTextComponent("qrystal.tooltip.qondo_block.2", tier + 1).applyTextStyle(TextFormatting.BLUE));
+                } else if(activated) {
+                    tooltip.add(new TranslationTextComponent("qrystal.tooltip.activated_qrystal_block", tier + 1).applyTextStyle(TextFormatting.BLUE));
+                } else {
+                    if(up != null) {
+                        tooltip.add(new TranslationTextComponent("qrystal.tooltip.qrystal_block", (new ItemStack(ForgeRegistries.ITEMS.getValue(up))).getDisplayName()).applyTextStyle(TextFormatting.BLUE));
+                    } else {
+                        ActivationRecipe recipe = (ActivationRecipe)worldIn.getRecipeManager()
+                                .getRecipes()
+                                .stream()
+                                .filter(r -> r.getType() == ActivationRecipe.ActivationRecipeType.ACTIVATION)
+                                .filter(r -> ((ActivationRecipe)r).color == color)
+                                .findFirst()
+                                .orElseGet(null);
+                        if(recipe != null)
+                            up = tier == 0 ? recipe.tier1 : (tier == 1 ? recipe.tier2 : recipe.tier3);
+                    }
+                }
+            } else {
+                tooltip.add(new TranslationTextComponent("qrystal.tooltip.shift").applyTextStyle(TextFormatting.BLUE));
+            }
+        }
     }
 }

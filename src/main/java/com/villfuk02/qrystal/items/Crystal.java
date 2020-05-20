@@ -2,6 +2,7 @@ package com.villfuk02.qrystal.items;
 
 import com.villfuk02.qrystal.dataserializers.MaterialManager;
 import com.villfuk02.qrystal.util.CrystalUtil;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
@@ -29,10 +30,23 @@ public class Crystal extends ItemBase {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
         if(stack.hasTag() && stack.getTag().contains("material", Constants.NBT.TAG_STRING)) {
-            if(!MaterialManager.material_names.contains(stack.getTag().getString("material")))
+            if(!MaterialManager.material_names.contains(stack.getTag().getString("material"))) {
                 tooltip.add(new TranslationTextComponent("qrystal.mat.unknown").applyTextStyle(TextFormatting.RED));
+            } else {
+                if(Screen.hasShiftDown()) {
+                    if(MaterialManager.materials.get(stack.getTag().getString("material")).seed == CrystalUtil.Color.QLEAR)
+                        tooltip.add(new TranslationTextComponent("qrystal.tooltip.crystal_no_seeds").applyTextStyle(TextFormatting.AQUA));
+                    else
+                        tooltip.add(new TranslationTextComponent("qrystal.tooltip.crystal_seeds").appendSibling(
+                                new TranslationTextComponent("qrystal.mat." + MaterialManager.materials.get(stack.getTag().getString("material")).seed.toString()))
+                                            .appendText(" ")
+                                            .appendSibling(new TranslationTextComponent("qrystal.seeds"))
+                                            .applyTextStyle(TextFormatting.BLUE));
+                } else {
+                    tooltip.add(new TranslationTextComponent("qrystal.tooltip.shift").applyTextStyle(TextFormatting.BLUE));
+                }
+            }
         } else {
             tooltip.add(new TranslationTextComponent("qrystal.mat.none").applyTextStyle(TextFormatting.RED));
         }

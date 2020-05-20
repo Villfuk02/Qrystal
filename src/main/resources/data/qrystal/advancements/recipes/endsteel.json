@@ -5,6 +5,7 @@
       "qrystal:ender_coil",
       "qrystal:endsteel_block",
       "qrystal:endsteel_ingot_from_blasting",
+      "qrystal:endsteel_ingot_from_smelting",
       "qrystal:endsteel_ingots"
     ]
   },

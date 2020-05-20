@@ -151,7 +151,7 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
             CrystalDust dust = (CrystalDust)itemStackIn.getItem();
             return (water - amt) / PROCESS_MULTIPLIER / dust.size / QrystalConfig.material_tier_multiplier;
         }
-        if(itemStackIn.getItem() instanceof Crystal) {
+        if(itemStackIn.getItem() instanceof Crystal && (water > 0 || (isEmpty() && amt == 0))) {
             if(!RecipeUtil.isQrystalMaterial(itemStackIn.getTag().getString("material"), false))
                 return 0;
             if(!material.isEmpty() && !itemStackIn.getTag().getString("material").equals(material))
@@ -290,7 +290,7 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
         } else {
             if(stack.hasTag() && stack.getTag().contains("material", Constants.NBT.TAG_STRING)) {
                 String mat = stack.getTag().getString("material");
-                if(!material.equals("qlear"))
+                if(!mat.equals("qlear"))
                     material = mat;
                 if(stack.getItem() instanceof CrystalDust) {
                     CrystalDust dust = (CrystalDust)stack.getItem();

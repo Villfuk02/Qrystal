@@ -1,0 +1,10 @@
+{
+  "type": "qrystal:fluid_mixing",
+  "fluid1": "qrystal:water",
+  "tag1": "forge:sand",
+  "item2": "qrystal:activated_carbon",
+  "result": "qrystal:purified_water",
+  "fluid1Amt": 1000,
+  "resultAmt": 1000,
+  "time": 750
+}

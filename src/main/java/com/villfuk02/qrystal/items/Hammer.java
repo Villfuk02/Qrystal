@@ -8,6 +8,7 @@ import com.villfuk02.qrystal.util.RecipeUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
@@ -68,7 +69,7 @@ public class Hammer extends ToolItem {
                                 ie.remove();
                                 
                                 if(playerentity != null) {
-                                    context.getItem().damageItem(ie.getItem().getCount(), playerentity, (p_220043_1_) -> {
+                                    context.getItem().damageItem(1 + (ie.getItem().getCount() - 1) / 16, playerentity, (p_220043_1_) -> {
                                         p_220043_1_.sendBreakAnimation(context.getHand());
                                     });
                                 }
@@ -176,8 +177,12 @@ public class Hammer extends ToolItem {
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
-        tooltip.add(new TranslationTextComponent("qrystal.hammer.tooltip").applyTextStyle(TextFormatting.YELLOW));
-        tooltip.add(new TranslationTextComponent("qrystal.hammer.tooltip2").applyTextStyle(TextFormatting.GOLD));
+        if(Screen.hasShiftDown()) {
+            tooltip.add(new TranslationTextComponent("qrystal.tooltip.hammer").applyTextStyle(TextFormatting.BLUE));
+            tooltip.add(new TranslationTextComponent("qrystal.tooltip.hammer+").applyTextStyle(TextFormatting.BLUE));
+        } else {
+            tooltip.add(new TranslationTextComponent("qrystal.tooltip.shift").applyTextStyle(TextFormatting.BLUE));
+        }
     }
     
     @Override

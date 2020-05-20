@@ -27,7 +27,7 @@ public class CondensingBarrelTileEntityRenderer extends TileEntityRenderer<Conde
             matrixStack.rotate(Vector3f.YP.rotationDegrees(-i * 90));
             if(!tileEntity.item.isEmpty()) {
                 ItemStack stack;
-                if(Minecraft.getInstance().player.isShiftKeyDown())
+                if(Minecraft.getInstance().player != null && Minecraft.getInstance().player.isShiftKeyDown())
                     stack = tileEntity.getStack(true).copy();
                 else
                     stack = tileEntity.item.copy();
@@ -42,9 +42,9 @@ public class CondensingBarrelTileEntityRenderer extends TileEntityRenderer<Conde
             matrixStack.translate(0, 0.2d, -0.501d);
             matrixStack.scale(-0.009f, -0.009f, -0.009f);
             FontRenderer fontrenderer = renderDispatcher.getFontRenderer();
-            String s = tileEntity.getRenderedText(Minecraft.getInstance().player.isShiftKeyDown());
+            String s = tileEntity.getRenderedText(Minecraft.getInstance().player != null && Minecraft.getInstance().player.isShiftKeyDown());
             fontrenderer.renderString(s, fontrenderer.getStringWidth(s) / -2f, 0, 0, false, matrixStack.getLast().getMatrix(), buffer, false, 0, light);
-            s = tileEntity.getSecondaryRenderedText(Minecraft.getInstance().player.isShiftKeyDown());
+            s = tileEntity.getSecondaryRenderedText(Minecraft.getInstance().player != null && Minecraft.getInstance().player.isShiftKeyDown());
             fontrenderer.renderString(s, fontrenderer.getStringWidth(s) / -2f, -8, 0, false, matrixStack.getLast().getMatrix(), buffer, false, 0, light);
             matrixStack.pop();
         }

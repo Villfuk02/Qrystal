@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "item": "qrystal:conductive_alloy_mix"
+  },
+  "result": "qrystal:conductive_alloy_ingot",
+  "experience": 0.3
+}

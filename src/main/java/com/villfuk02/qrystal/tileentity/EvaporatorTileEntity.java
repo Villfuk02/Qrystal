@@ -254,6 +254,7 @@ public abstract class EvaporatorTileEntity extends TileEntity implements INamedC
                 if(!fluid.isEmpty() && (materialAmount >= tierMultiplier() || fluid.getAmount() != 100)) {
                     time++;
                     if(time >= cycle) {
+                        reevaluateQlear();
                         if(tier == 0 && materialAmount % BASE_VALUE > 0)
                             materialAmount -= materialAmount % BASE_VALUE;
                         int targetMaterialAmt = (fluid.getAmount() - 10) * getMaxAmt() / 100;
@@ -347,6 +348,17 @@ public abstract class EvaporatorTileEntity extends TileEntity implements INamedC
             int amt = Math.min(inventory.getStackInSlot(1).getCount(), 4 * materialAmount / getMaxAmt());
             seeds = (byte)amt;
             inventory.extractItem(1, amt, false);
+        }
+    }
+    
+    void reevaluateQlear() {
+        if(!fluid.isEmpty() && fluid.getAmount() == 100 && !inventory.getStackInSlot(0).isEmpty() && tier == 0 && (material.equals("qeri") || material.equals("qawa") || material.equals("qini"))) {
+            if(inventory.getStackInSlot(0).getItem() instanceof CrystalDust && inventory.getStackInSlot(0).getTag().getString("material").equals("qlear")) {
+                CrystalDust dust = (CrystalDust)inventory.getStackInSlot(0).getItem();
+                int amt = Math.min(inventory.getStackInSlot(0).getCount(), (getMaxAmt() - materialAmount) / QrystalConfig.material_tier_multiplier / dust.size);
+                materialAmount += amt * QrystalConfig.material_tier_multiplier * dust.size;
+                inventory.extractItem(0, amt, false);
+            }
         }
     }
     

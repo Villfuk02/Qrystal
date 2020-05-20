@@ -12,7 +12,6 @@ import net.minecraft.block.material.MaterialColor;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.InventoryHelper;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
 import net.minecraft.state.StateContainer;
@@ -39,7 +38,7 @@ public abstract class CutterBlock extends HorizontalBlock {
         super(Properties.create(Material.IRON, MaterialColor.IRON).sound(SoundType.STONE).hardnessAndResistance(2f, 60f / 5f));
         setRegistryName(MODID, id);
         ModBlocks.BLOCKS.add(this);
-        Item item = new BlockItem(this, new Item.Properties().group(MOD_ITEM_GROUP));
+        Item item = new BlockBase.BlockItemWithTooltip(this, new Item.Properties().group(MOD_ITEM_GROUP), 2);
         item.setRegistryName(MODID, id);
         ModItems.ITEMS.add(item);
         setDefaultState(getDefaultState().with(HORIZONTAL_FACING, Direction.NORTH));

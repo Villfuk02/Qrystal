@@ -1,0 +1,9 @@
+{
+  "type": "qrystal:fluid_mixing",
+  "fluid1": "qrystal:water",
+  "item1": "qrystal:filter_paper",
+  "result": "qrystal:filtered_water",
+  "fluid1Amt": 1000,
+  "resultAmt": 1000,
+  "time": 750
+}

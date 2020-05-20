@@ -1,16 +1,20 @@
 package com.villfuk02.qrystal.blocks;
 
+import com.villfuk02.qrystal.QrystalConfig;
 import com.villfuk02.qrystal.init.ModBlocks;
 import com.villfuk02.qrystal.init.ModItems;
 import com.villfuk02.qrystal.init.ModTileEntityTypes;
 import com.villfuk02.qrystal.items.BarrelUpgrade;
 import com.villfuk02.qrystal.items.Hammer;
 import com.villfuk02.qrystal.tileentity.CondensingBarrelTileEntity;
+import com.villfuk02.qrystal.util.RecipeUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -21,10 +25,17 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Locale;
 
 import static com.villfuk02.qrystal.Main.MODID;
 import static com.villfuk02.qrystal.Main.MOD_ITEM_GROUP;
@@ -39,7 +50,7 @@ public class CondensingBarrelBlock extends Block {
         this.tier = tier;
         setRegistryName(MODID, id);
         ModBlocks.BLOCKS.add(this);
-        Item item = new BlockItem(this, new Item.Properties().group(MOD_ITEM_GROUP));
+        Item item = new CondensingBarrelBlockItem(this, new Item.Properties().group(MOD_ITEM_GROUP));
         item.setRegistryName(MODID, id);
         ModItems.ITEMS.add(item);
     }
@@ -112,5 +123,26 @@ public class CondensingBarrelBlock extends Block {
         if(tileEntity instanceof CondensingBarrelTileEntity)
             return ((CondensingBarrelTileEntity)tileEntity).getComparatorLevel();
         return super.getComparatorInputOverride(blockState, worldIn, pos);
+    }
+    
+    public static class CondensingBarrelBlockItem extends BlockItem {
+        
+        public CondensingBarrelBlockItem(Block blockIn, Properties builder) {
+            super(blockIn, builder);
+        }
+        
+        @Override
+        public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+            super.addInformation(stack, worldIn, tooltip, flagIn);
+            if(Screen.hasShiftDown()) {
+                tooltip.add(new TranslationTextComponent("qrystal.tooltip.condensing_barrel.0", String.format(Locale.US, "%,d", QrystalConfig.barrel_base_size *
+                        RecipeUtil.longPositivePower(QrystalConfig.barrel_tier_multiplier, ((CondensingBarrelBlock)getBlock()).tier)).replace(",", " ")).applyTextStyle(TextFormatting.BLUE));
+                tooltip.add(new TranslationTextComponent("qrystal.tooltip.condensing_barrel.1").applyTextStyle(TextFormatting.BLUE));
+                tooltip.add(new TranslationTextComponent("qrystal.tooltip.condensing_barrel.2").applyTextStyle(TextFormatting.BLUE));
+                tooltip.add(new TranslationTextComponent("qrystal.tooltip.condensing_barrel.3").applyTextStyle(TextFormatting.BLUE));
+            } else {
+                tooltip.add(new TranslationTextComponent("qrystal.tooltip.shift").applyTextStyle(TextFormatting.BLUE));
+            }
+        }
     }
 }

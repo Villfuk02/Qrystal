@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "item": "qrystal:imbued_alloy_mix"
+  },
+  "result": "qrystal:imbued_alloy_ingot",
+  "experience": 0.3
+}

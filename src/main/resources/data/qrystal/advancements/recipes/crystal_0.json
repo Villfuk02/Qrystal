@@ -13,7 +13,9 @@
       "qrystal:dusts_6",
       "qrystal:dusts_36",
       "qrystal:dusts_216",
-      "qrystal:wooden_condensing_barrel"
+      "qrystal:wooden_condensing_barrel",
+      "qrystal:imbued_alloy_mix",
+      "qrystal:dryer"
     ]
   },
   "criteria": {

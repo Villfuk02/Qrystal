@@ -14,7 +14,7 @@ public class QrystalOre extends BlockBase {
     private final boolean rich;
     
     public QrystalOre(CrystalUtil.Color color, boolean rich) {
-        super(color.toString() + "_ore" + (rich ? "_rich" : ""), Material.ROCK, MaterialColor.STONE, SoundType.STONE, 3f, 15f, ToolType.PICKAXE, rich ? 3 : 2);
+        super(color.toString() + "_ore" + (rich ? "_rich" : ""), Material.ROCK, MaterialColor.STONE, SoundType.STONE, 3f, 15f, ToolType.PICKAXE, rich ? 2 : 1, rich ? 1 : 0);
         this.rich = rich;
     }
     

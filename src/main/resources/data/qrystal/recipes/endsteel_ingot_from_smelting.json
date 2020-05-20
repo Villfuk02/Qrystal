@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "item": "qrystal:endsteel_mix"
+  },
+  "result": "qrystal:endsteel_ingot",
+  "experience": 0.3
+}

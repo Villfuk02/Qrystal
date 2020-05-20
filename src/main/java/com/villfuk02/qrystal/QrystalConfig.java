@@ -104,8 +104,8 @@ public class QrystalConfig {
             builder.comment(baked ? "" : "WARNING: Global configs are used when loading a world for the first time. For adjusting the config for an existing world, go to the world's serverconfig folder.");
             
             builder.push("world-generation");
-            ore_vein_size = builder.comment("The size of qrystal ore veins").defineInRange("ore_vein_size", baked ? QrystalConfig.ore_vein_size : 9, 0, 64);
-            ore_vein_size_rich = builder.comment("The size of rich qrystal ore veins").defineInRange("ore_vein_size_rich", baked ? QrystalConfig.ore_vein_size_rich : 5, 0, 64);
+            ore_vein_size = builder.comment("The size of qrystal ore veins").defineInRange("ore_vein_size", baked ? QrystalConfig.ore_vein_size : 4, 0, 64);
+            ore_vein_size_rich = builder.comment("The size of rich qrystal ore veins").defineInRange("ore_vein_size_rich", baked ? QrystalConfig.ore_vein_size_rich : 3, 0, 64);
             
             pebbles_spawn_tries = builder.comment("Number of potential pebble block veins per chunk").defineInRange("pebbles_spawn_tries", baked ? QrystalConfig.pebbles_spawn_tries : 0, 0, 64);
             ore_spawn_tries_qlear = builder.comment("Number of potential qlear qrystal ore veins per chunk").defineInRange("ore_spawn_tries_qlear", baked ? QrystalConfig.ore_spawn_tries_qlear : 2, 0, 64);
@@ -117,10 +117,10 @@ public class QrystalConfig {
             material_tier_multiplier = builder.comment("How many times more material is needed for next tier (multiplicative)")
                     .defineInRange("material_tier_multiplier", baked ? QrystalConfig.material_tier_multiplier : 3, 2, 8);
             base_yield_multiplier = builder.comment("How many ingots do you get from one Dust or Medium Triangular Crystal (assuming 100% efficiency)")
-                    .defineInRange("base_yield_multiplier", baked ? QrystalConfig.base_yield_multiplier : 2.188, 1, 16);
+                    .defineInRange("base_yield_multiplier", baked ? QrystalConfig.base_yield_multiplier : 2.167, 1, 16);
             yield_tier_multiplier = builder.comment("How many times more material you get for every tier (multiplicative)")
-                    .defineInRange("yield_tier_multiplier", baked ? QrystalConfig.yield_tier_multiplier : 1.26, 1, 4);
-            qrystal_yield_multiplier = builder.comment("How many times more material you get for every tier (multiplicative)")
+                    .defineInRange("yield_tier_multiplier", baked ? QrystalConfig.yield_tier_multiplier : 1.384, 1, 4);
+            qrystal_yield_multiplier = builder.comment("How many times more qrystal crystals you get from medium and large")
                     .defineInRange("qrystal_yield_multiplier", baked ? QrystalConfig.qrystal_yield_multiplier : 1.2, 1, 2);
             base_seed_chance = builder.comment("Chance for getting seeds of higher tier from a large crystal").defineInRange("base_seed_chance", baked ? QrystalConfig.base_seed_chance : 0.2, 0, 100);
             builder.pop();
