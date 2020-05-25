@@ -2,9 +2,9 @@
   "ambientocclusion": false,
   "parent": "qrystal:block/cutter",
   "textures": {
-    "particle": "qrystal:blocks/diamond_machine_side",
+    "particle": "qrystal:blocks/steel_chassis",
     "side": "qrystal:blocks/diamond_cutter_side",
     "top": "qrystal:blocks/diamond_cutter_top",
-    "bottom": "qrystal:blocks/diamond_machine_bottom"
+    "bottom": "qrystal:blocks/steel_chassis"
   }
 }

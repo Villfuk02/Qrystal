@@ -84,15 +84,6 @@ public class Main {
     private static void setup(FMLCommonSetupEvent event) {
         LOGGER.info("QRYSTAL setup");
         OreGeneration.setupOreGeneration();
-        /*
-        try {
-            ((SimpleReloadableResourceManager)ObfuscationReflectionHelper.findField(Minecraft.class, "field_110451_am").get(Minecraft.getInstance())).addReloadListener(
-                    new MaterialManager());
-        } catch(IllegalAccessException ignored) {
-        
-        }
-        addedServerListeners = false;
-         */
     }
     
     
@@ -109,7 +100,7 @@ public class Main {
         ClientRegistry.bindTileEntityRenderer(ModTileEntityTypes.DRYER, DryerTileEntityRenderer::new);
         ClientRegistry.bindTileEntityRenderer(ModTileEntityTypes.STEEL_CUTTER, CutterTileEntityRenderer::new);
         ClientRegistry.bindTileEntityRenderer(ModTileEntityTypes.DIAMOND_CUTTER, CutterTileEntityRenderer::new);
-        //ClientRegistry.bindTileEntityRenderer(ModTileEntityTypes.LASER_CUTTER, LaserCutterTileEntityRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(ModTileEntityTypes.LASER_CUTTER, LaserCutterTileEntityRenderer::new);
         ClientRegistry.bindTileEntityRenderer(ModTileEntityTypes.CONDENSING_BARREL, CondensingBarrelTileEntityRenderer::new);
         ClientRegistry.bindTileEntityRenderer(ModTileEntityTypes.EMITTER, EmitterTileEntityRenderer::new);
         ClientRegistry.bindTileEntityRenderer(ModTileEntityTypes.RESERVOIR, ReservoirTileEntityRenderer::new);

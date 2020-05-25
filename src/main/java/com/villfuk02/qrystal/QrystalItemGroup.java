@@ -11,6 +11,6 @@ public class QrystalItemGroup extends ItemGroup {
     
     @Override
     public ItemStack createIcon() {
-        return new ItemStack(ModItems.STONE_PEBBLES);
+        return new ItemStack(ModItems.TAB_ICON);
     }
 }

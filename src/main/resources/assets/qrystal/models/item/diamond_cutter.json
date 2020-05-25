@@ -1,5 +1,1 @@
-{
-"parent": "block/cube_all",
-"textures": {
-"all": "qrystal:blocks/diamond_cutter"}
-}
+{  "parent": "qrystal:block/diamond_cutter"}

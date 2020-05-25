@@ -1,5 +1,1 @@
-{
-"parent": "block/cube_all",
-"textures": {
-"all": "qrystal:blocks/powered_evaporator"}
-}
+{  "parent": "block/cube",  "textures": {    "particle": "qrystal:blocks/powered_evaporator",    "down": "qrystal:blocks/steel_chassis",    "up": "qrystal:blocks/powered_evaporator_top",    "north": "qrystal:blocks/powered_evaporator",    "south": "qrystal:blocks/powered_evaporator",    "east": "qrystal:blocks/powered_evaporator",    "west": "qrystal:blocks/powered_evaporator"  }}

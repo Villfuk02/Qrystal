@@ -135,7 +135,7 @@ public abstract class EvaporatorTileEntity extends TileEntity implements INamedC
                     return false;
                 switch(slot) {
                     case 0:
-                        return (stack.getItem() instanceof CrystalDust || (stack.getItem() instanceof Crystal && ((Crystal)stack.getItem()).size == CrystalUtil.Size.SMALL)) && stack.hasTag() &&
+                        return (stack.getItem() instanceof CrystalDust || (stack.getItem() instanceof Crystal && ((Crystal)stack.getItem()).size != CrystalUtil.Size.SEED)) && stack.hasTag() &&
                                 stack.getTag().contains("material", Constants.NBT.TAG_STRING);
                     case 1:
                         return stack.getItem() instanceof Crystal && ((Crystal)stack.getItem()).size == CrystalUtil.Size.SEED && stack.hasTag() && stack.getTag().contains("material", Constants.NBT.TAG_STRING);
@@ -321,8 +321,8 @@ public abstract class EvaporatorTileEntity extends TileEntity implements INamedC
             if(tier == 0) {
                 if(inventory.getStackInSlot(0).getItem() instanceof Crystal && ((Crystal)inventory.getStackInSlot(0).getItem()).tier == tier &&
                         !inventory.getStackInSlot(0).getTag().getString("material").equals("qlear")) {
-                    int amt = Math.min(inventory.getStackInSlot(0).getCount(), getMaxAmt() / BASE_VALUE);
-                    materialAmount += amt * BASE_VALUE;
+                    int amt = Math.min(inventory.getStackInSlot(0).getCount(), getMaxAmt() / BASE_VALUE / sizeMultiplier(((Crystal)inventory.getStackInSlot(0).getItem()).size));
+                    materialAmount += amt * BASE_VALUE * sizeMultiplier(((Crystal)inventory.getStackInSlot(0).getItem()).size);
                     material = inventory.getStackInSlot(0).getTag().getString("material");
                     inventory.extractItem(0, amt, false);
                 } else if(inventory.getStackInSlot(0).getItem() instanceof CrystalDust && !inventory.getStackInSlot(0).getTag().getString("material").equals("qlear")) {
@@ -335,8 +335,8 @@ public abstract class EvaporatorTileEntity extends TileEntity implements INamedC
             } else {
                 if(inventory.getStackInSlot(0).getItem() instanceof Crystal && ((Crystal)inventory.getStackInSlot(0).getItem()).tier == tier &&
                         !inventory.getStackInSlot(0).getTag().getString("material").equals("qlear")) {
-                    int amt = Math.min(inventory.getStackInSlot(0).getCount(), getMaxAmt());
-                    materialAmount += amt;
+                    int amt = Math.min(inventory.getStackInSlot(0).getCount(), getMaxAmt() / sizeMultiplier(((Crystal)inventory.getStackInSlot(0).getItem()).size));
+                    materialAmount += amt * sizeMultiplier(((Crystal)inventory.getStackInSlot(0).getItem()).size);
                     material = inventory.getStackInSlot(0).getTag().getString("material");
                     inventory.extractItem(0, amt, false);
                 }
@@ -370,6 +370,18 @@ public abstract class EvaporatorTileEntity extends TileEntity implements INamedC
         if(!fluid.isEmpty() && tier == 0)
             return BASE_VALUE;
         return 1;
+    }
+    
+    public int sizeMultiplier(CrystalUtil.Size s) {
+        switch(s) {
+            case SMALL:
+                return 1;
+            case MEDIUM:
+                return QrystalConfig.material_tier_multiplier;
+            case LARGE:
+                return QrystalConfig.material_tier_multiplier * QrystalConfig.material_tier_multiplier;
+        }
+        return 0;
     }
     
     abstract boolean isPowered();

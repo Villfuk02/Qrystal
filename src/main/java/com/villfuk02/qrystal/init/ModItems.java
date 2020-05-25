@@ -65,6 +65,7 @@ public class ModItems {
     public static final Item SURFACE_RENDERER = new Item(new Item.Properties()).setRegistryName("surface_renderer");
     public static final Item CONDENSED_MATERIAL_CAGE_RENDERER = new Item(new Item.Properties()).setRegistryName("condensed_material_cage_renderer");
     public static final Item RESERVOIR_RENDERER = new Item(new Item.Properties()).setRegistryName("reservoir_renderer");
+    public static final Item TAB_ICON = new Item(new Item.Properties()).setRegistryName("tab_icon");
     
     public static final Item FILTERED_WATER_BUCKET = new CustomBucketItem(ModFluids.FILTERED_WATER);
     public static final Item PURIFIED_WATER_BUCKET = new CustomBucketItem(ModFluids.PURIFIED_WATER);
@@ -85,5 +86,6 @@ public class ModItems {
         ITEMS.add(SURFACE_RENDERER);
         ITEMS.add(CONDENSED_MATERIAL_CAGE_RENDERER);
         ITEMS.add(RESERVOIR_RENDERER);
+        ITEMS.add(TAB_ICON);
     }
 }

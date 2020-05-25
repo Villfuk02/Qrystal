@@ -17,7 +17,7 @@
   "result": {
     "item": "qrystal:dust_36",
     "type": "forge:nbt",
-    "count": 1,
+    "count": 2,
     "nbt": "{material:qitae}"
   }
 }

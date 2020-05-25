@@ -1,5 +1,1 @@
-{
-"variants": {
-"": {"model": "qrystal:block/laser_cutter"}
-}
-}
+{  "variants": {    "facing=north": {"model": "qrystal:block/laser_cutter", "y": 270},    "facing=south": {"model": "qrystal:block/laser_cutter", "y": 90},    "facing=west": {"model": "qrystal:block/laser_cutter", "y": 180},    "facing=east": {"model": "qrystal:block/laser_cutter"}  }}

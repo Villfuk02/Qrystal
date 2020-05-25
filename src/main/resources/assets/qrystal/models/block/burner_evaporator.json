@@ -1,5 +1,1 @@
-{
-"parent": "block/cube_all",
-"textures": {
-"all": "qrystal:blocks/burner_evaporator"}
-}
+{  "parent": "block/cube",  "textures": {    "particle": "qrystal:blocks/burner_evaporator",    "down": "qrystal:blocks/imbued_alloy_chassis",    "up": "qrystal:blocks/burner_evaporator_top",    "north": "qrystal:blocks/burner_evaporator",    "south": "qrystal:blocks/burner_evaporator",    "east": "qrystal:blocks/burner_evaporator",    "west": "qrystal:blocks/burner_evaporator"  }}

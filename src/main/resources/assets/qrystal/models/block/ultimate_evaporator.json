@@ -1,5 +1,1 @@
-{
-"parent": "block/cube_all",
-"textures": {
-"all": "qrystal:blocks/ultimate_evaporator"}
-}
+{  "parent": "block/cube",  "textures": {    "particle": "qrystal:blocks/ultimate_evaporator",    "down": "qrystal:blocks/endsteel_chassis",    "up": "qrystal:blocks/ultimate_evaporator_top",    "north": "qrystal:blocks/ultimate_evaporator",    "south": "qrystal:blocks/ultimate_evaporator",    "east": "qrystal:blocks/ultimate_evaporator",    "west": "qrystal:blocks/ultimate_evaporator"  }}

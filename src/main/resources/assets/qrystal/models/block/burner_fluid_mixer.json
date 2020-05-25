@@ -1,5 +1,1 @@
-{
-"parent": "block/cube_all",
-"textures": {
-"all": "qrystal:blocks/burner_fluid_mixer"}
-}
+{  "parent": "block/cube_column",  "textures": {    "end": "qrystal:blocks/imbued_alloy_chassis",    "side": "qrystal:blocks/burner_fluid_mixer"  }}

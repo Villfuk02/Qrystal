@@ -1,5 +1,1 @@
-{
-"parent": "block/cube_all",
-"textures": {
-"all": "qrystal:blocks/ultimate_fluid_mixer"}
-}
+{  "parent": "qrystal:block/ultimate_fluid_mixer"}

@@ -1,5 +1,1 @@
-{
-"variants": {
-"": {"model": "qrystal:block/diamond_cutter"}
-}
-}
+{  "variants": {    "facing=north": {"model": "qrystal:block/diamond_cutter"},    "facing=south": {"model": "qrystal:block/diamond_cutter", "y": 180},    "facing=west": {"model": "qrystal:block/diamond_cutter", "y": 270},    "facing=east": {"model": "qrystal:block/diamond_cutter", "y": 90}  }}

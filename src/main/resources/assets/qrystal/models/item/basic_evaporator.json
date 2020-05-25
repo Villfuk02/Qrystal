@@ -1,5 +1,1 @@
-{
-"parent": "block/cube_all",
-"textures": {
-"all": "qrystal:blocks/basic_evaporator"}
-}
+{  "parent": "qrystal:block/basic_evaporator"}

@@ -1,5 +1,1 @@
-{
-"parent": "block/cube_all",
-"textures": {
-"all": "qrystal:blocks/laser_cutter"}
-}
+{  "parent": "qrystal:block/laser_cutter"}
