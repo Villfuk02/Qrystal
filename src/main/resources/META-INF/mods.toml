@@ -22,7 +22,8 @@ logoFile="mod.png" #optional
 authors="Villfuk02" #optional
 # The description text for the mod (multi line!) (#mandatory)
 description='''
-A mod about processing materials and increasing yields. Visit the Curseforge page for more info.
+A mod about processing materials and increasing yields.
+Visit the Curseforge page for more info: https://www.curseforge.com/minecraft/mc-mods/qrystal
 '''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.qrystal]] #optional
