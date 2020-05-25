@@ -1,6 +1,7 @@
 package com.villfuk02.qrystal.blocks;
 
 import com.villfuk02.qrystal.util.CrystalUtil;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -14,7 +15,8 @@ public class QrystalOre extends BlockBase {
     private final boolean rich;
     
     public QrystalOre(CrystalUtil.Color color, boolean rich) {
-        super(color.toString() + "_ore" + (rich ? "_rich" : ""), Material.ROCK, MaterialColor.STONE, SoundType.STONE, 3f, 15f, ToolType.PICKAXE, rich ? 2 : 1, rich ? 1 : 0);
+        super(color.toString() + "_ore" + (rich ? "_rich" : ""),
+              Block.Properties.create(Material.ROCK, MaterialColor.STONE).sound(SoundType.STONE).hardnessAndResistance(3f, 15f / 5).harvestTool(ToolType.PICKAXE).harvestLevel(1).lightValue(2), rich ? 1 : 0);
         this.rich = rich;
     }
     
