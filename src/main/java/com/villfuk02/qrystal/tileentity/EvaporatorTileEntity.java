@@ -6,6 +6,7 @@ import com.villfuk02.qrystal.dataserializers.MaterialManager;
 import com.villfuk02.qrystal.items.Crystal;
 import com.villfuk02.qrystal.items.CrystalDust;
 import com.villfuk02.qrystal.util.CrystalUtil;
+import com.villfuk02.qrystal.util.MaterialInfo;
 import com.villfuk02.qrystal.util.RecipeUtil;
 import com.villfuk02.qrystal.util.handlers.FluidStackHandler;
 import net.minecraft.block.Block;
@@ -135,8 +136,8 @@ public abstract class EvaporatorTileEntity extends TileEntity implements INamedC
                     return false;
                 switch(slot) {
                     case 0:
-                        return (stack.getItem() instanceof CrystalDust || (stack.getItem() instanceof Crystal && ((Crystal)stack.getItem()).size != CrystalUtil.Size.SEED)) && stack.hasTag() &&
-                                stack.getTag().contains("material", Constants.NBT.TAG_STRING);
+                        return ((stack.getItem() instanceof CrystalDust || (stack.getItem() instanceof Crystal && ((Crystal)stack.getItem()).size != CrystalUtil.Size.SEED)) && stack.hasTag() &&
+                                stack.getTag().contains("material", Constants.NBT.TAG_STRING)) || MaterialManager.dissolvable.containsKey(stack.getItem().getRegistryName());
                     case 1:
                         return stack.getItem() instanceof Crystal && ((Crystal)stack.getItem()).size == CrystalUtil.Size.SEED && stack.hasTag() && stack.getTag().contains("material", Constants.NBT.TAG_STRING);
                     case 6:
@@ -330,6 +331,12 @@ public abstract class EvaporatorTileEntity extends TileEntity implements INamedC
                     int amt = Math.min(inventory.getStackInSlot(0).getCount(), getMaxAmt() / QrystalConfig.material_tier_multiplier / dust.size);
                     materialAmount += amt * QrystalConfig.material_tier_multiplier * dust.size;
                     material = inventory.getStackInSlot(0).getTag().getString("material");
+                    inventory.extractItem(0, amt, false);
+                } else if(MaterialManager.dissolvable.containsKey(inventory.getStackInSlot(0).getItem().getRegistryName())) {
+                    MaterialInfo.Unit u = MaterialManager.dissolvable.get(inventory.getStackInSlot(0).getItem().getRegistryName());
+                    int amt = Math.min(inventory.getStackInSlot(0).getCount(), getMaxAmt() / QrystalConfig.material_tier_multiplier / u.value);
+                    materialAmount += amt * QrystalConfig.material_tier_multiplier * u.value;
+                    material = u.material;
                     inventory.extractItem(0, amt, false);
                 }
             } else {

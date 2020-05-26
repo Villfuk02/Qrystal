@@ -148,14 +148,18 @@ public class EvaporatorScreen extends ContainerScreen<EvaporatorContainer> {
         }
         
         if(!tileEntity.fluid.isEmpty()) {
-            if(relMouseX > 64 && relMouseX < 73 && relMouseY > 22 && relMouseY < 39 && !tileEntity.inventory.getStackInSlot(0).isEmpty() &&
-                    ((Crystal)tileEntity.inventory.getStackInSlot(0).getItem()).tier != tileEntity.tier) {
+            if(relMouseX > 64 && relMouseX < 73 && relMouseY > 22 && relMouseY < 39 && !tileEntity.inventory.getStackInSlot(0).isEmpty()) {
                 String tooltip = new TranslationTextComponent("gui." + Main.MODID + ".tier_error").appendSibling(new TranslationTextComponent("qrystal.tier." + tileEntity.tier))
                         .appendText(" ")
                         .appendSibling(new TranslationTextComponent("qrystal.crystals"))
                         .applyTextStyle(TextFormatting.RED)
                         .getFormattedText();
-                renderTooltip(tooltip, mouseX, mouseY);
+                if(tileEntity.inventory.getStackInSlot(0).getItem() instanceof Crystal) {
+                    if(((Crystal)tileEntity.inventory.getStackInSlot(0).getItem()).tier != tileEntity.tier)
+                        renderTooltip(tooltip, mouseX, mouseY);
+                } else if(tileEntity.tier != 0) {
+                    renderTooltip(tooltip, mouseX, mouseY);
+                }
             }
             
             if(relMouseX > 64 && relMouseX < 73 && relMouseY > 46 && relMouseY < 63 && !tileEntity.inventory.getStackInSlot(1).isEmpty() &&
@@ -241,8 +245,14 @@ public class EvaporatorScreen extends ContainerScreen<EvaporatorContainer> {
             blit(startX + 128, startY + 50, 176, 43, 11, (int)(-29 * getProgress()));
         
         if(!tileEntity.fluid.isEmpty()) {
-            if(!tileEntity.inventory.getStackInSlot(0).isEmpty() && ((Crystal)tileEntity.inventory.getStackInSlot(0).getItem()).tier != tileEntity.tier)
-                blit(startX + 65, startY + 23, 190, 0, 6, 14);
+            if(!tileEntity.inventory.getStackInSlot(0).isEmpty()) {
+                if(tileEntity.inventory.getStackInSlot(0).getItem() instanceof Crystal) {
+                    if(((Crystal)tileEntity.inventory.getStackInSlot(0).getItem()).tier != tileEntity.tier)
+                        blit(startX + 65, startY + 23, 190, 0, 6, 14);
+                } else if(tileEntity.tier != 0) {
+                    blit(startX + 65, startY + 23, 190, 0, 6, 14);
+                }
+            }
             if(!tileEntity.inventory.getStackInSlot(1).isEmpty() && ((Crystal)tileEntity.inventory.getStackInSlot(1).getItem()).tier != tileEntity.tier + 1)
                 blit(startX + 65, startY + 47, 190, 0, 6, 14);
             if(!tileEntity.inventory.getStackInSlot(1).isEmpty() && tileEntity.materialAmount > 0 &&

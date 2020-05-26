@@ -8,6 +8,7 @@ import com.villfuk02.qrystal.init.ModTileEntityTypes;
 import com.villfuk02.qrystal.items.Crystal;
 import com.villfuk02.qrystal.items.CrystalDust;
 import com.villfuk02.qrystal.util.CrystalUtil;
+import com.villfuk02.qrystal.util.MaterialInfo;
 import com.villfuk02.qrystal.util.RecipeUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -139,6 +140,14 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
             else
                 return 0;
         }
+        if(MaterialManager.dissolvable.containsKey(itemStackIn.getItem().getRegistryName())) {
+            MaterialInfo.Unit u = MaterialManager.dissolvable.get(itemStackIn.getItem().getRegistryName());
+            if(!u.material.equals("qlear") && u.value > 0) {
+                if(material.isEmpty() || material.equals(u.material)) {
+                    return (water - amt) / PROCESS_MULTIPLIER / QrystalConfig.material_tier_multiplier / u.value;
+                }
+            }
+        }
         if(!itemStackIn.hasTag() || !itemStackIn.getTag().contains("material", Constants.NBT.TAG_STRING))
             return 0;
         if(itemStackIn.getItem() instanceof CrystalDust) {
@@ -162,6 +171,7 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
             else
                 return 0;
         }
+        
         return 0;
     }
     
@@ -300,6 +310,10 @@ public class DryerTileEntity extends TileEntity implements ISidedInventory, ITic
                 } else {
                     Main.LOGGER.error("Trying to dissolve unsupported item.");
                 }
+            } else if(MaterialManager.dissolvable.containsKey(stack.getItem().getRegistryName())) {
+                MaterialInfo.Unit u = MaterialManager.dissolvable.get(stack.getItem().getRegistryName());
+                amt += PROCESS_MULTIPLIER * stack.getCount() * QrystalConfig.material_tier_multiplier * u.value;
+                material = u.material;
             } else {
                 Main.LOGGER.error("Trying to dissolve unsupported item.");
             }

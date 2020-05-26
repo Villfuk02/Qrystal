@@ -26,21 +26,6 @@ public class MaterialManager extends JsonReloadListener {
     public static Map<String, MaterialInfo> materials = new HashMap<>();
     public static Map<ResourceLocation, MaterialInfo.Unit> dissolvable = new HashMap<>();
     
-    /*
-            this.name = name;                    //Material ID
-            this.replaceData = replaceData;      //Replace temp, locale, seed and colors? (empty entries will not replace existing ones)
-            this.dataPriority = dataPriority;    //If replace = true, the version with higher priority is kept
-            this.replaceIO = replaceIO;          //Replace crushable and outputs?
-            this.IOPriority = IOPriority;        //If replace = true, the version with higher priority is kept
-            this.locale = locale;                //Localisation string for the material name display
-            this.seed = seed;                    //Which material seed is used to grow this material, only accepts qrystal materials, "qlear" = none
-            this.primaryColor = primaryColor;    //Primary color eg. "3EF20C"
-            this.secondaryColor = secondaryColor;//Secondary color eg. "3EF20C"
-            this.crushables = crushables;        //Items that can be crushed into material dust and their min and max value
-            this.outputs = outputs;              //Items that can crystals cut into and their values
-                                                 //Standard values are 23040 = nugget, 207360 = ingot, 1866240 = block
-    */
-    
     public MaterialManager() {
         super(GSON, "qrystal_materials");
     }
