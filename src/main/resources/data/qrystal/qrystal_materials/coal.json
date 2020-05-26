@@ -4,12 +4,6 @@
   "seed": "qeri",
   "color_primary": "261E24",
   "color_secondary": "393E46",
-  "dissolvable": [
-    {
-      "item": "minecraft:charcoal",
-      "value": 9
-    }
-  ],
   "outputs": [
     {
       "item": "minecraft:coal",
